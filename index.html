@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#102a56">
 <title>DocSetu - Your Documents. Our Assistance.</title>
-
 <style>
 :root {
   --navy:#102a56;
@@ -156,7 +155,6 @@ footer {
 }
 </style>
 </head>
-
 <body>
 
 <header>
@@ -205,7 +203,6 @@ footer {
     <div class="grid">
       <div>
         <h3>Create Account</h3>
-
         <label>Full Name</label>
         <input id="signupName" placeholder="Apna naam">
 
@@ -220,7 +217,6 @@ footer {
 
       <div>
         <h3>Login</h3>
-
         <label>Email</label>
         <input id="loginEmail" type="email" placeholder="Registered email">
 
@@ -242,7 +238,6 @@ footer {
   </p>
 
 </section>
-
 
 <section id="dashboard" class="hidden">
 
@@ -270,15 +265,17 @@ footer {
       <option>Document Correction Guidance</option>
       <option>Other Document Assistance</option>
     </select>
-<label>Mobile Number (WhatsApp)</label>
-<input
-  id="phone"
-  type="tel"
-  inputmode="numeric"
-  maxlength="10"
-  placeholder="10 digit mobile number"
-  required
->
+
+    <label>Mobile Number (WhatsApp)</label>
+    <input
+      id="phone"
+      type="tel"
+      inputmode="numeric"
+      maxlength="10"
+      placeholder="10 digit mobile number"
+      required
+    >
+
     <label>Apne Kaam Ki Jaankari</label>
     <textarea id="description"
       maxlength="1500"
@@ -311,13 +308,11 @@ footer {
   </p>
 
 </section>
-
 </main>
 
 <footer>
   © <span id="year"></span> DocSetu. All rights reserved.
 </footer>
-
 
 <script type="module">
 
@@ -542,12 +537,13 @@ $('submitEnquiryBtn').addEventListener('click',async()=>{
   }
 
   const service_name = $('serviceName').value;
+  const phone = $('phone').value.trim();
   const description = $('description').value.trim();
 
-  if(!service_name || !description) {
+  if(!service_name || !description || !/^[6-9]\d{9}$/.test(phone)) {
     return message(
       'enquiryMessage',
-      'Service select karein aur description likhein.',
+      'Service select karein, description likhein aur valid 10 digit mobile number bharein.',
       'error'
     );
   }
@@ -559,7 +555,8 @@ $('submitEnquiryBtn').addEventListener('click',async()=>{
     .insert([{
       user_id:user.id,
       service_name,
-      description
+      description,
+      phone
     }]);
 
   busy('submitEnquiryBtn',false);
@@ -573,6 +570,7 @@ $('submitEnquiryBtn').addEventListener('click',async()=>{
   }
 
   $('serviceName').value = '';
+  $('phone').value = '';
   $('description').value = '';
 
   message(
@@ -646,6 +644,10 @@ async function loadEnquiries(userId) {
       </div>
 
       <p>${safe(row.description)}</p>
+
+      <div class="muted">
+        Mobile: ${safe(row.phone || 'Not provided')}
+      </div>
 
       <div class="muted">
         Submitted: ${safe(formatDate(row.created_at))}
