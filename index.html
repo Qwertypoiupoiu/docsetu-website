@@ -1,88 +1,717 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#102a56" />
-  <title>DocSetu — Your Documents. Our Assistance.</title>
-  <style>
-    :root{--navy:#102a56;--blue:#1d4e89;--ink:#182338;--muted:#667085;--line:#e5eaf1;--bg:#f5f7fb;--white:#fff}
-    *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
-    header{background:var(--navy);color:white;padding:16px 20px} .top{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand{font-size:24px;font-weight:800;letter-spacing:.2px}.tag{font-size:12px;color:#d8e4f5}
-    main{max-width:1050px;margin:28px auto;padding:0 16px}.hero{background:linear-gradient(135deg,#102a56,#1d4e89);color:white;border-radius:18px;padding:34px 26px;margin-bottom:20px}
-    h1{font-size:clamp(28px,5vw,42px);line-height:1.15;margin:0 0 12px}.hero p{max-width:620px;color:#e5edf8;margin:0 0 20px}.btn{border:0;border-radius:10px;padding:12px 18px;background:white;color:var(--navy);font-weight:700;cursor:pointer}
-    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 4px 18px #102a5608}
-    h2{font-size:21px;margin:0 0 14px;color:var(--navy)} .services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.service{border:1px solid var(--line);border-radius:12px;padding:14px}.service b{display:block;margin-bottom:4px}.muted{color:var(--muted);font-size:14px}
-    label{display:block;font-size:14px;font-weight:700;margin:12px 0 5px}input{width:100%;padding:12px;border:1px solid #ccd5e2;border-radius:9px;font-size:16px} .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.primary{background:var(--navy);color:white}.secondary{background:#edf2f8;color:var(--navy)}button:disabled{opacity:.55;cursor:not-allowed}
-    #status{margin-top:12px;font-size:14px;min-height:22px}.notice{margin-top:16px;background:#fff8e8;border:1px solid #f2dfb5;padding:12px;border-radius:10px;font-size:13px;color:#684d12}
-    footer{text-align:center;padding:26px 12px;color:var(--muted);font-size:13px}
-    @media(max-width:760px){.grid{grid-template-columns:1fr}.hero{padding:26px 20px}.services{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#102a56">
+<title>DocSetu - Your Documents. Our Assistance.</title>
+
+<style>
+:root {
+  --navy:#102a56;
+  --blue:#2463b5;
+  --bg:#f5f7fb;
+  --white:#fff;
+  --text:#17243a;
+  --muted:#68758a;
+  --border:#e3e9f1;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+header {
+  background:var(--navy);
+  color:white;
+  padding:18px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.brand { font-size:26px;font-weight:bold; }
+.tag { font-size:12px;color:#dbe7fa; }
+main { max-width:1000px;margin:auto;padding:22px 14px; }
+.hero {
+  background:linear-gradient(120deg,#102a56,#244e89);
+  color:white;
+  padding:30px 22px;
+  border-radius:16px;
+  margin-bottom:18px;
+}
+.hero h1 { margin:0 0 10px;font-size:32px; }
+.hero p { margin:0;color:#e0eaff; }
+.card {
+  background:white;
+  padding:21px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin:16px 0;
+}
+h2 { color:var(--navy);margin-top:0; }
+h3 { margin-bottom:8px; }
+label {
+  display:block;
+  font-weight:bold;
+  font-size:13px;
+  margin:12px 0 5px;
+}
+input,select,textarea {
+  width:100%;
+  padding:12px;
+  border:1px solid #cfd8e5;
+  border-radius:8px;
+  font-size:15px;
+  background:white;
+}
+textarea { min-height:100px; }
+button {
+  background:var(--blue);
+  color:white;
+  border:0;
+  padding:12px 17px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+  margin:10px 5px 0 0;
+}
+button.secondary { background:#eaf0f8;color:var(--navy); }
+button:disabled { opacity:.6; }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:15px;
+}
+.services {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+}
+.service {
+  border:1px solid var(--border);
+  padding:15px;
+  border-radius:10px;
+}
+.muted { color:var(--muted);font-size:13px; }
+.message {
+  padding:12px;
+  background:#edf4ff;
+  border-radius:8px;
+  margin-top:12px;
+  white-space:pre-wrap;
+}
+.error { background:#fff0ef;color:#b42318; }
+.success { background:#eaf8f1;color:#147d55; }
+.item {
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px;
+  margin:10px 0;
+  background:white;
+}
+.pill {
+  display:inline-block;
+  background:#edf3fc;
+  color:var(--navy);
+  border-radius:20px;
+  padding:4px 10px;
+  font-size:12px;
+  font-weight:bold;
+}
+.empty {
+  padding:18px;
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed #cbd5e1;
+  border-radius:10px;
+}
+.notice {
+  font-size:12px;
+  color:#58677c;
+  background:#f7f9fc;
+  padding:12px;
+  border-left:3px solid #8ba8d2;
+}
+.hidden { display:none !important; }
+.topline {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+footer {
+  text-align:center;
+  padding:22px;
+  color:var(--muted);
+  font-size:12px;
+}
+@media(max-width:550px) {
+  .hero h1 { font-size:27px; }
+  .card { padding:16px; }
+}
+</style>
 </head>
+
 <body>
-<header><div class="top"><div><div class="brand">DocSetu</div><div class="tag">Your Documents. Our Assistance.</div></div><div class="tag">Simple • Secure • Online Assistance</div></div></header>
-<main>
-  <section class="hero">
-    <h1>Documents ka kaam, ab aasaan.</h1>
-    <p>Document-related services ke liye enquiry bhejein. Hum aapki requirement samajhkar fees aur expected time batayenge. Aapki approval ke baad hi kaam shuru hoga.</p>
-    <button class="btn" onclick="document.getElementById('account').scrollIntoView({behavior:'smooth'})">Get Started</button>
-  </section>
-  <div class="grid">
-    <section class="card">
-      <h2>Hamari Services</h2>
-      <div class="services">
-        <div class="service"><b>Form Assistance</b><span class="muted">Online forms bharne mein madad</span></div>
-        <div class="service"><b>Document Guidance</b><span class="muted">Documents aur process ki jaankari</span></div>
-        <div class="service"><b>Application Support</b><span class="muted">Application process mein sahayata</span></div>
-        <div class="service"><b>Digital Document Help</b><span class="muted">Files ko व्यवस्थित rakhne mein madad</span></div>
-      </div>
-      <div class="notice">Note: DocSetu ek assistance service hai. Sarkari approval, certificate ya result ki guarantee nahi deta. Sensitive documents sirf zaroorat hone par aur surakshit tareeke se share karein.</div>
-    </section>
-    <section class="card" id="account">
-      <h2>Customer Account</h2>
-      <p class="muted">Naya account banayein ya apne account mein login karein.</p>
-      <label for="name">Full Name (signup ke liye)</label><input id="name" autocomplete="name" placeholder="Apna poora naam" />
-      <label for="email">Email Address</label><input id="email" type="email" autocomplete="email" placeholder="name@example.com" />
-      <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Kam se kam 6 characters" />
-      <div class="actions"><button class="btn primary" id="signup">Create Account</button><button class="btn secondary" id="login">Login</button></div>
-      <div class="actions"><button class="btn secondary" id="reset">Forgot Password</button></div>
-      <div id="status" role="status" aria-live="polite"></div>
-      <p class="muted">Signup ke baad email confirmation link aayega. Confirmation ke liye website ka live URL set hona zaroori hai.</p>
-    </section>
+
+<header>
+  <div>
+    <div class="brand">DocSetu</div>
+    <div class="tag">Your Documents. Our Assistance.</div>
   </div>
+  <div id="headerUser" class="tag">Document Assistance</div>
+</header>
+
+<main>
+
+<section id="publicArea">
+
+  <div class="hero">
+    <h1>Documents ka kaam, ab aasaan.</h1>
+    <p>Forms, applications aur documents ke kaam mein sahi guidance aur assistance paaiye.</p>
+  </div>
+
+  <div class="card">
+    <h2>Hamari Services</h2>
+    <div class="services">
+      <div class="service">
+        <h3>Form Assistance</h3>
+        <p class="muted">Online forms bharne mein madad.</p>
+      </div>
+      <div class="service">
+        <h3>Document Guidance</h3>
+        <p class="muted">Documents aur process ki jaankari.</p>
+      </div>
+      <div class="service">
+        <h3>Application Support</h3>
+        <p class="muted">Application process mein assistance.</p>
+      </div>
+      <div class="service">
+        <h3>Digital Document Help</h3>
+        <p class="muted">Digital documents organize karne mein madad.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Customer Account</h2>
+    <p class="muted">Naya account banayein ya login karein.</p>
+
+    <div class="grid">
+      <div>
+        <h3>Create Account</h3>
+
+        <label>Full Name</label>
+        <input id="signupName" placeholder="Apna naam">
+
+        <label>Email</label>
+        <input id="signupEmail" type="email" placeholder="Email address">
+
+        <label>Password</label>
+        <input id="signupPassword" type="password" placeholder="Minimum 6 characters">
+
+        <button id="signupBtn">Create Account</button>
+      </div>
+
+      <div>
+        <h3>Login</h3>
+
+        <label>Email</label>
+        <input id="loginEmail" type="email" placeholder="Registered email">
+
+        <label>Password</label>
+        <input id="loginPassword" type="password" placeholder="Password">
+
+        <button id="loginBtn">Login</button>
+        <button id="forgotBtn" class="secondary">Forgot Password</button>
+      </div>
+    </div>
+
+    <div id="authMessage" class="message hidden"></div>
+  </div>
+
+  <p class="notice">
+    DocSetu ek independent document assistance service hai, government department nahi.
+    Kisi bhi government benefit ya certificate ki eligibility aur approval sambandhit
+    official authority tay karti hai. Hum approval ki guarantee nahi dete.
+  </p>
+
+</section>
+
+
+<section id="dashboard" class="hidden">
+
+  <div class="hero">
+    <div class="topline">
+      <div>
+        <h1>Customer Dashboard</h1>
+        <p id="welcomeText">Welcome to DocSetu</p>
+      </div>
+      <button id="logoutBtn" class="secondary">Logout</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>New Enquiry</h2>
+    <p class="muted">Apne kaam ki jaankari bhejein.</p>
+
+    <label>Service Select Karein</label>
+    <select id="serviceName">
+      <option value="">Select Service</option>
+      <option>PPP Income Correction Guidance</option>
+      <option>Ayushman Eligibility Guidance</option>
+      <option>Certificate Application Assistance</option>
+      <option>Government Form Assistance</option>
+      <option>Document Correction Guidance</option>
+      <option>Other Document Assistance</option>
+    </select>
+
+    <label>Apne Kaam Ki Jaankari</label>
+    <textarea id="description"
+      maxlength="1500"
+      placeholder="Apni problem ya requirement likhein. OTP, bank PIN ya sensitive details na likhein."></textarea>
+
+    <button id="submitEnquiryBtn">Submit Enquiry</button>
+    <div id="enquiryMessage" class="message hidden"></div>
+  </div>
+
+  <div class="card">
+    <div class="topline">
+      <h2>My Enquiries</h2>
+      <button id="refreshBtn" class="secondary">Refresh</button>
+    </div>
+    <div id="enquiriesList">
+      <div class="empty">Loading...</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>My Orders</h2>
+    <div id="ordersList">
+      <div class="empty">Loading...</div>
+    </div>
+  </div>
+
+  <p class="notice">
+    Digital Locker abhi development mein hai. Real customers ke sensitive documents
+    tab tak upload na karein jab tak storage security aur access policies test na ho jaayein.
+  </p>
+
+</section>
+
 </main>
-<footer>© <span id="year"></span> DocSetu. All rights reserved.</footer>
+
+<footer>
+  © <span id="year"></span> DocSetu. All rights reserved.
+</footer>
+
+
 <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-  const SUPABASE_URL = 'https://hqzxhbuhecaltjoxhffe.supabase.co';
-  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu';
-  const status = document.getElementById('status');
-  const setStatus = (message, isError=false) => { status.textContent = message; status.style.color = isError ? '#b42318' : '#176b3a'; };
-  document.getElementById('year').textContent = new Date().getFullYear();
-  const configured = !SUPABASE_URL.includes('PASTE_') && !SUPABASE_PUBLISHABLE_KEY.includes('PASTE_');
-  const supabase = configured ? createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
-  if (!configured) setStatus('Supabase connected configuration loaded. Signup aur login ke liye apna account use karein.');
-  const values = () => ({name:document.getElementById('name').value.trim(),email:document.getElementById('email').value.trim(),password:document.getElementById('password').value});
-  document.getElementById('signup').addEventListener('click', async () => {
-    if (!supabase) return setStatus('Pehle website configuration mein Supabase URL aur Publishable key add karni hogi.', true);
-    const {name,email,password}=values();
-    if (!name || !email || password.length < 6) return setStatus('Naam, sahi email aur kam se kam 6-character password bharein.', true);
-    const {error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name},emailRedirectTo:window.location.href}});
-    setStatus(error ? error.message : 'Signup request bhej di gayi hai. Apna email inbox check karein aur confirmation link kholein.');
+
+import { createClient } from
+'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL =
+'https://hqzxhbuhecaltjoxhffe.supabase.co';
+
+const SUPABASE_PUBLISHABLE_KEY =
+'sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu';
+
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+const $ = id => document.getElementById(id);
+
+$('year').textContent = new Date().getFullYear();
+
+function message(id,text,type='') {
+  const el = $(id);
+  el.textContent = text;
+  el.className = 'message' + (type ? ' '+type : '');
+}
+
+function hideMessage(id) {
+  $(id).classList.add('hidden');
+}
+
+function busy(id,state,label) {
+  const btn = $(id);
+  btn.disabled = state;
+
+  if(state) {
+    btn.dataset.old = btn.textContent;
+    btn.textContent = label;
+  } else {
+    btn.textContent = btn.dataset.old || btn.textContent;
+  }
+}
+
+function safe(value) {
+  return String(value ?? '').replace(/[&<>"']/g,c => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  })[c]);
+}
+
+function formatDate(value) {
+  if(!value) return '—';
+  const date = new Date(value);
+  return isNaN(date) ? String(value) :
+    date.toLocaleString('en-IN');
+}
+
+function showPublic() {
+  $('publicArea').classList.remove('hidden');
+  $('dashboard').classList.add('hidden');
+  $('headerUser').textContent = 'Document Assistance';
+}
+
+async function showDashboard(user) {
+  $('publicArea').classList.add('hidden');
+  $('dashboard').classList.remove('hidden');
+
+  $('headerUser').textContent = user.email || 'Customer';
+
+  $('welcomeText').textContent =
+    'Welcome, ' + (user.user_metadata?.full_name || user.email);
+
+  await loadCustomerData(user.id);
+}
+
+
+// SIGN UP
+
+$('signupBtn').addEventListener('click',async()=>{
+
+  hideMessage('authMessage');
+
+  const name = $('signupName').value.trim();
+  const email = $('signupEmail').value.trim();
+  const password = $('signupPassword').value;
+
+  if(!name || !email || password.length < 6) {
+    return message(
+      'authMessage',
+      'Naam, valid email aur minimum 6-character password bharein.',
+      'error'
+    );
+  }
+
+  busy('signupBtn',true,'Creating Account...');
+
+  const {data,error} = await supabase.auth.signUp({
+    email,
+    password,
+    options:{
+      data:{full_name:name},
+      emailRedirectTo:window.location.href
+    }
   });
-  document.getElementById('login').addEventListener('click', async () => {
-    if (!supabase) return setStatus('Pehle website configuration mein Supabase URL aur Publishable key add karni hogi.', true);
-    const {email,password}=values(); if(!email || !password) return setStatus('Email aur password bharein.', true);
-    const {error}=await supabase.auth.signInWithPassword({email,password});
-    setStatus(error ? error.message : 'Login successful. Aapka account connect ho gaya hai.');
-  });
-  document.getElementById('reset').addEventListener('click', async () => {
-    if (!supabase) return setStatus('Pehle website configuration mein Supabase URL aur Publishable key add karni hogi.', true);
-    const {email}=values(); if(!email) return setStatus('Pehle email address bharein.', true);
-    const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
-    setStatus(error ? error.message : 'Password reset email bhej di gayi hai. Inbox check karein.');
-  });
+
+  busy('signupBtn',false);
+
+  if(error) {
+    return message('authMessage',error.message,'error');
+  }
+
+  if(data.session) {
+    await showDashboard(data.user);
+  } else {
+    message(
+      'authMessage',
+      'Account ban gaya hai. Email inbox mein confirmation link check karein. Uske baad login karein.',
+      'success'
+    );
+  }
+});
+
+
+// LOGIN
+
+$('loginBtn').addEventListener('click',async()=>{
+
+  hideMessage('authMessage');
+
+  const email = $('loginEmail').value.trim();
+  const password = $('loginPassword').value;
+
+  if(!email || !password) {
+    return message('authMessage','Email aur password bharein.','error');
+  }
+
+  busy('loginBtn',true,'Logging in...');
+
+  const {data,error} =
+    await supabase.auth.signInWithPassword({
+      email,password
+    });
+
+  busy('loginBtn',false);
+
+  if(error) {
+    return message('authMessage',error.message,'error');
+  }
+
+  await showDashboard(data.user);
+});
+
+
+// FORGOT PASSWORD
+
+$('forgotBtn').addEventListener('click',async()=>{
+
+  const email = $('loginEmail').value.trim();
+
+  if(!email) {
+    return message(
+      'authMessage',
+      'Pehle Login wale box mein registered email likhein.',
+      'error'
+    );
+  }
+
+  busy('forgotBtn',true,'Sending...');
+
+  const {error} =
+    await supabase.auth.resetPasswordForEmail(email,{
+      redirectTo:window.location.href
+    });
+
+  busy('forgotBtn',false);
+
+  if(error) {
+    message('authMessage',error.message,'error');
+  } else {
+    message(
+      'authMessage',
+      'Password reset link email par bhej diya gaya hai. Inbox aur spam check karein.',
+      'success'
+    );
+  }
+});
+
+
+// LOGOUT
+
+$('logoutBtn').addEventListener('click',async()=>{
+
+  const {error} = await supabase.auth.signOut();
+
+  if(error) {
+    message('enquiryMessage',error.message,'error');
+  } else {
+    showPublic();
+  }
+});
+
+
+// NEW ENQUIRY
+
+$('submitEnquiryBtn').addEventListener('click',async()=>{
+
+  hideMessage('enquiryMessage');
+
+  const {data:{user}} = await supabase.auth.getUser();
+
+  if(!user) {
+    message(
+      'enquiryMessage',
+      'Session expire ho gaya. Dobara login karein.',
+      'error'
+    );
+    showPublic();
+    return;
+  }
+
+  const service_name = $('serviceName').value;
+  const description = $('description').value.trim();
+
+  if(!service_name || !description) {
+    return message(
+      'enquiryMessage',
+      'Service select karein aur description likhein.',
+      'error'
+    );
+  }
+
+  busy('submitEnquiryBtn',true,'Submitting...');
+
+  const {error} = await supabase
+    .from('enquiries')
+    .insert([{
+      user_id:user.id,
+      service_name,
+      description
+    }]);
+
+  busy('submitEnquiryBtn',false);
+
+  if(error) {
+    return message(
+      'enquiryMessage',
+      'Enquiry submit nahi hui: '+error.message,
+      'error'
+    );
+  }
+
+  $('serviceName').value = '';
+  $('description').value = '';
+
+  message(
+    'enquiryMessage',
+    'Aapki enquiry successfully submit ho gayi!',
+    'success'
+  );
+
+  await loadEnquiries(user.id);
+});
+
+
+// REFRESH
+
+$('refreshBtn').addEventListener('click',async()=>{
+
+  const {data:{user}} = await supabase.auth.getUser();
+
+  if(user) {
+    await loadCustomerData(user.id);
+  }
+});
+
+
+// LOAD DASHBOARD DATA
+
+async function loadCustomerData(userId) {
+
+  $('enquiriesList').innerHTML =
+    '<div class="empty">Loading enquiries...</div>';
+
+  $('ordersList').innerHTML =
+    '<div class="empty">Loading orders...</div>';
+
+  await Promise.all([
+    loadEnquiries(userId),
+    loadOrders(userId)
+  ]);
+}
+
+
+// LOAD ENQUIRIES
+
+async function loadEnquiries(userId) {
+
+  const {data,error} = await supabase
+    .from('enquiries')
+    .select('*')
+    .eq('user_id',userId)
+    .order('created_at',{ascending:false});
+
+  if(error) {
+    $('enquiriesList').innerHTML =
+      '<div class="empty">Enquiries load nahi hui. RLS SELECT policy check karein: '
+      + safe(error.message) + '</div>';
+    return;
+  }
+
+  if(!data || data.length===0) {
+    $('enquiriesList').innerHTML =
+      '<div class="empty">Abhi koi enquiry nahi hai.</div>';
+    return;
+  }
+
+  $('enquiriesList').innerHTML = data.map(row=>`
+
+    <div class="item">
+      <div class="topline">
+        <strong>${safe(row.service_name)}</strong>
+        <span class="pill">${safe(row.status || 'Received')}</span>
+      </div>
+
+      <p>${safe(row.description)}</p>
+
+      <div class="muted">
+        Submitted: ${safe(formatDate(row.created_at))}
+      </div>
+    </div>
+
+  `).join('');
+}
+
+
+// LOAD ORDERS
+
+async function loadOrders(userId) {
+
+  const {data,error} = await supabase
+    .from('orders')
+    .select('*')
+    .eq('user_id',userId)
+    .order('created_at',{ascending:false});
+
+  if(error) {
+    $('ordersList').innerHTML =
+      '<div class="empty">Orders load nahi hue. RLS SELECT policy check karein: '
+      + safe(error.message) + '</div>';
+    return;
+  }
+
+  if(!data || data.length===0) {
+    $('ordersList').innerHTML =
+      '<div class="empty">Abhi aapka koi order nahi hai.</div>';
+    return;
+  }
+
+  $('ordersList').innerHTML = data.map(row=>`
+
+    <div class="item">
+
+      <div class="topline">
+        <strong>${safe(row.service_name)}</strong>
+        <span class="pill">${safe(row.work_status || 'Pending')}</span>
+      </div>
+
+      <p>
+        <strong>Amount:</strong>
+        ${row.amount == null ? 'Not set' : '₹'+safe(row.amount)}
+      </p>
+
+      <p>
+        <strong>Payment:</strong>
+        ${safe(row.payment_status || 'Not updated')}
+      </p>
+
+      <div class="muted">
+        Created: ${safe(formatDate(row.created_at))}
+      </div>
+
+    </div>
+
+  `).join('');
+}
+
+
+// CHECK EXISTING SESSION
+
+const {data:{session}} =
+  await supabase.auth.getSession();
+
+if(session?.user) {
+  await showDashboard(session.user);
+} else {
+  showPublic();
+}
+
 </script>
+
 </body>
 </html>
