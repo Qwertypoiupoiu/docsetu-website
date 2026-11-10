@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#102a56">
 <title>DocSetu - Your Documents. Our Assistance.</title>
+
 <style>
 :root {
   --navy:#102a56;
@@ -34,7 +35,7 @@ header {
 }
 .brand { font-size:26px;font-weight:bold; }
 .tag { font-size:12px;color:#dbe7fa; }
-main { max-width:1000px;margin:auto;padding:22px 14px; }
+main { max-width:1100px;margin:auto;padding:22px 14px; }
 .hero {
   background:linear-gradient(120deg,#102a56,#244e89);
   color:white;
@@ -42,7 +43,7 @@ main { max-width:1000px;margin:auto;padding:22px 14px; }
   border-radius:16px;
   margin-bottom:18px;
 }
-.hero h1 { margin:0 0 10px;font-size:32px; }
+.hero h1 { margin:0 0 10px;font-size:30px; }
 .hero p { margin:0;color:#e0eaff; }
 .card {
   background:white;
@@ -66,6 +67,7 @@ input,select,textarea {
   border-radius:8px;
   font-size:15px;
   background:white;
+  color:var(--text);
 }
 textarea { min-height:100px; }
 button {
@@ -76,10 +78,11 @@ button {
   border-radius:8px;
   font-weight:bold;
   cursor:pointer;
-  margin:10px 5px 0 0;
+  margin:8px 5px 0 0;
 }
 button.secondary { background:#eaf0f8;color:var(--navy); }
-button:disabled { opacity:.6; }
+button.danger { background:#b42318;color:white; }
+button:disabled { opacity:.6;cursor:not-allowed; }
 .grid {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
@@ -102,13 +105,14 @@ button:disabled { opacity:.6; }
   border-radius:8px;
   margin-top:12px;
   white-space:pre-wrap;
+  overflow-wrap:anywhere;
 }
 .error { background:#fff0ef;color:#b42318; }
 .success { background:#eaf8f1;color:#147d55; }
 .item {
   border:1px solid var(--border);
   border-radius:10px;
-  padding:14px;
+  padding:15px;
   margin:10px 0;
   background:white;
 }
@@ -117,7 +121,7 @@ button:disabled { opacity:.6; }
   background:#edf3fc;
   color:var(--navy);
   border-radius:20px;
-  padding:4px 10px;
+  padding:5px 10px;
   font-size:12px;
   font-weight:bold;
 }
@@ -143,6 +147,38 @@ button:disabled { opacity:.6; }
   gap:10px;
   flex-wrap:wrap;
 }
+.stats {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:12px;
+  margin:15px 0;
+}
+.stat {
+  background:white;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:17px;
+}
+.stat strong {
+  display:block;
+  font-size:26px;
+  color:var(--navy);
+  margin-top:6px;
+}
+.admin-item { border-left:4px solid var(--blue); }
+.admin-actions {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:8px;
+  margin-top:12px;
+}
+.admin-actions button { margin:0; }
+.admin-actions select { min-width:0; }
+.small-label {
+  font-size:12px;
+  color:var(--muted);
+  margin:10px 0 4px;
+}
 footer {
   text-align:center;
   padding:22px;
@@ -150,11 +186,13 @@ footer {
   font-size:12px;
 }
 @media(max-width:550px) {
-  .hero h1 { font-size:27px; }
+  .hero h1 { font-size:25px; }
   .card { padding:16px; }
+  button { padding:11px 13px; }
 }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -166,6 +204,8 @@ footer {
 </header>
 
 <main>
+
+<!-- PUBLIC WEBSITE -->
 
 <section id="publicArea">
 
@@ -201,8 +241,10 @@ footer {
     <p class="muted">Naya account banayein ya login karein.</p>
 
     <div class="grid">
+
       <div>
         <h3>Create Account</h3>
+
         <label>Full Name</label>
         <input id="signupName" placeholder="Apna naam">
 
@@ -217,6 +259,7 @@ footer {
 
       <div>
         <h3>Login</h3>
+
         <label>Email</label>
         <input id="loginEmail" type="email" placeholder="Registered email">
 
@@ -226,6 +269,7 @@ footer {
         <button id="loginBtn">Login</button>
         <button id="forgotBtn" class="secondary">Forgot Password</button>
       </div>
+
     </div>
 
     <div id="authMessage" class="message hidden"></div>
@@ -233,11 +277,14 @@ footer {
 
   <p class="notice">
     DocSetu ek independent document assistance service hai, government department nahi.
-    Kisi bhi government benefit ya certificate ki eligibility aur approval sambandhit
-    official authority tay karti hai. Hum approval ki guarantee nahi dete.
+    Government benefit ya certificate ki eligibility aur approval sambandhit official
+    authority tay karti hai. Hum approval ki guarantee nahi dete.
   </p>
 
 </section>
+
+
+<!-- CUSTOMER DASHBOARD -->
 
 <section id="dashboard" class="hidden">
 
@@ -267,18 +314,11 @@ footer {
     </select>
 
     <label>Mobile Number (WhatsApp)</label>
-    <input
-      id="phone"
-      type="tel"
-      inputmode="numeric"
-      maxlength="10"
-      placeholder="10 digit mobile number"
-      required
-    >
+    <input id="phone" type="tel" inputmode="numeric"
+      maxlength="10" placeholder="10 digit mobile number">
 
     <label>Apne Kaam Ki Jaankari</label>
-    <textarea id="description"
-      maxlength="1500"
+    <textarea id="description" maxlength="1500"
       placeholder="Apni problem ya requirement likhein. OTP, bank PIN ya sensitive details na likhein."></textarea>
 
     <button id="submitEnquiryBtn">Submit Enquiry</button>
@@ -308,11 +348,92 @@ footer {
   </p>
 
 </section>
+
+
+<!-- ADMIN DASHBOARD -->
+
+<section id="adminDashboard" class="hidden">
+
+  <div class="hero">
+    <div class="topline">
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p>DocSetu Owner Control Panel</p>
+        <p id="adminWelcome"></p>
+      </div>
+      <button id="adminLogoutBtn" class="secondary">Logout</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="muted">Total Enquiries</div>
+      <strong id="totalEnquiries">0</strong>
+    </div>
+    <div class="stat">
+      <div class="muted">Pending</div>
+      <strong id="pendingEnquiries">0</strong>
+    </div>
+    <div class="stat">
+      <div class="muted">In Progress</div>
+      <strong id="progressEnquiries">0</strong>
+    </div>
+    <div class="stat">
+      <div class="muted">Completed</div>
+      <strong id="completedEnquiries">0</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="topline">
+      <div>
+        <h2>All Customer Enquiries</h2>
+        <p class="muted">Sabhi customers ki latest enquiries.</p>
+      </div>
+      <button id="adminRefreshBtn" class="secondary">Refresh Data</button>
+    </div>
+
+    <label>Search Enquiries</label>
+    <input id="adminSearch" placeholder="Name, mobile, service ya enquiry search karein">
+
+    <label>Filter by Status</label>
+    <select id="adminFilter">
+      <option value="">All Enquiries</option>
+      <option>Received</option>
+      <option>Pending</option>
+      <option>In Progress</option>
+      <option>Completed</option>
+      <option>Rejected</option>
+    </select>
+
+    <div id="adminEnquiriesList">
+      <div class="empty">Loading enquiries...</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>All Orders</h2>
+    <p class="muted">Order amount, work status aur payment update karein.</p>
+    <div id="adminOrdersList">
+      <div class="empty">Loading orders...</div>
+    </div>
+  </div>
+
+  <p class="notice">
+    Admin access database permissions se protected hai. Customer data ko sirf
+    authorized business work ke liye use karein.
+  </p>
+
+  <div id="adminMessage" class="message hidden"></div>
+
+</section>
+
 </main>
 
 <footer>
   © <span id="year"></span> DocSetu. All rights reserved.
 </footer>
+
 
 <script type="module">
 
@@ -331,6 +452,9 @@ const supabase = createClient(
 );
 
 const $ = id => document.getElementById(id);
+
+let currentUser = null;
+let allAdminEnquiries = [];
 
 $('year').textContent = new Date().getFullYear();
 
@@ -373,20 +497,65 @@ function formatDate(value) {
     date.toLocaleString('en-IN');
 }
 
+function showOnly(section) {
+  ['publicArea','dashboard','adminDashboard'].forEach(id=>{
+    $(id).classList.toggle('hidden',id !== section);
+  });
+}
+
 function showPublic() {
-  $('publicArea').classList.remove('hidden');
-  $('dashboard').classList.add('hidden');
+  currentUser = null;
+  showOnly('publicArea');
   $('headerUser').textContent = 'Document Assistance';
 }
 
-async function showDashboard(user) {
-  $('publicArea').classList.add('hidden');
-  $('dashboard').classList.remove('hidden');
+async function getCurrentProfile(userId) {
+  return await supabase
+    .from('profiles')
+    .select('id,full_name,role')
+    .eq('id',userId)
+    .maybeSingle();
+}
 
+
+// LOGIN ROUTING
+
+async function showDashboard(user) {
+
+  currentUser = user;
+
+  const {data:profile,error} = await getCurrentProfile(user.id);
+
+  if(error) {
+    showOnly('dashboard');
+    $('headerUser').textContent = user.email || 'Customer';
+    $('welcomeText').textContent = 'Welcome to DocSetu';
+
+    message(
+      'enquiryMessage',
+      'Profile load nahi ho paya. Dashboard permissions check karein: '+error.message,
+      'error'
+    );
+
+    await loadCustomerData(user.id);
+    return;
+  }
+
+  if(profile?.role === 'admin') {
+    showOnly('adminDashboard');
+    $('headerUser').textContent = 'DocSetu Owner Admin';
+    $('adminWelcome').textContent =
+      'Welcome, ' + (profile.full_name || user.email);
+
+    await loadAdminData();
+    return;
+  }
+
+  showOnly('dashboard');
   $('headerUser').textContent = user.email || 'Customer';
 
   $('welcomeText').textContent =
-    'Welcome, ' + (user.user_metadata?.full_name || user.email);
+    'Welcome, ' + (profile?.full_name || user.email);
 
   await loadCustomerData(user.id);
 }
@@ -506,19 +675,21 @@ $('forgotBtn').addEventListener('click',async()=>{
 
 // LOGOUT
 
-$('logoutBtn').addEventListener('click',async()=>{
-
+async function logout() {
   const {error} = await supabase.auth.signOut();
 
   if(error) {
-    message('enquiryMessage',error.message,'error');
+    message('adminMessage',error.message,'error');
   } else {
     showPublic();
   }
-});
+}
+
+$('logoutBtn').addEventListener('click',logout);
+$('adminLogoutBtn').addEventListener('click',logout);
 
 
-// NEW ENQUIRY
+// CUSTOMER ENQUIRY
 
 $('submitEnquiryBtn').addEventListener('click',async()=>{
 
@@ -527,11 +698,7 @@ $('submitEnquiryBtn').addEventListener('click',async()=>{
   const {data:{user}} = await supabase.auth.getUser();
 
   if(!user) {
-    message(
-      'enquiryMessage',
-      'Session expire ho gaya. Dobara login karein.',
-      'error'
-    );
+    message('enquiryMessage','Session expire ho gaya. Dobara login karein.','error');
     showPublic();
     return;
   }
@@ -583,19 +750,14 @@ $('submitEnquiryBtn').addEventListener('click',async()=>{
 });
 
 
-// REFRESH
+// CUSTOMER REFRESH
 
 $('refreshBtn').addEventListener('click',async()=>{
-
-  const {data:{user}} = await supabase.auth.getUser();
-
-  if(user) {
-    await loadCustomerData(user.id);
-  }
+  if(currentUser) await loadCustomerData(currentUser.id);
 });
 
 
-// LOAD DASHBOARD DATA
+// CUSTOMER DATA
 
 async function loadCustomerData(userId) {
 
@@ -612,7 +774,7 @@ async function loadCustomerData(userId) {
 }
 
 
-// LOAD ENQUIRIES
+// CUSTOMER ENQUIRIES
 
 async function loadEnquiries(userId) {
 
@@ -624,8 +786,7 @@ async function loadEnquiries(userId) {
 
   if(error) {
     $('enquiriesList').innerHTML =
-      '<div class="empty">Enquiries load nahi hui. RLS SELECT policy check karein: '
-      + safe(error.message) + '</div>';
+      '<div class="empty">Enquiries load nahi hui: '+safe(error.message)+'</div>';
     return;
   }
 
@@ -658,7 +819,7 @@ async function loadEnquiries(userId) {
 }
 
 
-// LOAD ORDERS
+// CUSTOMER ORDERS
 
 async function loadOrders(userId) {
 
@@ -670,8 +831,7 @@ async function loadOrders(userId) {
 
   if(error) {
     $('ordersList').innerHTML =
-      '<div class="empty">Orders load nahi hue. RLS SELECT policy check karein: '
-      + safe(error.message) + '</div>';
+      '<div class="empty">Orders load nahi hue: '+safe(error.message)+'</div>';
     return;
   }
 
@@ -684,44 +844,53 @@ async function loadOrders(userId) {
   $('ordersList').innerHTML = data.map(row=>`
 
     <div class="item">
-
       <div class="topline">
         <strong>${safe(row.service_name)}</strong>
         <span class="pill">${safe(row.work_status || 'Pending')}</span>
       </div>
 
-      <p>
-        <strong>Amount:</strong>
+      <p><strong>Amount:</strong>
         ${row.amount == null ? 'Not set' : '₹'+safe(row.amount)}
       </p>
 
-      <p>
-        <strong>Payment:</strong>
+      <p><strong>Payment:</strong>
         ${safe(row.payment_status || 'Not updated')}
       </p>
 
       <div class="muted">
         Created: ${safe(formatDate(row.created_at))}
       </div>
-
     </div>
 
   `).join('');
 }
 
 
-// CHECK EXISTING SESSION
+// ADMIN DATA
 
-const {data:{session}} =
-  await supabase.auth.getSession();
+async function loadAdminData() {
 
-if(session?.user) {
-  await showDashboard(session.user);
-} else {
-  showPublic();
+  if(!currentUser) return;
+
+  $('adminEnquiriesList').innerHTML =
+    '<div class="empty">Loading enquiries...</div>';
+
+  $('adminOrdersList').innerHTML =
+    '<div class="empty">Loading orders...</div>';
+
+  const results = await Promise.all([
+    loadAdminEnquiries(),
+    loadAdminOrders()
+  ]);
+
+  updateAdminStats();
 }
 
-</script>
 
-</body>
-</html>
+// ADMIN ENQUIRIES
+
+async function loadAdminEnquiries() {
+
+  const {data:enquiries,error:enquiryError} = await supabase
+    .from('enquiries')
+   
