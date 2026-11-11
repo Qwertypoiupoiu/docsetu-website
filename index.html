@@ -6,201 +6,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#10264a">
 <title>DocSetu - Your Documents. Our Assistance.</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-:root {
-  --navy:#10264a;
-  --blue:#24528b;
-  --light:#f3f6fb;
-  --white:#fff;
-  --text:#263449;
-  --muted:#718096;
-  --border:#dce4ef;
-  --green:#168653;
-  --red:#c0392b;
-}
+:root{--navy:#10264a;--blue:#24528b;--light:#f3f6fb;--text:#263449;--muted:#718096;--border:#dce4ef;--green:#168653;--red:#c0392b}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--light);
-  color:var(--text);
-  font-family:Arial,sans-serif;
-}
-header{
-  background:var(--navy);
-  color:white;
-  padding:16px 5%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:12px;
-}
-.brand{font-size:26px;font-weight:800}
-.brand span{color:#9fc5ff}
-header small{display:block;color:#d4e1f5;font-size:12px;margin-top:3px}
-button{
-  background:var(--blue);
-  color:white;
-  border:0;
-  padding:11px 16px;
-  border-radius:8px;
-  font-size:14px;
-  font-weight:600;
-  cursor:pointer;
-}
-button:hover{opacity:.9}
-button:disabled{opacity:.5;cursor:not-allowed}
-.secondary{background:#e8eef7;color:var(--navy)}
-.danger{background:var(--red)}
-.green{background:var(--green)}
+body{margin:0;background:var(--light);color:var(--text);font-family:Arial,sans-serif}
+header{background:var(--navy);color:#fff;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.brand{font-size:26px;font-weight:800}.brand span{color:#9fc5ff}header small{display:block;color:#d4e1f5;font-size:12px;margin-top:3px}
+button{background:var(--blue);color:#fff;border:0;padding:11px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+button:hover{opacity:.9}button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#e8eef7;color:var(--navy)}.danger{background:var(--red)}.green{background:var(--green)}
 .container{width:min(1100px,94%);margin:25px auto}
-.hero{
-  background:linear-gradient(130deg,#10264a,#24528b);
-  color:white;
-  border-radius:16px;
-  padding:35px 25px;
-  margin-bottom:20px;
-}
-.hero h1{font-size:30px;margin:0 0 12px}
-.hero p{line-height:1.6;color:#e1eaf8}
-.card{
-  background:white;
-  border:1px solid var(--border);
-  border-radius:13px;
-  padding:20px;
-  margin-bottom:18px;
-  box-shadow:0 3px 14px #10264a0b;
-}
+.hero{background:linear-gradient(130deg,#10264a,#24528b);color:#fff;border-radius:16px;padding:35px 25px;margin-bottom:20px}
+.hero h1{font-size:30px;margin:0 0 12px}.hero p{line-height:1.6;color:#e1eaf8}
+.card{background:#fff;border:1px solid var(--border);border-radius:13px;padding:20px;margin-bottom:18px;box-shadow:0 3px 14px #10264a0b}
 h2,h3{color:var(--navy);margin-top:0}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:14px;
-}
-.service{
-  background:white;
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:17px;
-}
-.service h3{margin:0 0 8px;font-size:17px}
-.service p{font-size:14px;color:var(--muted);line-height:1.5;margin:0}
-input,select,textarea{
-  width:100%;
-  padding:12px;
-  border:1px solid #cbd5e1;
-  border-radius:8px;
-  margin:7px 0 13px;
-  font-size:15px;
-  background:white;
-  color:var(--text);
-}
-textarea{min-height:100px;resize:vertical}
-label{
-  font-size:14px;
-  font-weight:600;
-  color:var(--navy);
-}
-.auth-box{max-width:440px;margin:28px auto}
-.auth-box .card{padding:25px}
-.hidden{display:none!important}
-.muted{color:var(--muted);font-size:13px;line-height:1.5}
-.message{
-  padding:11px;
-  border-radius:8px;
-  margin:10px 0;
-  font-size:14px;
-  display:none;
-  overflow-wrap:anywhere;
-}
-.message.error{display:block;background:#fff0ef;color:#a32920}
-.message.success{display:block;background:#eaf8f0;color:#176c43}
-.row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
-  gap:12px;
-  margin:16px 0;
-}
-.stat{
-  background:white;
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:17px;
-}
-.stat strong{
-  display:block;
-  font-size:27px;
-  color:var(--navy);
-  margin-top:7px;
-}
-.stat span{font-size:13px;color:var(--muted)}
-.item{
-  background:white;
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:15px;
-  margin:12px 0;
-}
-.item h3{font-size:16px;margin:0 0 8px}
-.item p{font-size:14px;line-height:1.5;margin:6px 0;overflow-wrap:anywhere}
-.tag{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  background:#eaf0fa;
-  color:var(--navy);
-  font-size:12px;
-  font-weight:700;
-}
-.item-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.item-actions button,.item-actions a{padding:9px 12px}
-.item-actions a{
-  display:inline-block;
-  text-decoration:none;
-  color:white;
-  background:var(--green);
-  border-radius:8px;
-  font-size:14px;
-  font-weight:600;
-}
-.filters{
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:10px;
-}
-a{color:var(--blue)}
-hr{border:0;border-top:1px solid var(--border);margin:18px 0}
-footer{
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
-  padding:25px 15px;
-}
-@media(max-width:550px){
-  .hero h1{font-size:24px}
-  .card{padding:15px}
-  .filters{grid-template-columns:1fr}
-}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.service{background:#fff;border:1px solid var(--border);border-radius:10px;padding:17px}.service h3{margin:0 0 8px;font-size:17px}.service p{font-size:14px;color:var(--muted);line-height:1.5;margin:0}
+.auth-box{max-width:440px;margin:28px auto}.auth-box .card{padding:25px}
+.hidden{display:none!important}.muted{color:var(--muted);font-size:13px;line-height:1.5}
+.message{padding:11px;border-radius:8px;margin:10px 0;font-size:14px;display:none;overflow-wrap:anywhere}
+.message.error{display:block;background:#fff0ef;color:#a32920}.message.success{display:block;background:#eaf8f0;color:#176c43}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;margin:7px 0 13px;font-size:15px;background:#fff;color:var(--text)}
+textarea{min-height:100px;resize:vertical}label{font-size:14px;font-weight:600;color:var(--navy)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:16px 0}
+.stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:17px}.stat strong{display:block;font-size:27px;color:var(--navy);margin-top:7px}.stat span{font-size:13px;color:var(--muted)}
+.item{background:#fff;border:1px solid var(--border);border-radius:10px;padding:15px;margin:12px 0}.item h3{font-size:16px;margin:0 0 8px}.item p{font-size:14px;line-height:1.5;margin:6px 0;overflow-wrap:anywhere}
+.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#eaf0fa;color:var(--navy);font-size:12px;font-weight:700}
+.item-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.item-actions button,.item-actions a{padding:9px 12px}
+.item-actions a{display:inline-block;text-decoration:none;color:#fff;background:var(--green);border-radius:8px;font-size:14px;font-weight:600}
+.filters{display:grid;grid-template-columns:2fr 1fr;gap:10px}a{color:var(--blue)}hr{border:0;border-top:1px solid var(--border);margin:18px 0}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px 15px}
+@media(max-width:550px){.hero h1{font-size:24px}.card{padding:15px}.filters{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
-
 <header>
-  <div>
-    <div class="brand">Doc<span>Setu</span></div>
-    <small>Your Documents. Our Assistance.</small>
-  </div>
+  <div><div class="brand">Doc<span>Setu</span></div><small>Your Documents. Our Assistance.</small></div>
   <div class="row">
     <button id="headerLogin" class="secondary" type="button">Login</button>
     <button id="headerSignup" type="button">Create Account</button>
@@ -209,8 +51,6 @@ footer{
 </header>
 
 <main class="container">
-
-<!-- HOME -->
 <section id="homeView">
   <div class="hero">
     <h1>Documents ka kaam, ab aasaan.</h1>
@@ -220,134 +60,57 @@ footer{
       <button id="homeLogin" class="secondary" type="button">Customer Login</button>
     </div>
   </div>
-
   <div class="card">
     <h2>Hamari Services</h2>
     <div class="grid">
-      <div class="service">
-        <h3>Form Assistance</h3>
-        <p>Online forms bharne mein madad.</p>
-      </div>
-      <div class="service">
-        <h3>Document Guidance</h3>
-        <p>Documents aur process ki jaankari.</p>
-      </div>
-      <div class="service">
-        <h3>Application Support</h3>
-        <p>Application process mein assistance.</p>
-      </div>
-      <div class="service">
-        <h3>Digital Document Help</h3>
-        <p>Digital documents organize karne mein madad.</p>
-      </div>
+      <div class="service"><h3>Form Assistance</h3><p>Online forms bharne mein madad.</p></div>
+      <div class="service"><h3>Document Guidance</h3><p>Documents aur process ki jaankari.</p></div>
+      <div class="service"><h3>Application Support</h3><p>Application process mein assistance.</p></div>
+      <div class="service"><h3>Digital Document Help</h3><p>Digital documents organize karne mein madad.</p></div>
     </div>
   </div>
-
   <div class="card">
     <h2>Customer Account</h2>
     <p class="muted">Naya account banayein ya apne account mein login karein.</p>
     <button id="homeSignup" type="button">Create Account</button>
     <button id="homeLogin2" class="secondary" type="button">Login</button>
   </div>
-
   <div class="card">
     <h3>Important Information</h3>
-    <p class="muted">
-      DocSetu ek independent document assistance service hai.
-      Hum kisi government department ya authority ka hissa nahi hain.
-      Application ki eligibility aur approval sambandhit authority ke niyamon par nirbhar karta hai.
-      Hum approval ki guarantee nahi dete. Application mein sahi aur asli jaankari dena zaroori hai.
-    </p>
+    <p class="muted">DocSetu ek independent document assistance service hai. Hum kisi government department ya authority ka hissa nahi hain. Har application ki eligibility aur approval sambandhit authority ke niyamon par nirbhar karta hai. Hum approval ki guarantee nahi dete. Kisi bhi application mein sahi aur asli jaankari dena zaroori hai.</p>
   </div>
 </section>
 
-<!-- AUTH -->
 <section id="authView" class="auth-box hidden">
   <div class="card">
     <h2 id="authTitle">Customer Login</h2>
     <div id="authMessage" class="message"></div>
-
-    <div id="nameField" class="hidden">
-      <label>Full Name</label>
-      <input id="fullName" type="text" placeholder="Apna poora naam">
-    </div>
-
-    <label>Email Address</label>
-    <input id="email" type="email" placeholder="name@example.com">
-
-    <label>Password</label>
-    <input id="password" type="password" placeholder="Password">
-
+    <div id="nameField" class="hidden"><label>Full Name</label><input id="fullName" type="text" autocomplete="name" placeholder="Apna poora naam"></div>
+    <label>Email Address</label><input id="email" type="email" autocomplete="email" placeholder="name@example.com">
+    <label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password">
     <button id="authButton" type="button" style="width:100%">Login</button>
-
-    <p id="forgotLine" class="muted">
-      <a href="#" id="forgotButton">Forgot Password?</a>
-    </p>
-
-    <hr>
-
-    <p id="switchText" class="muted"></p>
+    <p id="forgotLine" class="muted"><a href="#" id="forgotButton">Forgot Password?</a></p>
+    <hr><p id="switchText" class="muted"></p>
     <button id="backHome" class="secondary" type="button">Back to Home</button>
   </div>
 </section>
 
-<!-- CUSTOMER -->
 <section id="customerView" class="hidden">
-  <div class="row">
-    <div>
-      <h2>Customer Dashboard</h2>
-      <p class="muted" id="customerWelcome"></p>
-    </div>
-    <button class="danger" id="customerLogout" type="button">Logout</button>
-  </div>
-
+  <div class="row"><div><h2>Customer Dashboard</h2><p class="muted" id="customerWelcome"></p></div><button class="danger" id="customerLogout" type="button">Logout</button></div>
   <div class="card">
-    <h3>New Enquiry</h3>
-    <div id="enquiryMessage" class="message"></div>
-
+    <h3>New Enquiry</h3><div id="enquiryMessage" class="message"></div>
     <label>Service Select Karein</label>
-    <select id="serviceName">
-      <option value="">Select Service</option>
-      <option>Form Assistance</option>
-      <option>Document Guidance</option>
-      <option>Application Support</option>
-      <option>Digital Document Help</option>
-      <option>Other</option>
-    </select>
-
-    <label>Mobile Number</label>
-    <input id="phone" type="tel" inputmode="numeric" maxlength="15" placeholder="Mobile number">
-
-    <label>Apni problem ya requirement batayein</label>
-    <textarea id="description" placeholder="Aapko kis document ya application mein madad chahiye?"></textarea>
-
+    <select id="serviceName"><option value="">Select Service</option><option>Form Assistance</option><option>Document Guidance</option><option>Application Support</option><option>Digital Document Help</option><option>Other</option></select>
+    <label>Mobile Number</label><input id="phone" type="tel" inputmode="numeric" maxlength="15" placeholder="Mobile number">
+    <label>Apni problem ya requirement batayein</label><textarea id="description" placeholder="Aapko kis document ya application mein madad chahiye?"></textarea>
     <button id="submitEnquiry" type="button">Submit Enquiry</button>
   </div>
-
-  <div class="card">
-    <div class="row">
-      <h3>My Enquiries</h3>
-      <button id="refreshMyEnquiries" class="secondary" type="button">Refresh</button>
-    </div>
-    <div id="myEnquiries"><p class="muted">Loading...</p></div>
-  </div>
-
-  <div class="card">
-    <h3>My Orders</h3>
-    <div id="myOrders"><p class="muted">Loading...</p></div>
-  </div>
+  <div class="card"><div class="row"><h3>My Enquiries</h3><button id="refreshMyEnquiries" class="secondary" type="button">Refresh</button></div><div id="myEnquiries"><p class="muted">Loading...</p></div></div>
+  <div class="card"><h3>My Orders</h3><div id="myOrders"><p class="muted">Orders feature abhi setup nahi hai.</p></div></div>
 </section>
 
-<!-- ADMIN -->
 <section id="adminView" class="hidden">
-  <div class="row">
-    <div>
-      <h2>Admin Dashboard</h2>
-      <p class="muted" id="adminWelcome">DocSetu Management Panel</p>
-    </div>
-    <button class="danger" id="adminLogout" type="button">Logout</button>
-  </div>
-
+  <div class="row"><div><h2>Admin Dashboard</h2><p class="muted" id="adminWelcome">DocSetu Management Panel</p></div><button class="danger" id="adminLogout" type="button">Logout</button></div>
   <div class="stats">
     <div class="stat"><span>Total Enquiries</span><strong id="totalCount">0</strong></div>
     <div class="stat"><span>New</span><strong id="newCount">0</strong></div>
@@ -355,415 +118,254 @@ footer{
     <div class="stat"><span>In Progress</span><strong id="progressCount">0</strong></div>
     <div class="stat"><span>Completed</span><strong id="completedCount">0</strong></div>
   </div>
-
   <div class="card">
-    <div class="row">
-      <h3>All Customer Enquiries</h3>
-      <button id="refreshAdmin" class="secondary" type="button">Refresh</button>
-    </div>
-
+    <div class="row"><h3>All Customer Enquiries</h3><button id="refreshAdmin" class="secondary" type="button">Refresh</button></div>
     <div id="adminMessage" class="message"></div>
-
-    <div class="filters">
-      <input id="adminSearch" type="search" placeholder="Name, phone ya service search karein">
-      <select id="statusFilter">
-        <option value="">All Status</option>
-        <option>New</option>
-        <option>Pending</option>
-        <option>In Progress</option>
-        <option>Completed</option>
-        <option>Rejected</option>
-      </select>
-    </div>
-
+    <div class="filters"><input id="adminSearch" type="search" placeholder="Phone ya service search karein"><select id="statusFilter"><option value="">All Status</option><option>New</option><option>Pending</option><option>In Progress</option><option>Completed</option><option>Rejected</option></select></div>
     <div id="adminEnquiries"><p class="muted">Enquiries load ho rahi hain...</p></div>
   </div>
-
-  <div class="card">
-    <h3>All Orders</h3>
-    <div id="adminOrders"><p class="muted">Loading...</p></div>
-  </div>
+  <div class="card"><h3>All Orders</h3><div id="adminOrders"><p class="muted">Orders feature abhi setup nahi hai.</p></div></div>
 </section>
 
-<!-- PASSWORD RESET -->
 <section id="resetView" class="auth-box hidden">
-  <div class="card">
-    <h2>Set New Password</h2>
-    <div id="resetMessage" class="message"></div>
-    <label>New Password</label>
-    <input id="newPassword" type="password" placeholder="New password">
-    <button id="updatePasswordButton" type="button">Update Password</button>
-  </div>
+  <div class="card"><h2>Set New Password</h2><div id="resetMessage" class="message"></div><label>New Password</label><input id="newPassword" type="password" placeholder="New password"><button id="updatePasswordButton" type="button">Update Password</button></div>
 </section>
-
 </main>
-
 <footer>© 2026 DocSetu. Independent Document Assistance Service.</footer>
 
 <script>
 "use strict";
 
-/* SUPABASE CONNECTION */
 const SUPABASE_URL = "https://hqzxhbuhecaltjoxhffe.supabase.co";
 const SUPABASE_KEY = "sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
 
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+const $ = (id) => document.getElementById(id);
+let db = null;
 let currentUser = null;
 let currentProfile = null;
 let adminEnquiries = [];
 let authMode = "login";
 
-const $ = id => document.getElementById(id);
-
 function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  })[c]);
+  return String(value ?? "").replace(/[&<>"']/g, function(ch) {
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];
+  });
 }
-
-function message(id, text, type = "success") {
+function message(id, text, type) {
   const box = $(id);
+  if (!box) return;
   box.textContent = text;
-  box.className = "message " + type;
+  box.className = "message " + (type || "success");
 }
-
 function clearMessage(id) {
   const box = $(id);
-  box.textContent = "";
-  box.className = "message";
+  if (box) { box.textContent = ""; box.className = "message"; }
 }
-
 function showView(viewId) {
-  [
-    "homeView",
-    "authView",
-    "customerView",
-    "adminView",
-    "resetView"
-  ].forEach(id => $(id).classList.add("hidden"));
-
+  ["homeView","authView","customerView","adminView","resetView"].forEach(function(id) {
+    $(id).classList.add("hidden");
+  });
   $(viewId).classList.remove("hidden");
-  window.scrollTo(0, 0);
+  window.scrollTo(0,0);
 }
-
 function setHeader(loggedIn) {
   $("headerLogin").classList.toggle("hidden", loggedIn);
   $("headerSignup").classList.toggle("hidden", loggedIn);
   $("headerLogout").classList.toggle("hidden", !loggedIn);
 }
-
-function showHome() {
-  showView("homeView");
-}
-
+function showHome() { showView("homeView"); }
 function showAuth(mode) {
   authMode = mode;
   clearMessage("authMessage");
-
-  $("authTitle").textContent =
-    mode === "signup" ? "Create Customer Account" : "Customer Login";
-
-  $("authButton").textContent =
-    mode === "signup" ? "Create Account" : "Login";
-
+  $("authTitle").textContent = mode === "signup" ? "Create Customer Account" : "Customer Login";
+  $("authButton").textContent = mode === "signup" ? "Create Account" : "Login";
   $("nameField").classList.toggle("hidden", mode !== "signup");
   $("forgotLine").classList.toggle("hidden", mode === "signup");
-
   $("switchText").innerHTML = mode === "signup"
     ? 'Already have an account? <a href="#" id="switchLogin">Login</a>'
     : 'Naya account hai? <a href="#" id="switchSignup">Create Account</a>';
-
   showView("authView");
 }
-
 function formatDate(value) {
   if (!value) return "—";
   const d = new Date(value);
   return isNaN(d.getTime()) ? "—" : d.toLocaleString("en-IN");
 }
+function statusTag(status) { return '<span class="tag">' + escapeHTML(status || "New") + "</span>"; }
 
-function statusTag(status) {
-  return '<span class="tag">' + escapeHTML(status || "New") + "</span>";
+function connectButtons() {
+  $("headerLogin").addEventListener("click", () => showAuth("login"));
+  $("headerSignup").addEventListener("click", () => showAuth("signup"));
+  $("headerLogout").addEventListener("click", logout);
+  $("getStarted").addEventListener("click", () => showAuth("signup"));
+  $("homeLogin").addEventListener("click", () => showAuth("login"));
+  $("homeLogin2").addEventListener("click", () => showAuth("login"));
+  $("homeSignup").addEventListener("click", () => showAuth("signup"));
+  $("backHome").addEventListener("click", showHome);
+  $("customerLogout").addEventListener("click", logout);
+  $("adminLogout").addEventListener("click", logout);
+  $("authButton").addEventListener("click", handleAuth);
+  $("forgotButton").addEventListener("click", function(event) { event.preventDefault(); forgotPassword(); });
+  $("updatePasswordButton").addEventListener("click", updatePassword);
+  $("submitEnquiry").addEventListener("click", submitEnquiry);
+  $("refreshMyEnquiries").addEventListener("click", loadMyEnquiries);
+  $("refreshAdmin").addEventListener("click", loadAdminEnquiries);
+  $("adminSearch").addEventListener("input", renderAdminEnquiries);
+  $("statusFilter").addEventListener("change", renderAdminEnquiries);
+  $("switchText").addEventListener("click", function(event) {
+    event.preventDefault();
+    if (event.target.id === "switchSignup") showAuth("signup");
+    if (event.target.id === "switchLogin") showAuth("login");
+  });
+  $("adminEnquiries").addEventListener("change", async function(event) {
+    if (event.target.matches(".status-select")) {
+      await updateEnquiryStatus(event.target.dataset.id, event.target.value);
+    }
+  });
 }
 
-/* BUTTON CONNECTIONS */
-$("headerLogin").addEventListener("click", () => showAuth("login"));
-$("headerSignup").addEventListener("click", () => showAuth("signup"));
-$("headerLogout").addEventListener("click", logout);
-$("getStarted").addEventListener("click", () => showAuth("signup"));
-$("homeLogin").addEventListener("click", () => showAuth("login"));
-$("homeLogin2").addEventListener("click", () => showAuth("login"));
-$("homeSignup").addEventListener("click", () => showAuth("signup"));
-$("backHome").addEventListener("click", showHome);
-$("customerLogout").addEventListener("click", logout);
-$("adminLogout").addEventListener("click", logout);
-$("authButton").addEventListener("click", handleAuth);
-$("forgotButton").addEventListener("click", event => {
-  event.preventDefault();
-  forgotPassword();
-});
-$("updatePasswordButton").addEventListener("click", updatePassword);
-$("submitEnquiry").addEventListener("click", submitEnquiry);
-$("refreshMyEnquiries").addEventListener("click", loadMyEnquiries);
-$("refreshAdmin").addEventListener("click", loadAdminEnquiries);
-$("adminSearch").addEventListener("input", renderAdminEnquiries);
-$("statusFilter").addEventListener("change", renderAdminEnquiries);
-
-$("switchText").addEventListener("click", event => {
-  event.preventDefault();
-  if (event.target.id === "switchSignup") showAuth("signup");
-  if (event.target.id === "switchLogin") showAuth("login");
-});
-
-/* AUTHENTICATION */
 async function handleAuth() {
   clearMessage("authMessage");
-
   const email = $("email").value.trim();
   const password = $("password").value;
+  if (!email || !password) return message("authMessage","Email aur password dono bharein.","error");
+  if (password.length < 6) return message("authMessage","Password kam se kam 6 characters ka hona chahiye.","error");
 
-  if (!email || !password) {
-    message("authMessage", "Email aur password dono bharein.", "error");
-    return;
-  }
-
-  if (password.length < 6) {
-    message("authMessage", "Password kam se kam 6 characters ka hona chahiye.", "error");
-    return;
-  }
-
-  if (authMode === "signup") {
-    const name = $("fullName").value.trim();
-
-    if (!name) {
-      message("authMessage", "Apna poora naam bharein.", "error");
-      return;
-    }
-
-    $("authButton").disabled = true;
-
-    try {
-      const { data, error } = await db.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { full_name: name }
-        }
-      });
-
-      if (error) throw error;
-
-      if (data.session) {
-        await loadDashboard(data.session.user);
-      } else {
-        message(
-          "authMessage",
-          "Account create ho gaya. Email confirmation enabled hai to email verify karke login karein."
-        );
-      }
-    } catch (err) {
-      message("authMessage", err.message || "Signup failed.", "error");
-    } finally {
-      $("authButton").disabled = false;
-    }
-
-    return;
-  }
-
-  $("authButton").disabled = true;
-
+  const btn = $("authButton");
+  btn.disabled = true;
+  btn.textContent = "Please wait...";
   try {
-    const { data, error } = await db.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) throw error;
-
-    await loadDashboard(data.user);
+    if (authMode === "signup") {
+      const name = $("fullName").value.trim();
+      if (!name) throw new Error("Apna poora naam bharein.");
+      const result = await db.auth.signUp({email:email,password:password,options:{data:{full_name:name}}});
+      if (result.error) throw result.error;
+      if (result.data.session) {
+        await loadDashboard(result.data.session.user);
+      } else {
+        message("authMessage","Account create ho gaya. Email confirmation enabled hai to email verify karke login karein.");
+      }
+    } else {
+      const result = await db.auth.signInWithPassword({email:email,password:password});
+      if (result.error) throw result.error;
+      await loadDashboard(result.data.user);
+    }
   } catch (err) {
-    message("authMessage", err.message || "Login failed.", "error");
+    message("authMessage",err.message || "Authentication failed.","error");
   } finally {
-    $("authButton").disabled = false;
+    btn.disabled = false;
+    btn.textContent = authMode === "signup" ? "Create Account" : "Login";
   }
 }
 
 async function forgotPassword() {
   clearMessage("authMessage");
-
   const email = $("email").value.trim();
-
-  if (!email) {
-    message("authMessage", "Pehle email address bharein.", "error");
-    return;
-  }
-
+  if (!email) return message("authMessage","Pehle email address bharein.","error");
   try {
-    const { error } = await db.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + window.location.pathname
-    });
-
-    if (error) throw error;
-
-    message("authMessage", "Password reset link email par bhej diya gaya hai.");
-  } catch (err) {
-    message("authMessage", err.message, "error");
-  }
+    const result = await db.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin + window.location.pathname});
+    if (result.error) throw result.error;
+    message("authMessage","Password reset link email par bhej diya gaya hai.");
+  } catch (err) { message("authMessage",err.message,"error"); }
 }
-
 async function updatePassword() {
   const password = $("newPassword").value;
-
-  if (password.length < 6) {
-    message("resetMessage", "Password kam se kam 6 characters ka hona chahiye.", "error");
-    return;
-  }
-
-  const { error } = await db.auth.updateUser({ password });
-
-  if (error) {
-    message("resetMessage", error.message, "error");
-    return;
-  }
-
-  message("resetMessage", "Password update ho gaya. Ab login kar sakte hain.");
+  if (password.length < 6) return message("resetMessage","Password kam se kam 6 characters ka hona chahiye.","error");
+  try {
+    const result = await db.auth.updateUser({password:password});
+    if (result.error) throw result.error;
+    message("resetMessage","Password update ho gaya. Ab login kar sakte hain.");
+  } catch (err) { message("resetMessage",err.message,"error"); }
 }
 
-/* SESSION AND PROFILE */
 async function loadDashboard(user) {
   currentUser = user;
-
-  const { data, error } = await db
-    .from("profiles")
-    .select("id,full_name,role")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (error) {
-    showView("homeView");
-    alert("Profile load nahi hua: " + error.message);
+  const result = await db.from("profiles").select("id,full_name,role").eq("id",user.id).maybeSingle();
+  if (result.error) {
+    showHome();
+    alert("Profile load nahi hua: " + result.error.message);
     return;
   }
-
-  if (!data) {
-    showView("homeView");
-    alert("Profile record nahi mila. Supabase profile creation trigger check karna hoga.");
+  if (!result.data) {
+    showHome();
+    alert("Profile record nahi mila. Supabase mein is user ka profiles record banana hoga.");
     return;
   }
-
-  currentProfile = data;
+  currentProfile = result.data;
   setHeader(true);
-
-  if (data.role === "admin") {
+  if (currentProfile.role === "admin") {
+    $("adminWelcome").textContent = "Welcome, " + (currentProfile.full_name || "Admin");
     showView("adminView");
-    $("adminWelcome").textContent =
-      "Welcome, " + (data.full_name || "Admin");
-
     await loadAdminEnquiries();
     await loadAdminOrders();
   } else {
+    $("customerWelcome").textContent = "Welcome, " + (currentProfile.full_name || "Customer");
     showView("customerView");
-    $("customerWelcome").textContent =
-      "Welcome, " + (data.full_name || "Customer");
-
     await loadMyEnquiries();
     await loadMyOrders();
   }
 }
-
 async function checkSession() {
   try {
-    const { data, error } = await db.auth.getSession();
-
-    if (error) throw error;
-
-    if (data.session) {
-      await loadDashboard(data.session.user);
-    } else {
-      currentUser = null;
-      currentProfile = null;
-      setHeader(false);
-      showHome();
-    }
+    const result = await db.auth.getSession();
+    if (result.error) throw result.error;
+    if (result.data.session) await loadDashboard(result.data.session.user);
+    else { currentUser = null; currentProfile = null; setHeader(false); showHome(); }
   } catch (err) {
     console.error(err);
     setHeader(false);
     showHome();
   }
 }
-
 async function logout() {
-  const { error } = await db.auth.signOut();
-
-  if (error) {
-    alert("Logout error: " + error.message);
-    return;
-  }
-
-  currentUser = null;
-  currentProfile = null;
-  adminEnquiries = [];
-
-  setHeader(false);
-  showHome();
+  try {
+    const result = await db.auth.signOut();
+    if (result.error) throw result.error;
+    currentUser = null; currentProfile = null; adminEnquiries = [];
+    setHeader(false); showHome();
+  } catch (err) { alert("Logout error: " + err.message); }
 }
 
-/* CUSTOMER ENQUIRIES */
 async function submitEnquiry() {
   clearMessage("enquiryMessage");
-
-  if (!currentUser) {
-    message("enquiryMessage", "Pehle login karein.", "error");
-    return;
-  }
-
+  if (!currentUser) return message("enquiryMessage","Pehle login karein.","error");
   const service_name = $("serviceName").value;
   const phone = $("phone").value.trim();
   const description = $("description").value.trim();
+  if (!service_name || !phone || !description) return message("enquiryMessage","Saari details bharein.","error");
+  if (!/^[0-9+\-\s]{10,15}$/.test(phone)) return message("enquiryMessage","Sahi mobile number enter karein.","error");
 
-  if (!service_name || !phone || !description) {
-    message("enquiryMessage", "Saari details bharein.", "error");
-    return;
-  }
-
-  if (!/^[0-9+\-\s]{10,15}$/.test(phone)) {
-    message("enquiryMessage", "Sahi mobile number enter karein.", "error");
-    return;
-  }
-
-  $("submitEnquiry").disabled = true;
-
+  const btn = $("submitEnquiry");
+  btn.disabled = true;
   try {
-    const { error } = await db.from("enquiries").insert({
-      user_id: currentUser.id,
-      service_name,
-      phone,
-      description,
-      status: "New"
+    const result = await db.from("enquiries").insert({
+      user_id:currentUser.id, service_name:service_name, phone:phone, description:description, status:"New"
     });
-
-    if (error) throw error;
-
-    $("serviceName").value = "";
-    $("phone").value = "";
-    $("description").value = "";
-
-    message("enquiryMessage", "Aapki enquiry successfully submit ho gayi.");
-
+    if (result.error) throw result.error;
+    $("serviceName").value = ""; $("phone").value = ""; $("description").value = "";
+    message("enquiryMessage","Aapki enquiry successfully submit ho gayi.");
     await loadMyEnquiries();
-  } catch (err) {
-    message("enquiryMessage", "Enquiry submit nahi hui: " + err.message, "error");
-  } finally {
-    $("submitEnquiry").disabled = false;
-  }
+  } catch (err) { message("enquiryMessage","Enquiry submit nahi hui: " + err.message,"error"); }
+  finally { btn.disabled = false; }
 }
-
 async function loadMyEnquiries() {
   if (!currentUser) return;
-
   $("myEnquiries").innerHTML = '<p class="muted">Loading...</p>';
+  try {
+    const result = await db.from("enquiries").select("id,service_name,description,phone,status,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false});
+    if (result.error) throw result.error;
+    if (!result.data || !result.data.length) {
+      $("myEnquiries").innerHTML = '<p class="muted">Abhi koi enquiry nahi hai.</p>';
+      return;
+    }
+    $("myEnquiries").innerHTML = result.data.map(row =>
+      '<div class="item"><h3>' + escapeHTML(row.service_name) + '</h3><p>' + escapeHTML(row.description) +
+      '</p><p>Mobile: ' + escapeHTML(row.phone) + '</p><p>Status: ' + statusTag(row.status) +
+      '</p><p class="muted">' + escapeHTML(formatDate(row.created_at)) + '</p></div>'
+    ).join("");
+  } catch (err) { $("myEnquiries").innerHTML = '<p class="message error">Enquiries load nahi hui: ' + escapeHTML(err.message) + '</p>'; }
+}
+async function loadMyOrders() {
+  $("myOrders").innerHTML = '<p class="muted">Orders feature abhi setup nahi hai.</p>';
+  try {
+    const result = await db.from("orders").select("*").eq("use
