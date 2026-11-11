@@ -4,893 +4,457 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#102a56">
-<title>DocSetu - Your Documents. Our Assistance.</title>
-
+<title>DocSetu - Document Assistance</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --navy:#102a56;
-  --blue:#2463b5;
-  --bg:#f5f7fb;
-  --white:#fff;
-  --text:#17243a;
-  --muted:#68758a;
-  --border:#e3e9f1;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,sans-serif;
-}
-header {
-  background:var(--navy);
-  color:white;
-  padding:18px 5%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-}
-.brand { font-size:26px;font-weight:bold; }
-.tag { font-size:12px;color:#dbe7fa; }
-main { max-width:1100px;margin:auto;padding:22px 14px; }
-.hero {
-  background:linear-gradient(120deg,#102a56,#244e89);
-  color:white;
-  padding:30px 22px;
-  border-radius:16px;
-  margin-bottom:18px;
-}
-.hero h1 { margin:0 0 10px;font-size:30px; }
-.hero p { margin:0;color:#e0eaff; }
-.card {
-  background:white;
-  padding:21px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  margin:16px 0;
-}
-h2 { color:var(--navy);margin-top:0; }
-h3 { margin-bottom:8px; }
-label {
-  display:block;
-  font-weight:bold;
-  font-size:13px;
-  margin:12px 0 5px;
-}
-input,select,textarea {
-  width:100%;
-  padding:12px;
-  border:1px solid #cfd8e5;
-  border-radius:8px;
-  font-size:15px;
-  background:white;
-  color:var(--text);
-}
-textarea { min-height:100px; }
-button {
-  background:var(--blue);
-  color:white;
-  border:0;
-  padding:12px 17px;
-  border-radius:8px;
-  font-weight:bold;
-  cursor:pointer;
-  margin:8px 5px 0 0;
-}
-button.secondary { background:#eaf0f8;color:var(--navy); }
-button.danger { background:#b42318;color:white; }
-button:disabled { opacity:.6;cursor:not-allowed; }
-.grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:15px;
-}
-.services {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:12px;
-}
-.service {
-  border:1px solid var(--border);
-  padding:15px;
-  border-radius:10px;
-}
-.muted { color:var(--muted);font-size:13px; }
-.message {
-  padding:12px;
-  background:#edf4ff;
-  border-radius:8px;
-  margin-top:12px;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-}
-.error { background:#fff0ef;color:#b42318; }
-.success { background:#eaf8f1;color:#147d55; }
-.item {
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:15px;
-  margin:10px 0;
-  background:white;
-}
-.pill {
-  display:inline-block;
-  background:#edf3fc;
-  color:var(--navy);
-  border-radius:20px;
-  padding:5px 10px;
-  font-size:12px;
-  font-weight:bold;
-}
-.empty {
-  padding:18px;
-  text-align:center;
-  color:var(--muted);
-  border:1px dashed #cbd5e1;
-  border-radius:10px;
-}
-.notice {
-  font-size:12px;
-  color:#58677c;
-  background:#f7f9fc;
-  padding:12px;
-  border-left:3px solid #8ba8d2;
-}
-.hidden { display:none !important; }
-.topline {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.stats {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
-  gap:12px;
-  margin:15px 0;
-}
-.stat {
-  background:white;
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:17px;
-}
-.stat strong {
-  display:block;
-  font-size:26px;
-  color:var(--navy);
-  margin-top:6px;
-}
-.admin-item { border-left:4px solid var(--blue); }
-.admin-actions {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
-  gap:8px;
-  margin-top:12px;
-}
-.admin-actions button { margin:0; }
-.admin-actions select { min-width:0; }
-.small-label {
-  font-size:12px;
-  color:var(--muted);
-  margin:10px 0 4px;
-}
-footer {
-  text-align:center;
-  padding:22px;
-  color:var(--muted);
-  font-size:12px;
-}
-@media(max-width:550px) {
-  .hero h1 { font-size:25px; }
-  .card { padding:16px; }
-  button { padding:11px 13px; }
-}
+:root{--navy:#10264a;--blue:#1d477e;--light:#f3f6fb;--white:#fff;--text:#25334a;--muted:#718096;--border:#dce4ef;--green:#168653;--red:#c0392b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--light);font-family:Arial,sans-serif;color:var(--text)}
+header{background:var(--navy);color:white;padding:17px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-size:25px;font-weight:800;letter-spacing:.3px}
+.brand span{color:#9fc5ff}
+header small{display:block;font-size:12px;color:#d4e1f5;margin-top:3px}
+button{border:0;border-radius:8px;padding:11px 16px;background:var(--blue);color:white;font-size:14px;font-weight:600;cursor:pointer}
+button:hover{opacity:.9}
+button.secondary{background:#e8eef7;color:var(--navy)}
+button.danger{background:var(--red)}
+button.green{background:var(--green)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.container{width:min(1100px,92%);margin:25px auto}
+.hero{background:linear-gradient(130deg,#10264a,#24528b);color:white;border-radius:16px;padding:35px 25px;margin-bottom:22px}
+.hero h1{font-size:30px;margin:0 0 10px}
+.hero p{line-height:1.6;color:#e1eaf8;margin:0}
+.card{background:white;border:1px solid var(--border);border-radius:13px;padding:20px;margin-bottom:18px;box-shadow:0 3px 14px #10264a0b}
+h2,h3{color:var(--navy);margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.service{border:1px solid var(--border);padding:17px;border-radius:10px;background:white}
+.service h3{margin:0 0 8px;font-size:17px}
+.service p{margin:0;color:var(--muted);line-height:1.5;font-size:14px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;margin:7px 0 13px;font-size:15px;background:white;color:var(--text)}
+textarea{min-height:95px;resize:vertical}
+label{font-size:14px;font-weight:600;color:var(--navy)}
+.auth-box{max-width:440px;margin:28px auto}
+.auth-box .card{padding:25px}
+.hidden{display:none!important}
+.muted{color:var(--muted);font-size:13px;line-height:1.5}
+.message{padding:11px;border-radius:8px;margin:10px 0;font-size:14px;display:none}
+.message.error{display:block;background:#fff0ef;color:#a32920}
+.message.success{display:block;background:#eaf8f0;color:#176c43}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:16px 0}
+.stat{background:white;border:1px solid var(--border);border-radius:12px;padding:17px}
+.stat strong{font-size:27px;color:var(--navy);display:block;margin-top:7px}
+.stat span{font-size:13px;color:var(--muted)}
+.item{border:1px solid var(--border);border-radius:10px;padding:15px;margin:12px 0;background:white}
+.item h3{font-size:16px;margin:0 0 8px}
+.item p{font-size:14px;line-height:1.5;margin:5px 0;overflow-wrap:anywhere}
+.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#eaf0fa;color:var(--navy);font-size:12px;font-weight:700}
+.item-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.item-actions button{padding:9px 12px}
+.filters{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px 15px}
+hr{border:0;border-top:1px solid var(--border);margin:18px 0}
+@media(max-width:550px){.hero h1{font-size:24px}.container{width:94%}.card{padding:15px}.filters{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
 
 <header>
   <div>
-    <div class="brand">DocSetu</div>
-    <div class="tag">Your Documents. Our Assistance.</div>
+    <div class="brand">Doc<span>Setu</span></div>
+    <small>Your Documents. Our Assistance.</small>
   </div>
-  <div id="headerUser" class="tag">Document Assistance</div>
+  <div class="row">
+    <button id="headerLogin" class="secondary" onclick="showAuth('login')">Login</button>
+    <button id="headerSignup" onclick="showAuth('signup')">Create Account</button>
+    <button id="headerLogout" class="danger hidden" onclick="logout()">Logout</button>
+  </div>
 </header>
 
-<main>
+<main class="container">
 
-<!-- PUBLIC WEBSITE -->
-
-<section id="publicArea">
-
+<section id="homeView">
   <div class="hero">
     <h1>Documents ka kaam, ab aasaan.</h1>
     <p>Forms, applications aur documents ke kaam mein sahi guidance aur assistance paaiye.</p>
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+      <button onclick="showAuth('signup')">Get Started</button>
+      <button class="secondary" onclick="showAuth('login')">Customer Login</button>
+    </div>
   </div>
 
   <div class="card">
     <h2>Hamari Services</h2>
-    <div class="services">
-      <div class="service">
-        <h3>Form Assistance</h3>
-        <p class="muted">Online forms bharne mein madad.</p>
-      </div>
-      <div class="service">
-        <h3>Document Guidance</h3>
-        <p class="muted">Documents aur process ki jaankari.</p>
-      </div>
-      <div class="service">
-        <h3>Application Support</h3>
-        <p class="muted">Application process mein assistance.</p>
-      </div>
-      <div class="service">
-        <h3>Digital Document Help</h3>
-        <p class="muted">Digital documents organize karne mein madad.</p>
-      </div>
+    <div class="grid">
+      <div class="service"><h3>Form Assistance</h3><p>Online forms bharne mein madad.</p></div>
+      <div class="service"><h3>Document Guidance</h3><p>Documents aur process ki jaankari.</p></div>
+      <div class="service"><h3>Application Support</h3><p>Application process mein assistance.</p></div>
+      <div class="service"><h3>Digital Document Help</h3><p>Digital documents organize karne mein madad.</p></div>
     </div>
   </div>
 
   <div class="card">
     <h2>Customer Account</h2>
-    <p class="muted">Naya account banayein ya login karein.</p>
-
-    <div class="grid">
-
-      <div>
-        <h3>Create Account</h3>
-
-        <label>Full Name</label>
-        <input id="signupName" placeholder="Apna naam">
-
-        <label>Email</label>
-        <input id="signupEmail" type="email" placeholder="Email address">
-
-        <label>Password</label>
-        <input id="signupPassword" type="password" placeholder="Minimum 6 characters">
-
-        <button id="signupBtn">Create Account</button>
-      </div>
-
-      <div>
-        <h3>Login</h3>
-
-        <label>Email</label>
-        <input id="loginEmail" type="email" placeholder="Registered email">
-
-        <label>Password</label>
-        <input id="loginPassword" type="password" placeholder="Password">
-
-        <button id="loginBtn">Login</button>
-        <button id="forgotBtn" class="secondary">Forgot Password</button>
-      </div>
-
-    </div>
-
-    <div id="authMessage" class="message hidden"></div>
-  </div>
-
-  <p class="notice">
-    DocSetu ek independent document assistance service hai, government department nahi.
-    Government benefit ya certificate ki eligibility aur approval sambandhit official
-    authority tay karti hai. Hum approval ki guarantee nahi dete.
-  </p>
-
-</section>
-
-
-<!-- CUSTOMER DASHBOARD -->
-
-<section id="dashboard" class="hidden">
-
-  <div class="hero">
-    <div class="topline">
-      <div>
-        <h1>Customer Dashboard</h1>
-        <p id="welcomeText">Welcome to DocSetu</p>
-      </div>
-      <button id="logoutBtn" class="secondary">Logout</button>
-    </div>
+    <p class="muted">Naya account banayein ya apne account mein login karein.</p>
+    <button onclick="showAuth('signup')">Create Account</button>
+    <button class="secondary" onclick="showAuth('login')">Login</button>
   </div>
 
   <div class="card">
-    <h2>New Enquiry</h2>
-    <p class="muted">Apne kaam ki jaankari bhejein.</p>
+    <h3>Important Information</h3>
+    <p class="muted">DocSetu ek independent document assistance service hai. Hum kisi government department ya authority ka hissa nahi hain. Har application ki eligibility aur approval sambandhit authority ke niyamon par nirbhar karta hai. Hum approval ki guarantee nahi dete. Kisi bhi application mein sahi aur asli jaankari dena zaroori hai.</p>
+  </div>
+</section>
 
+<section id="authView" class="auth-box hidden">
+  <div class="card">
+    <h2 id="authTitle">Customer Login</h2>
+    <div id="authMessage" class="message"></div>
+    <div id="nameField" class="hidden">
+      <label>Full Name</label>
+      <input id="fullName" type="text" placeholder="Apna poora naam">
+    </div>
+    <label>Email Address</label>
+    <input id="email" type="email" placeholder="name@example.com" autocomplete="email">
+    <label>Password</label>
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+    <button id="authButton" style="width:100%" onclick="handleAuth()">Login</button>
+    <p id="forgotLine" class="muted" style="margin-top:14px"><a href="#" onclick="forgotPassword();return false">Forgot Password?</a></p>
+    <hr>
+    <p id="switchText" class="muted">Naya account hai? <a href="#" onclick="showAuth('signup');return false">Create Account</a></p>
+    <button class="secondary" onclick="showHome()">Back to Home</button>
+  </div>
+</section>
+
+<section id="customerView" class="hidden">
+  <div class="row">
+    <div><h2>Customer Dashboard</h2><p class="muted" id="customerWelcome"></p></div>
+    <button class="secondary" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="card">
+    <h3>New Enquiry</h3>
+    <div id="enquiryMessage" class="message"></div>
     <label>Service Select Karein</label>
     <select id="serviceName">
       <option value="">Select Service</option>
-      <option>PPP Income Correction Guidance</option>
-      <option>Ayushman Eligibility Guidance</option>
-      <option>Certificate Application Assistance</option>
-      <option>Government Form Assistance</option>
-      <option>Document Correction Guidance</option>
-      <option>Other Document Assistance</option>
+      <option>Form Assistance</option>
+      <option>Document Guidance</option>
+      <option>Application Support</option>
+      <option>Digital Document Help</option>
+      <option>Other</option>
     </select>
-
-    <label>Mobile Number (WhatsApp)</label>
-    <input id="phone" type="tel" inputmode="numeric"
-      maxlength="10" placeholder="10 digit mobile number">
-
-    <label>Apne Kaam Ki Jaankari</label>
-    <textarea id="description" maxlength="1500"
-      placeholder="Apni problem ya requirement likhein. OTP, bank PIN ya sensitive details na likhein."></textarea>
-
-    <button id="submitEnquiryBtn">Submit Enquiry</button>
-    <div id="enquiryMessage" class="message hidden"></div>
+    <label>Mobile Number</label>
+    <input id="phone" type="tel" inputmode="numeric" maxlength="15" placeholder="Mobile number">
+    <label>Apni problem ya requirement batayein</label>
+    <textarea id="description" placeholder="Aapko kis document ya application mein madad chahiye?"></textarea>
+    <button id="submitEnquiry" onclick="submitEnquiry()">Submit Enquiry</button>
   </div>
 
   <div class="card">
-    <div class="topline">
-      <h2>My Enquiries</h2>
-      <button id="refreshBtn" class="secondary">Refresh</button>
-    </div>
-    <div id="enquiriesList">
-      <div class="empty">Loading...</div>
-    </div>
+    <div class="row"><h3>My Enquiries</h3><button class="secondary" onclick="loadMyEnquiries()">Refresh</button></div>
+    <div id="myEnquiries"><p class="muted">Loading...</p></div>
   </div>
 
   <div class="card">
-    <h2>My Orders</h2>
-    <div id="ordersList">
-      <div class="empty">Loading...</div>
-    </div>
+    <h3>My Orders</h3>
+    <div id="myOrders"><p class="muted">Orders load ho rahe hain...</p></div>
   </div>
-
-  <p class="notice">
-    Digital Locker abhi development mein hai. Real customers ke sensitive documents
-    tab tak upload na karein jab tak storage security aur access policies test na ho jaayein.
-  </p>
-
 </section>
 
-
-<!-- ADMIN DASHBOARD -->
-
-<section id="adminDashboard" class="hidden">
-
-  <div class="hero">
-    <div class="topline">
-      <div>
-        <h1>Admin Dashboard</h1>
-        <p>DocSetu Owner Control Panel</p>
-        <p id="adminWelcome"></p>
-      </div>
-      <button id="adminLogoutBtn" class="secondary">Logout</button>
-    </div>
+<section id="adminView" class="hidden">
+  <div class="row">
+    <div><h2>Admin Dashboard</h2><p class="muted" id="adminWelcome">DocSetu Management Panel</p></div>
+    <button class="danger" onclick="logout()">Logout</button>
   </div>
 
   <div class="stats">
-    <div class="stat">
-      <div class="muted">Total Enquiries</div>
-      <strong id="totalEnquiries">0</strong>
-    </div>
-    <div class="stat">
-      <div class="muted">Pending</div>
-      <strong id="pendingEnquiries">0</strong>
-    </div>
-    <div class="stat">
-      <div class="muted">In Progress</div>
-      <strong id="progressEnquiries">0</strong>
-    </div>
-    <div class="stat">
-      <div class="muted">Completed</div>
-      <strong id="completedEnquiries">0</strong>
-    </div>
+    <div class="stat"><span>Total Enquiries</span><strong id="totalCount">0</strong></div>
+    <div class="stat"><span>New</span><strong id="newCount">0</strong></div>
+    <div class="stat"><span>Pending</span><strong id="pendingCount">0</strong></div>
+    <div class="stat"><span>In Progress</span><strong id="progressCount">0</strong></div>
+    <div class="stat"><span>Completed</span><strong id="completedCount">0</strong></div>
   </div>
 
   <div class="card">
-    <div class="topline">
-      <div>
-        <h2>All Customer Enquiries</h2>
-        <p class="muted">Sabhi customers ki latest enquiries.</p>
-      </div>
-      <button id="adminRefreshBtn" class="secondary">Refresh Data</button>
+    <div class="row"><h3>All Customer Enquiries</h3><button class="secondary" onclick="loadAdminEnquiries()">Refresh</button></div>
+    <div id="adminMessage" class="message"></div>
+    <div class="filters">
+      <input id="adminSearch" type="search" placeholder="Name, phone ya service search karein" oninput="renderAdminEnquiries()">
+      <select id="statusFilter" onchange="renderAdminEnquiries()">
+        <option value="">All Status</option>
+        <option>New</option>
+        <option>Pending</option>
+        <option>In Progress</option>
+        <option>Completed</option>
+        <option>Rejected</option>
+      </select>
     </div>
-
-    <label>Search Enquiries</label>
-    <input id="adminSearch" placeholder="Name, mobile, service ya enquiry search karein">
-
-    <label>Filter by Status</label>
-    <select id="adminFilter">
-      <option value="">All Enquiries</option>
-      <option>Received</option>
-      <option>Pending</option>
-      <option>In Progress</option>
-      <option>Completed</option>
-      <option>Rejected</option>
-    </select>
-
-    <div id="adminEnquiriesList">
-      <div class="empty">Loading enquiries...</div>
-    </div>
+    <div id="adminEnquiries"><p class="muted">Enquiries load ho rahi hain...</p></div>
   </div>
 
   <div class="card">
-    <h2>All Orders</h2>
-    <p class="muted">Order amount, work status aur payment update karein.</p>
-    <div id="adminOrdersList">
-      <div class="empty">Loading orders...</div>
-    </div>
+    <h3>All Orders</h3>
+    <div id="adminOrders"><p class="muted">Orders load ho rahe hain...</p></div>
   </div>
+</section>
 
-  <p class="notice">
-    Admin access database permissions se protected hai. Customer data ko sirf
-    authorized business work ke liye use karein.
-  </p>
-
-  <div id="adminMessage" class="message hidden"></div>
-
+<section id="resetView" class="auth-box hidden">
+  <div class="card">
+    <h2>Set New Password</h2>
+    <div id="resetMessage" class="message"></div>
+    <label>New Password</label>
+    <input id="newPassword" type="password" placeholder="New password">
+    <button onclick="updatePassword()">Update Password</button>
+  </div>
 </section>
 
 </main>
 
-<footer>
-  © <span id="year"></span> DocSetu. All rights reserved.
-</footer>
+<footer>© 2026 DocSetu. Independent Document Assistance Service.</footer>
 
-
-<script type="module">
-
-import { createClient } from
-'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-const SUPABASE_URL =
-'https://hqzxhbuhecaltjoxhffe.supabase.co';
-
-const SUPABASE_PUBLISHABLE_KEY =
-'sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu';
-
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
-
-const $ = id => document.getElementById(id);
+<script>
+const SUPABASE_URL = "https://hqzxhbuhecaltjoxhffe.supabase.co";
+const SUPABASE_KEY = "sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser = null;
-let allAdminEnquiries = [];
+let currentProfile = null;
+let adminEnquiries = [];
 
-$('year').textContent = new Date().getFullYear();
-
-function message(id,text,type='') {
-  const el = $(id);
-  el.textContent = text;
-  el.className = 'message' + (type ? ' '+type : '');
-}
-
-function hideMessage(id) {
-  $(id).classList.add('hidden');
-}
-
-function busy(id,state,label) {
-  const btn = $(id);
-  btn.disabled = state;
-
-  if(state) {
-    btn.dataset.old = btn.textContent;
-    btn.textContent = label;
-  } else {
-    btn.textContent = btn.dataset.old || btn.textContent;
-  }
-}
-
-function safe(value) {
-  return String(value ?? '').replace(/[&<>"']/g,c => ({
-    '&':'&amp;',
-    '<':'&lt;',
-    '>':'&gt;',
-    '"':'&quot;',
-    "'":'&#39;'
-  })[c]);
-}
-
-function formatDate(value) {
-  if(!value) return '—';
-  const date = new Date(value);
-  return isNaN(date) ? String(value) :
-    date.toLocaleString('en-IN');
-}
-
-function showOnly(section) {
-  ['publicArea','dashboard','adminDashboard'].forEach(id=>{
-    $(id).classList.toggle('hidden',id !== section);
+function el(id){return document.getElementById(id)}
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
   });
 }
-
-function showPublic() {
-  currentUser = null;
-  showOnly('publicArea');
-  $('headerUser').textContent = 'Document Assistance';
+function showMessage(id,text,type="success"){
+  const box=el(id);
+  if(!box)return;
+  box.textContent=text;
+  box.className="message "+type;
+}
+function clearMessage(id){
+  const box=el(id);
+  if(box){box.textContent="";box.className="message";}
+}
+function hideAll(){
+  ["homeView","authView","customerView","adminView","resetView"].forEach(id=>el(id).classList.add("hidden"));
+}
+function showHome(){hideAll();el("homeView").classList.remove("hidden");}
+function showAuth(mode){
+  hideAll();el("authView").classList.remove("hidden");clearMessage("authMessage");
+  const signup=mode==="signup";
+  el("authTitle").textContent=signup?"Create Customer Account":"Customer Login";
+  el("authButton").textContent=signup?"Create Account":"Login";
+  el("nameField").classList.toggle("hidden",!signup);
+  el("forgotLine").classList.toggle("hidden",signup);
+  el("switchText").innerHTML=signup
+    ?'Already have an account? <a href="#" onclick="showAuth(\\'login\\');return false">Login</a>'
+    :'Naya account hai? <a href="#" onclick="showAuth(\\'signup\\');return false">Create Account</a>';
+  el("authButton").dataset.mode=mode;
+}
+function setHeader(loggedIn){
+  el("headerLogin").classList.toggle("hidden",loggedIn);
+  el("headerSignup").classList.toggle("hidden",loggedIn);
+  el("headerLogout").classList.toggle("hidden",!loggedIn);
+}
+function formatDate(value){
+  if(!value)return "—";
+  const d=new Date(value);
+  return isNaN(d)?"—":d.toLocaleString("en-IN");
+}
+function statusTag(status){
+  return '<span class="tag">'+escapeHTML(status||"New")+'</span>';
 }
 
-async function getCurrentProfile(userId) {
-  return await supabase
-    .from('profiles')
-    .select('id,full_name,role')
-    .eq('id',userId)
-    .maybeSingle();
-}
-
-
-// LOGIN ROUTING
-
-async function showDashboard(user) {
-
-  currentUser = user;
-
-  const {data:profile,error} = await getCurrentProfile(user.id);
-
-  if(error) {
-    showOnly('dashboard');
-    $('headerUser').textContent = user.email || 'Customer';
-    $('welcomeText').textContent = 'Welcome to DocSetu';
-
-    message(
-      'enquiryMessage',
-      'Profile load nahi ho paya. Dashboard permissions check karein: '+error.message,
-      'error'
-    );
-
-    await loadCustomerData(user.id);
-    return;
-  }
-
-  if(profile?.role === 'admin') {
-    showOnly('adminDashboard');
-    $('headerUser').textContent = 'DocSetu Owner Admin';
-    $('adminWelcome').textContent =
-      'Welcome, ' + (profile.full_name || user.email);
-
-    await loadAdminData();
-    return;
-  }
-
-  showOnly('dashboard');
-  $('headerUser').textContent = user.email || 'Customer';
-
-  $('welcomeText').textContent =
-    'Welcome, ' + (profile?.full_name || user.email);
-
-  await loadCustomerData(user.id);
-}
-
-
-// SIGN UP
-
-$('signupBtn').addEventListener('click',async()=>{
-
-  hideMessage('authMessage');
-
-  const name = $('signupName').value.trim();
-  const email = $('signupEmail').value.trim();
-  const password = $('signupPassword').value;
-
-  if(!name || !email || password.length < 6) {
-    return message(
-      'authMessage',
-      'Naam, valid email aur minimum 6-character password bharein.',
-      'error'
-    );
-  }
-
-  busy('signupBtn',true,'Creating Account...');
-
-  const {data,error} = await supabase.auth.signUp({
-    email,
-    password,
-    options:{
-      data:{full_name:name},
-      emailRedirectTo:window.location.href
+async function handleAuth(){
+  clearMessage("authMessage");
+  const mode=el("authButton").dataset.mode;
+  const email=el("email").value.trim();
+  const password=el("password").value;
+  if(!email||!password){showMessage("authMessage","Email aur password dono bharein.","error");return;}
+  if(password.length<6){showMessage("authMessage","Password kam se kam 6 characters ka hona chahiye.","error");return;}
+  el("authButton").disabled=true;
+  try{
+    if(mode==="signup"){
+      const name=el("fullName").value.trim();
+      if(!name){showMessage("authMessage","Apna naam bharein.","error");return;}
+      const {data,error}=await supabase.auth.signUp({
+        email,password,options:{data:{full_name:name}}
+      });
+      if(error)throw error;
+      if(data.session){
+        await checkSession();
+      }else{
+        showMessage("authMessage","Account request ho gayi. Agar email confirmation enabled hai, to email verify karke login karein.");
+      }
+    }else{
+      const {error}=await supabase.auth.signInWithPassword({email,password});
+      if(error)throw error;
+      await checkSession();
     }
-  });
+  }catch(err){showMessage("authMessage",err.message||"Authentication failed.","error");}
+  finally{el("authButton").disabled=false;}
+}
 
-  busy('signupBtn',false);
-
-  if(error) {
-    return message('authMessage',error.message,'error');
-  }
-
-  if(data.session) {
-    await showDashboard(data.user);
-  } else {
-    message(
-      'authMessage',
-      'Account ban gaya hai. Email inbox mein confirmation link check karein. Uske baad login karein.',
-      'success'
-    );
-  }
-});
-
-
-// LOGIN
-
-$('loginBtn').addEventListener('click',async()=>{
-
-  hideMessage('authMessage');
-
-  const email = $('loginEmail').value.trim();
-  const password = $('loginPassword').value;
-
-  if(!email || !password) {
-    return message('authMessage','Email aur password bharein.','error');
-  }
-
-  busy('loginBtn',true,'Logging in...');
-
-  const {data,error} =
-    await supabase.auth.signInWithPassword({
-      email,password
+async function forgotPassword(){
+  clearMessage("authMessage");
+  const email=el("email").value.trim();
+  if(!email){showMessage("authMessage","Pehle email address bharein.","error");return;}
+  try{
+    const {error}=await supabase.auth.resetPasswordForEmail(email,{
+      redirectTo:window.location.origin+window.location.pathname
     });
+    if(error)throw error;
+    showMessage("authMessage","Password reset link aapke email par bhej diya gaya hai.");
+  }catch(err){showMessage("authMessage",err.message,"error");}
+}
 
-  busy('loginBtn',false);
+async function updatePassword(){
+  const password=el("newPassword").value;
+  if(password.length<6){showMessage("resetMessage","Password kam se kam 6 characters ka hona chahiye.","error");return;}
+  const {error}=await supabase.auth.updateUser({password});
+  if(error){showMessage("resetMessage",error.message,"error");return;}
+  showMessage("resetMessage","Password update ho gaya. Ab login kar sakte hain.");
+}
 
-  if(error) {
-    return message('authMessage',error.message,'error');
+async function checkSession(){
+  const {data,error}=await supabase.auth.getSession();
+  if(error){console.error(error);showHome();return;}
+  currentUser=data.session?.user||null;
+  if(!currentUser){currentProfile=null;setHeader(false);showHome();return;}
+  await loadProfileAndDashboard();
+}
+
+async function loadProfileAndDashboard(){
+  const {data,error}=await supabase
+    .from("profiles")
+    .select("id,full_name,role")
+    .eq("id",currentUser.id)
+    .maybeSingle();
+
+  if(error){
+    showHome();
+    alert("Profile load nahi ho paaya: "+error.message);
+    return;
   }
-
-  await showDashboard(data.user);
-});
-
-
-// FORGOT PASSWORD
-
-$('forgotBtn').addEventListener('click',async()=>{
-
-  const email = $('loginEmail').value.trim();
-
-  if(!email) {
-    return message(
-      'authMessage',
-      'Pehle Login wale box mein registered email likhein.',
-      'error'
-    );
+  if(!data){
+    showHome();
+    alert("Aapka profile record nahi mila. Supabase mein profile creation setup check karna hoga.");
+    return;
   }
+  currentProfile=data;
+  setHeader(true);
+  if(data.role==="admin"){
+    hideAll();el("adminView").classList.remove("hidden");
+    el("adminWelcome").textContent="Welcome, "+(data.full_name||"Admin");
+    await loadAdminEnquiries();
+    await loadAdminOrders();
+  }else{
+    hideAll();el("customerView").classList.remove("hidden");
+    el("customerWelcome").textContent="Welcome, "+(data.full_name||"Customer");
+    await loadMyEnquiries();
+    await loadMyOrders();
+  }
+}
 
-  busy('forgotBtn',true,'Sending...');
+async function logout(){
+  await supabase.auth.signOut();
+  currentUser=null;currentProfile=null;adminEnquiries=[];
+  setHeader(false);showHome();
+}
 
-  const {error} =
-    await supabase.auth.resetPasswordForEmail(email,{
-      redirectTo:window.location.href
+async function submitEnquiry(){
+  clearMessage("enquiryMessage");
+  const service_name=el("serviceName").value;
+  const phone=el("phone").value.trim();
+  const description=el("description").value.trim();
+  if(!service_name||!phone||!description){
+    showMessage("enquiryMessage","Service, mobile number aur details bharna zaroori hai.","error");return;
+  }
+  if(!/^[0-9+\-\s]{10,15}$/.test(phone)){
+    showMessage("enquiryMessage","Sahi mobile number enter karein.","error");return;
+  }
+  el("submitEnquiry").disabled=true;
+  try{
+    const {error}=await supabase.from("enquiries").insert({
+      user_id:currentUser.id,service_name,phone,description,status:"New"
     });
-
-  busy('forgotBtn',false);
-
-  if(error) {
-    message('authMessage',error.message,'error');
-  } else {
-    message(
-      'authMessage',
-      'Password reset link email par bhej diya gaya hai. Inbox aur spam check karein.',
-      'success'
-    );
-  }
-});
-
-
-// LOGOUT
-
-async function logout() {
-  const {error} = await supabase.auth.signOut();
-
-  if(error) {
-    message('adminMessage',error.message,'error');
-  } else {
-    showPublic();
-  }
+    if(error)throw error;
+    el("serviceName").value="";el("phone").value="";el("description").value="";
+    showMessage("enquiryMessage","Aapki enquiry successfully submit ho gayi.");
+    await loadMyEnquiries();
+  }catch(err){showMessage("enquiryMessage","Enquiry submit nahi hui: "+err.message,"error");}
+  finally{el("submitEnquiry").disabled=false;}
 }
 
-$('logoutBtn').addEventListener('click',logout);
-$('adminLogoutBtn').addEventListener('click',logout);
-
-
-// CUSTOMER ENQUIRY
-
-$('submitEnquiryBtn').addEventListener('click',async()=>{
-
-  hideMessage('enquiryMessage');
-
-  const {data:{user}} = await supabase.auth.getUser();
-
-  if(!user) {
-    message('enquiryMessage','Session expire ho gaya. Dobara login karein.','error');
-    showPublic();
-    return;
-  }
-
-  const service_name = $('serviceName').value;
-  const phone = $('phone').value.trim();
-  const description = $('description').value.trim();
-
-  if(!service_name || !description || !/^[6-9]\d{9}$/.test(phone)) {
-    return message(
-      'enquiryMessage',
-      'Service select karein, description likhein aur valid 10 digit mobile number bharein.',
-      'error'
-    );
-  }
-
-  busy('submitEnquiryBtn',true,'Submitting...');
-
-  const {error} = await supabase
-    .from('enquiries')
-    .insert([{
-      user_id:user.id,
-      service_name,
-      description,
-      phone
-    }]);
-
-  busy('submitEnquiryBtn',false);
-
-  if(error) {
-    return message(
-      'enquiryMessage',
-      'Enquiry submit nahi hui: '+error.message,
-      'error'
-    );
-  }
-
-  $('serviceName').value = '';
-  $('phone').value = '';
-  $('description').value = '';
-
-  message(
-    'enquiryMessage',
-    'Aapki enquiry successfully submit ho gayi!',
-    'success'
-  );
-
-  await loadEnquiries(user.id);
-});
-
-
-// CUSTOMER REFRESH
-
-$('refreshBtn').addEventListener('click',async()=>{
-  if(currentUser) await loadCustomerData(currentUser.id);
-});
-
-
-// CUSTOMER DATA
-
-async function loadCustomerData(userId) {
-
-  $('enquiriesList').innerHTML =
-    '<div class="empty">Loading enquiries...</div>';
-
-  $('ordersList').innerHTML =
-    '<div class="empty">Loading orders...</div>';
-
-  await Promise.all([
-    loadEnquiries(userId),
-    loadOrders(userId)
-  ]);
-}
-
-
-// CUSTOMER ENQUIRIES
-
-async function loadEnquiries(userId) {
-
-  const {data,error} = await supabase
-    .from('enquiries')
-    .select('*')
-    .eq('user_id',userId)
-    .order('created_at',{ascending:false});
-
-  if(error) {
-    $('enquiriesList').innerHTML =
-      '<div class="empty">Enquiries load nahi hui: '+safe(error.message)+'</div>';
-    return;
-  }
-
-  if(!data || data.length===0) {
-    $('enquiriesList').innerHTML =
-      '<div class="empty">Abhi koi enquiry nahi hai.</div>';
-    return;
-  }
-
-  $('enquiriesList').innerHTML = data.map(row=>`
-
+async function loadMyEnquiries(){
+  el("myEnquiries").innerHTML='<p class="muted">Loading...</p>';
+  const {data,error}=await supabase.from("enquiries")
+    .select("id,service_name,description,phone,status,created_at")
+    .eq("user_id",currentUser.id).order("created_at",{ascending:false});
+  if(error){el("myEnquiries").textContent="Enquiries load nahi hui: "+error.message;return;}
+  if(!data||data.length===0){el("myEnquiries").innerHTML='<p class="muted">Abhi koi enquiry nahi hai.</p>';return;}
+  el("myEnquiries").innerHTML=data.map(e=>`
     <div class="item">
-      <div class="topline">
-        <strong>${safe(row.service_name)}</strong>
-        <span class="pill">${safe(row.status || 'Received')}</span>
-      </div>
-
-      <p>${safe(row.description)}</p>
-
-      <div class="muted">
-        Mobile: ${safe(row.phone || 'Not provided')}
-      </div>
-
-      <div class="muted">
-        Submitted: ${safe(formatDate(row.created_at))}
-      </div>
-    </div>
-
-  `).join('');
+      <div class="row"><h3>${escapeHTML(e.service_name)}</h3>${statusTag(e.status)}</div>
+      <p>${escapeHTML(e.description)}</p>
+      <p class="muted">Date: ${escapeHTML(formatDate(e.created_at))}</p>
+    </div>`).join("");
 }
 
-
-// CUSTOMER ORDERS
-
-async function loadOrders(userId) {
-
-  const {data,error} = await supabase
-    .from('orders')
-    .select('*')
-    .eq('user_id',userId)
-    .order('created_at',{ascending:false});
-
-  if(error) {
-    $('ordersList').innerHTML =
-      '<div class="empty">Orders load nahi hue: '+safe(error.message)+'</div>';
+async function loadMyOrders(){
+  el("myOrders").innerHTML='<p class="muted">Loading...</p>';
+  const {data,error}=await supabase.from("orders").select("*")
+    .eq("user_id",currentUser.id).order("created_at",{ascending:false});
+  if(error){
+    el("myOrders").innerHTML='<p class="muted">Orders feature abhi setup nahi hai. Aapki enquiries normal kaam kar rahi hain.</p>';
     return;
   }
-
-  if(!data || data.length===0) {
-    $('ordersList').innerHTML =
-      '<div class="empty">Abhi aapka koi order nahi hai.</div>';
-    return;
-  }
-
-  $('ordersList').innerHTML = data.map(row=>`
-
+  if(!data||!data.length){el("myOrders").innerHTML='<p class="muted">Abhi koi order nahi hai.</p>';return;}
+  el("myOrders").innerHTML=data.map(o=>`
     <div class="item">
-      <div class="topline">
-        <strong>${safe(row.service_name)}</strong>
-        <span class="pill">${safe(row.work_status || 'Pending')}</span>
-      </div>
-
-      <p><strong>Amount:</strong>
-        ${row.amount == null ? 'Not set' : '₹'+safe(row.amount)}
-      </p>
-
-      <p><strong>Payment:</strong>
-        ${safe(row.payment_status || 'Not updated')}
-      </p>
-
-      <div class="muted">
-        Created: ${safe(formatDate(row.created_at))}
-      </div>
-    </div>
-
-  `).join('');
+      <h3>${escapeHTML(o.service_name||"Order")}</h3>
+      <p>Work Status: ${escapeHTML(o.work_status||o.status||"—")}</p>
+      <p>Amount: ${escapeHTML(o.amount??"—")}</p>
+      <p>Payment: ${escapeHTML(o.payment_status||"—")}</p>
+      <p class="muted">${escapeHTML(formatDate(o.created_at))}</p>
+    </div>`).join("");
 }
-
-
-// ADMIN DATA
-
-async function loadAdminData() {
-
-  if(!currentUser) return;
-
-  $('adminEnquiriesList').innerHTML =
-    '<div class="empty">Loading enquiries...</div>';
-
-  $('adminOrdersList').innerHTML =
-    '<div class="empty">Loading orders...</div>';
-
-  const results = await Promise.all([
-    loadAdminEnquiries(),
-    loadAdminOrders()
-  ]);
-
-  updateAdminStats();
-}
-
 
 // ADMIN ENQUIRIES
+async function loadAdminEnquiries(){
+  clearMessage("adminMessage");
+  el("adminEnquiries").innerHTML='<p class="muted">Enquiries load ho rahi hain...</p>';
+  const {data,error}=await supabase.from("enquiries")
+    .select("*").order("created_at",{ascending:false});
+  if(error){
+    adminEnquiries=[];
+    el("adminEnquiries").textContent="Enquiries load nahi hui: "+error.message;
+    showMessage("adminMessage","Admin enquiry access mein problem hai. Supabase RLS policies check karein.","error");
+    updateStats([]);
+    return;
+  }
+  const rows=data||[];
+  const ids=[...new Set(rows.map(x=>x.user_id).filter(Boolean))];
+  let profileMap={};
+  if(ids.length){
+    const {data:profiles,error:profileError}=await supabase
+      .from("profiles").select("id,full_name").in("id",ids);
+    if(!profileError){
+      (profiles||[]).forEach(p=>profileMap[p.id]=p.full_name||"Customer");
+    }
+  }
+  adminEnquiries=rows.map(e=>({...e,customer_name:profileMap[e.user_id]||"Customer"}));
+  updateStats(adminEnquiries);
+  renderAdminEnquiries();
+}
 
-async function loadAdminEnquiries() {
-
-  const {data:enquiries,error:enquiryError} = await supabase
-    .from('enquiries')
-   
+function updateStats(rows){
+  const count=s=>rows.filter(e=>(e.status||"New").toLowerCase()===s.toLowerCase()).length;
+  el("totalCount").textContent=rows.length;
+  el("newCount").textContent=count("New");
+  el("pendingCount").textContent=count("Pending");
+  el("progressCount").textContent=count("In Progress");
+  el("completedCount").textCon
