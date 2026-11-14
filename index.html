@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -6,24 +7,46 @@
 <meta name="theme-color" content="#102a56">
 <title>DocSetu - Your Documents. Our Assistance.</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--navy:#102a56;--blue:#285b96;--bg:#f2f5fa;--text:#20324d;--muted:#718096;--white:#fff;--line:#e4eaf2;--red:#b42318}
+:root{
+  --navy:#102a56;
+  --blue:#285b96;
+  --bg:#f2f5fa;
+  --text:#20324d;
+  --muted:#718096;
+  --line:#e4eaf2;
+  --red:#b42318;
+}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--text)}
-header{background:var(--navy);color:#fff;padding:14px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:5}
+header{
+  background:var(--navy);color:#fff;padding:14px 5%;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;position:sticky;top:0;z-index:5
+}
 .brand{font-weight:800;font-size:18px}
 .tag{font-size:10px;opacity:.8;margin-top:3px}
 nav{display:flex;gap:8px;flex-wrap:wrap}
-button{border:0;border-radius:7px;padding:10px 14px;background:var(--blue);color:#fff;font-weight:700;cursor:pointer}
+button{
+  border:0;border-radius:7px;padding:10px 14px;
+  background:var(--blue);color:#fff;font-weight:700;cursor:pointer
+}
 button.secondary{background:#e8eef7;color:var(--navy)}
 button.light{background:#fff;color:var(--navy)}
 button:disabled{opacity:.5;cursor:not-allowed}
 main{max-width:1100px;margin:22px auto;padding:0 16px}
-.hero{background:linear-gradient(110deg,#102a56,#285b96);color:#fff;border-radius:14px;padding:30px 24px;margin-bottom:16px}
+.hero{
+  background:linear-gradient(110deg,#102a56,#285b96);
+  color:#fff;border-radius:14px;padding:30px 24px;margin-bottom:16px
+}
 .hero h1{font-size:26px;margin:0 0 12px}
 .hero p{line-height:1.6;color:#e7edf7}
 .hero-actions{display:flex;gap:9px;flex-wrap:wrap}
-.panel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px;margin:14px 0;box-shadow:0 3px 12px #102a5608}
+.panel{
+  background:#fff;border:1px solid var(--line);border-radius:13px;
+  padding:18px;margin:14px 0;box-shadow:0 3px 12px #102a5608
+}
 h2{font-size:19px;margin:0 0 14px}
 h3{font-size:16px;margin:0 0 8px}
 .muted{color:var(--muted);font-size:13px;line-height:1.6}
@@ -34,23 +57,30 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:22px}
 .formbox{max-width:480px;margin:28px auto}
 .field{margin:12px 0}
 .field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
-input,textarea,select{width:100%;padding:12px;border:1px solid #ccd6e3;border-radius:8px;font:inherit;background:#fff;color:var(--text)}
+input,textarea,select{
+  width:100%;padding:12px;border:1px solid #ccd6e3;
+  border-radius:8px;font:inherit;background:#fff;color:var(--text)
+}
 textarea{min-height:90px;resize:vertical}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .row>*{flex:1}
-.notice{padding:11px;border-radius:8px;background:#edf4ff;color:#204b7d;font-size:13px;margin:10px 0}
+.notice{
+  padding:11px;border-radius:8px;background:#edf4ff;
+  color:#204b7d;font-size:13px;margin:10px 0
+}
 .error{background:#fff0ef;color:var(--red)}
 .item{border:1px solid var(--line);border-radius:9px;padding:13px;margin:10px 0}
 .status{font-size:12px;font-weight:700;color:#285b96}
 @media(max-width:600px){
-header{align-items:flex-start}
-nav{justify-content:flex-end}
-nav button{padding:8px 10px;font-size:12px}
-.hero{padding:24px 18px}
-.hero h1{font-size:22px}
+  header{align-items:flex-start}
+  nav{justify-content:flex-end}
+  nav button{padding:8px 10px;font-size:12px}
+  .hero{padding:24px 18px}
+  .hero h1{font-size:22px}
 }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -108,7 +138,13 @@ nav button{padding:8px 10px;font-size:12px}
 
   <div class="panel">
     <h3>Important Information</h3>
-    <p class="muted">DocSetu ek independent document assistance service hai. Hum kisi government department ya authority ka hissa nahi hain. Har application ki eligibility aur approval sambandhit authority ke niyamon par nirbhar karta hai. Hum approval ki guarantee nahi dete. Kisi bhi application mein sahi aur asli jaankari dena zaroori hai.</p>
+    <p class="muted">
+      DocSetu ek independent document assistance service hai.
+      Hum kisi government department ya authority ka hissa nahi hain.
+      Har application ki eligibility aur approval sambandhit authority ke
+      niyamon par nirbhar karta hai. Hum approval ki guarantee nahi dete.
+      Kisi bhi application mein sahi aur asli jaankari dena zaroori hai.
+    </p>
   </div>
 </section>
 
@@ -133,13 +169,16 @@ nav button{padding:8px 10px;font-size:12px}
     </div>
 
     <button id="authSubmit" style="width:100%">Login</button>
+
     <p class="muted" style="margin-top:14px">
       <a href="#" id="forgotLink">Password bhool gaye?</a>
     </p>
+
     <p class="muted">
       <span id="switchPrompt">Naya account chahiye?</span>
       <a href="#" id="switchAuth">Create Account</a>
     </p>
+
     <button class="secondary" data-action="home">Back to Home</button>
   </div>
 </section>
@@ -225,8 +264,9 @@ nav button{padding:8px 10px;font-size:12px}
 (() => {
 "use strict";
 
+/* SUPABASE CONFIGURATION */
 const SUPABASE_URL = "https://hqzxhbuhecaltjoxhffe.supabase.co";
-const SUPABASE_KEY = "sb_publishable_S4kEbpGO46mH22P20SFgg_fQtxAmnu";
+const SUPABASE_KEY = "sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
 
 const $ = id => document.getElementById(id);
 const views = ["homeView","authView","customerView","adminView"];
@@ -351,7 +391,8 @@ function renderEnquiries(rows,target,isAdmin){
 
     const meta=document.createElement("div");
     meta.className="status";
-    meta.textContent="Status: "+(row.status||"New")+" · "+new Date(row.created_at).toLocaleString("en-IN");
+    meta.textContent="Status: "+(row.status||"New")+" · "+
+      new Date(row.created_at).toLocaleString("en-IN");
 
     card.append(title,detail,meta);
 
@@ -390,7 +431,8 @@ function filterAdminRows(){
 
   const filtered=allRows.filter(r=>
     (!status||r.status===status) &&
-    [r.service_name,r.phone,r.description].join(" ").toLowerCase().includes(q)
+    [r.service_name,r.phone,r.description]
+      .join(" ").toLowerCase().includes(q)
   );
 
   renderEnquiries(filtered,"allEnquiries",true);
@@ -476,7 +518,10 @@ async function signup(){
     showMessage("authMessage","Account ban gaya. Dashboard khol rahe hain.");
     await openDashboard(data.user);
   }else{
-    showMessage("authMessage","Account request submit ho gayi. Email verification link check karein, phir login karein.");
+    showMessage(
+      "authMessage",
+      "Account request submit ho gayi. Email verification link check karein, phir login karein."
+    );
   }
 }
 
@@ -547,7 +592,8 @@ async function forgotPassword(){
 
   showMessage(
     "authMessage",
-    error?friendlyError(error):"Password reset link email par bhej diya gaya.",
+    error?"Password reset request nahi hui: "+friendlyError(error):
+      "Password reset link email par bhej diya gaya.",
     !!error
   );
 }
@@ -558,7 +604,10 @@ function init(){
     return;
   }
 
-  supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  supabaseClient=window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
   document.addEventListener("click",async e=>{
     const btn=e.target.closest("[data-action]");
@@ -566,14 +615,25 @@ function init(){
 
     const action=btn.dataset.action;
 
-    if(action==="login"||action==="signup") setAuthMode(action);
-    if(action==="home") showView("homeView");
-    if(action==="logout") await logout();
+    if(action==="login"||action==="signup"){
+      setAuthMode(action);
+    }
+
+    if(action==="home"){
+      showView("homeView");
+    }
+
+    if(action==="logout"){
+      await logout();
+    }
   });
 
   $("authSubmit").addEventListener("click",()=>{
-    if(authMode==="signup") signup();
-    else login();
+    if(authMode==="signup"){
+      signup();
+    }else{
+      login();
+    }
   });
 
   $("switchAuth").addEventListener("click",e=>{
@@ -591,11 +651,15 @@ function init(){
   $("statusFilter").addEventListener("change",filterAdminRows);
 
   supabaseClient.auth.getSession().then(({data})=>{
-    if(data.session) openDashboard(data.session.user);
+    if(data.session){
+      openDashboard(data.session.user);
+    }
   });
 
   supabaseClient.auth.onAuthStateChange((_event,session)=>{
-    if(session&&!currentUser) openDashboard(session.user);
+    if(session&&!currentUser){
+      openDashboard(session.user);
+    }
 
     if(!session){
       currentUser=null;
@@ -613,4 +677,4 @@ if(document.readyState==="loading"){
 })();
 </script>
 </body>
-</html
+</html>
