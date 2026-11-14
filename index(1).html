@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#102a56">
+<title>DocSetu - Your Documents. Our Assistance.</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#102a56;--blue:#285b96;--bg:#f2f5fa;--text:#20324d;--muted:#718096;--white:#fff;--line:#e4eaf2;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial, sans-serif;color:var(--text)}
+header{background:var(--navy);color:#fff;padding:14px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:5}
+.brand{font-weight:800;font-size:18px}.tag{font-size:10px;opacity:.8;margin-top:3px}
+nav{display:flex;gap:8px;flex-wrap:wrap}button{border:0;border-radius:7px;padding:10px 14px;background:var(--blue);color:#fff;font-weight:700;cursor:pointer}
+button.secondary{background:#e8eef7;color:var(--navy)}button.light{background:#fff;color:var(--navy)}button:disabled{opacity:.5;cursor:not-allowed}
+main{max-width:1100px;margin:22px auto;padding:0 16px}.hero{background:linear-gradient(110deg,#102a56,#285b96);color:#fff;border-radius:14px;padding:30px 24px;margin-bottom:16px}
+.hero h1{font-size:26px;margin:0 0 12px}.hero p{line-height:1.6;color:#e7edf7}.hero-actions{display:flex;gap:9px;flex-wrap:wrap}
+.panel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px;margin:14px 0;box-shadow:0 3px 12px #102a5608}
+h2{font-size:19px;margin:0 0 14px}h3{font-size:16px;margin:0 0 8px}.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.service{border:1px solid var(--line);padding:14px;border-radius:10px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:22px}
+.hidden{display:none!important}.formbox{max-width:480px;margin:28px auto}.field{margin:12px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+input,textarea,select{width:100%;padding:12px;border:1px solid #ccd6e3;border-radius:8px;font:inherit;background:#fff;color:var(--text)}
+textarea{min-height:90px;resize:vertical}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
+.notice{padding:11px;border-radius:8px;background:#edf4ff;color:#204b7d;font-size:13px;margin:10px 0}.error{background:#fff0ef;color:var(--red)}
+.item{border:1px solid var(--line);border-radius:9px;padding:13px;margin:10px 0}.status{font-size:12px;font-weight:700;color:#285b96}
+@media(max-width:600px){header{align-items:flex-start}nav{justify-content:flex-end}nav button{padding:8px 10px;font-size:12px}.hero{padding:24px 18px}.hero h1{font-size:22px}}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="brand">DocSetu</div><div class="tag">Your Documents. Our Assistance.</div></div>
+  <nav id="topNav">
+    <button class="light" data-action="login">Login</button>
+    <button data-action="signup">Create Account</button>
+    <button class="secondary hidden" id="logoutBtn" data-action="logout">Logout</button>
+  </nav>
+</header>
+
+<main>
+<section id="homeView">
+  <div class="hero">
+    <h1>Documents ka kaam, ab aasaan.</h1>
+    <p>Forms, applications aur documents ke kaam mein sahi guidance aur assistance paaiye.</p>
+    <div class="hero-actions">
+      <button data-action="signup">Get Started</button>
+      <button class="light" data-action="login">Customer Login</button>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Hamari Services</h2>
+    <div class="services">
+      <div class="service"><h3>Form Assistance</h3><div class="muted">Online forms bharne mein madad.</div></div>
+      <div class="service"><h3>Document Guidance</h3><div class="muted">Documents aur process ki jaankari.</div></div>
+      <div class="service"><h3>Application Support</h3><div class="muted">Application process mein assistance.</div></div>
+      <div class="service"><h3>Digital Document Help</h3><div class="muted">Digital documents organize karne mein madad.</div></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Customer Account</h2><p class="muted">Naya account banayein ya apne account mein login karein.</p>
+    <button data-action="signup">Create Account</button>
+    <button class="secondary" data-action="login">Login</button>
+  </div>
+  <div class="panel">
+    <h3>Important Information</h3>
+    <p class="muted">DocSetu ek independent document assistance service hai. Hum kisi government department ya authority ka hissa nahi hain. Har application ki eligibility aur approval sambandhit authority ke niyamon par nirbhar karta hai. Hum approval ki guarantee nahi dete. Kisi bhi application mein sahi aur asli jaankari dena zaroori hai.</p>
+  </div>
+</section>
+
+<section id="authView" class="hidden">
+  <div class="panel formbox">
+    <h2 id="authTitle">Login</h2>
+    <div id="authMessage" class="notice hidden"></div>
+    <div class="field hidden" id="nameField"><label>Full Name</label><input id="fullName" autocomplete="name" placeholder="Apna naam likhein"></div>
+    <div class="field"><label>Email</label><input id="email" type="email" autocomplete="email" placeholder="Email address"></div>
+    <div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password"></div>
+    <button id="authSubmit" style="width:100%">Login</button>
+    <p class="muted" style="margin-top:14px"><a href="#" id="forgotLink">Password bhool gaye?</a></p>
+    <p class="muted"><span id="switchPrompt">Naya account chahiye?</span> <a href="#" id="switchAuth">Create Account</a></p>
+    <button class="secondary" data-action="home">Back to Home</button>
+  </div>
+</section>
+
+<section id="customerView" class="hidden">
+  <div class="panel">
+    <div class="row"><div><h2>Customer Dashboard</h2><div class="muted" id="customerEmail"></div></div><button class="secondary" data-action="home">Home</button></div>
+  </div>
+  <div class="panel">
+    <h2>New Enquiry</h2>
+    <div id="enquiryMessage" class="notice hidden"></div>
+    <div class="field"><label>Service</label><select id="serviceName"><option value="">Service select karein</option><option>Form Assistance</option><option>Document Guidance</option><option>Application Support</option><option>Digital Document Help</option><option>Other</option></select></div>
+    <div class="field"><label>Mobile Number</label><input id="phone" type="tel" placeholder="10 digit mobile number"></div>
+    <div class="field"><label>Details</label><textarea id="description" placeholder="Apne kaam ki details likhein"></textarea></div>
+    <button id="submitEnquiry">Submit Enquiry</button>
+  </div>
+  <div class="panel"><h2>My Enquiries</h2><div id="myEnquiries" class="muted">Loading...</div></div>
+</section>
+
+<section id="adminView" class="hidden">
+  <div class="panel">
+    <div class="row"><div><h2>Admin Dashboard</h2><div class="muted" id="adminEmail"></div></div><button class="secondary" data-action="home">Home</button></div>
+  </div>
+  <div class="panel">
+    <h2>All Enquiries</h2>
+    <div class="row"><input id="adminSearch" placeholder="Search service, phone or details"><select id="statusFilter"><option value="">All Status</option><option>New</option><option>In Progress</option><option>Completed</option><option>Rejected</option></select></div>
+    <div id="allEnquiries" class="muted">Loading...</div>
+  </div>
+</section>
+</main>
+<footer>© 2026 DocSetu. Independent Document Assistance Service.</footer>
+
+<script>
+(() => {
+  "use strict";
+  const SUPABASE_URL = "https://hqzxhbuhecaltjoxhffe.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
+  const $ = id => document.getElementById(id);
+  const views = ["homeView","authView","customerView","adminView"];
+  let supabaseClient = null, authMode = "login", currentUser = null, allRows = [];
+
+  function showMessage(id, message, isError=false) {
+    const el=$(id); el.textContent=message; el.classList.remove("hidden","error");
+    if(isError) el.classList.add("error");
+  }
+  function showView(name) {
+    views.forEach(id=>$(id).classList.toggle("hidden",id!==name));
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  function setAuthMode(mode) {
+    authMode=mode;
+    const signup=mode==="signup";
+    $("authTitle").textContent=signup?"Create Account":"Login";
+    $("authSubmit").textContent=signup?"Create Account":"Login";
+    $("nameField").classList.toggle("hidden",!signup);
+    $("forgotLink").classList.toggle("hidden",signup);
+    $("switchPrompt").textContent=signup?"Pehle se account hai?":"Naya account chahiye?";
+    $("switchAuth").textContent=signup?"Login karein":"Create Account";
+    $("authMessage").classList.add("hidden");
+    showView("authView");
+  }
+  function friendlyError(err) {
+    return err?.message || "Kuch problem aa gayi. Dobara koshish karein.";
+  }
+  async function openDashboard(user) {
+    currentUser=user;
+    $("logoutBtn").classList.remove("hidden");
+    const {data:profile,error}=await supabaseClient.from("profiles").select("full_name,role").eq("id",user.id).maybeSingle();
+    if(error) console.warn("Profile read:",error.message);
+    const isAdmin=profile?.role==="admin";
+    if(isAdmin) {
+      $("adminEmail").textContent=user.email||"";
+      showView("adminView"); await loadAllEnquiries();
+    } else {
+      $("customerEmail").textContent=user.email||"";
+      showView("customerView"); await loadMyEnquiries();
+    }
+  }
+  async function loadMyEnquiries() {
+    $("myEnquiries").textContent="Loading...";
+    const {data,error}=await supabaseClient.from("enquiries").select("id,service_name,description,status,created_at,phone").eq("user_id",currentUser.id).order("created_at",{ascending:false});
+    if(error){$("myEnquiries").textContent="Enquiries load nahi hui: "+error.message;return;}
+    renderEnquiries(data||[],"myEnquiries",false);
+  }
+  async function loadAllEnquiries() {
+    $("allEnquiries").textContent="Loading...";
+    const {data,error}=await supabaseClient.from("enquiries").select("id,user_id,service_name,description,status,created_at,phone").order("created_at",{ascending:false});
+    if(error){$("allEnquiries").textContent="Admin enquiries load nahi hui: "+error.message;return;}
+    allRows=data||[]; filterAdminRows();
+  }
+  function renderEnquiries(rows,target,isAdmin) {
+    const el=$(target);
+    if(!rows.length){el.textContent="Abhi koi enquiry nahi hai.";return;}
+    el.innerHTML="";
+    rows.forEach(row=>{
+      const card=document.createElement("div");card.className="item";
+      const title=document.createElement("h3");title.textContent=row.service_name||"Enquiry";
+      const detail=document.createElement("p");detail.className="muted";detail.textContent=row.description||"";
+      const meta=document.createElement("div");meta.className="status";meta.textContent="Status: "+(row.status||"New")+" · "+new Date(row.created_at).toLocaleString("en-IN");
+      card.append(title,detail,meta);
+      if(row.phone){const phone=document.createElement("p");phone.className="muted";phone.textContent="Phone: "+row.phone;card.append(phone);}
+      if(isAdmin){
+        const select=document.createElement("select");
+        ["New","In Progress","Completed","Rejected"].forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;if(s===(row.status||"New"))o.selected=true;select.append(o);});
+        select.addEventListener("change",()=>updateStatus(row.id,select.value,select));
+        card.append(select);
+      }
+      el.append(card);
+    });
+  }
+  function filterAdminRows() {
+    const q=$("adminSearch").value.toLowerCase(), status=$("statusFilter").value;
+    const filtered=allRows.filter(r=>(!status||r.status===status)&&[r.service_name,r.phone,r.description].join(" ").toLowerCase().includes(q));
+    renderEnquiries(filtered,"allEnquiries",true);
+  }
+  async function updateStatus(id,status,control) {
+    control.disabled=true;
+    const {error}=await supabaseClient.from("enquiries").update({status}).eq("id",id);
+    control.disabled=false;
+    if(error){alert("Status update nahi hua: "+error.message);return;}
+    const row=allRows.find(r=>String(r.id)===String(id)); if(row)row.status=status;
+    filterAdminRows();
+  }
+  async function login() {
+    const email=$("email").value.trim(),password=$("password").value;
+    if(!email||!password){showMessage("authMessage","Email aur password dono bharein.",true);return;}
+    $("authSubmit").disabled=true;
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+    $("authSubmit").disabled=false;
+    if(error){showMessage("authMessage",friendlyError(error),true);return;}
+    await openDashboard(data.user);
+  }
+  async function signup() {
+    const name=$("fullName").value.trim(),email=$("email").value.trim(),password=$("password").value;
+    if(!name||!email||!password){showMessage("authMessage","Naam, email aur password bharein.",true);return;}
+    if(password.length<6){showMessage("authMessage","Password kam se kam 6 characters ka hona chahiye.",true);return;}
+    $("authSubmit").disabled=true;
+    const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{full_name:name}}});
+    $("authSubmit").disabled=false;
+    if(error){showMessage("authMessage",friendlyError(error),true);return;}
+    if(data.session&&data.user){showMessage("authMessage","Account ban gaya. Dashboard khol rahe hain.");await openDashboard(data.user);}
+    else showMessage("authMessage","Account request submit ho gayi. Email verification link check karein, phir login karein.");
+  }
+  async function submitEnquiry() {
+    const service_name=$("serviceName").value,phone=$("phone").value.trim(),description=$("description").value.trim();
+    if(!service_name||!phone||!description){showMessage("enquiryMessage","Service, mobile number aur details bharein.",true);return;}
+    if(!/^[0-9+\-\s]{10,15}$/.test(phone)){showMessage("enquiryMessage","Mobile number check karein.",true);return;}
+    $("submitEnquiry").disabled=true;
+    const {error}=await supabaseClient.from("enquiries").insert({user_id:currentUser.id,service_name,phone,description,status:"New"});
+    $("submitEnquiry").disabled=false;
+    if(error){showMessage("enquiryMessage","Enquiry submit nahi hui: "+error.message,true);return;}
+    $("serviceName").value="";$("phone").value="";$("description").value="";
+    showMessage("enquiryMessage","Aapki enquiry successfully submit ho gayi.");
+    await loadMyEnquiries();
+  }
+  async function logout() {
+    const {error}=await supabaseClient.auth.signOut();
+    if(error){alert(friendlyError(error));return;}
+    currentUser=null;$("logoutBtn").classList.add("hidden");showView("homeView");
+  }
+  async function forgotPassword() {
+    const email=$("email").value.trim();
+    if(!email){showMessage("authMessage","Pehle email address bharein.",true);return;}
+    const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:location.href.split("?")[0]});
+    showMessage("authMessage",error?friendlyError(error):"Password reset link email par bhej diya gaya.",!!error);
+  }
+  function init() {
+    if(!window.supabase){alert("Supabase library load nahi hui. Internet connection check karke page refresh karein.");return;}
+    supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    document.addEventListener("click",async e=>{
+      const btn=e.target.closest("[data-action]");if(!btn)return;
+      const action=btn.dataset.action;
+      if(action==="login"||action==="signup")setAuthMode(action);
+      if(action==="home")showView("homeView");
+      if(action==="logout")await logout();
+    });
+    $("authSubmit").addEventListener("click",()=>authMode==="signup"?signup():login());
+    $("switchAuth").addEventListener("click",e=>{e.preventDefault();setAuthMode(authMode==="signup"?"login":"signup");});
+    $("forgotLink").addEventListener("click",e=>{e.preventDefault();forgotPassword();});
+    $("submitEnquiry").addEventListener("click",submitEnquiry);
+    $("adminSearch").addEventListener("input",filterAdminRows);
+    $("statusFilter").addEventListener("change",filterAdminRows);
+    supabaseClient.auth.getSession().then(({data})=>{
+      if(data.session)openDashboard(data.session.user);
+    });
+    supabaseClient.auth.onAuthStateChange((_event,session)=>{
+      if(session&&!currentUser)openDashboard(session.user);
+      if(!session){currentUser=null;$("logoutBtn").classList.add("hidden");}
+    });
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+})();
+</script>
+</body>
+</html>
