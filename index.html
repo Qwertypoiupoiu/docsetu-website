@@ -7,674 +7,470 @@
 <meta name="theme-color" content="#102a56">
 <title>DocSetu - Your Documents. Our Assistance.</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 :root{
-  --navy:#102a56;
-  --blue:#285b96;
-  --bg:#f2f5fa;
-  --text:#20324d;
-  --muted:#718096;
-  --line:#e4eaf2;
-  --red:#b42318;
+  --navy:#102a56;--blue:#1c4d91;--light:#f3f6fb;
+  --white:#fff;--text:#26354a;--muted:#718096;
+  --green:#168653;--red:#c0392b;--border:#e2e8f0;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--text)}
-header{
-  background:var(--navy);color:#fff;padding:14px 5%;
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;position:sticky;top:0;z-index:5
-}
-.brand{font-weight:800;font-size:18px}
-.tag{font-size:10px;opacity:.8;margin-top:3px}
-nav{display:flex;gap:8px;flex-wrap:wrap}
-button{
-  border:0;border-radius:7px;padding:10px 14px;
-  background:var(--blue);color:#fff;font-weight:700;cursor:pointer
-}
-button.secondary{background:#e8eef7;color:var(--navy)}
-button.light{background:#fff;color:var(--navy)}
+body{margin:0;background:var(--light);color:var(--text);
+font-family:Arial,sans-serif}
+header{background:var(--navy);color:white;padding:17px 5%;
+display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.brand{font-size:25px;font-weight:bold}
+.brand small{display:block;font-size:11px;font-weight:normal;margin-top:4px}
+button{background:var(--navy);color:white;border:0;padding:11px 17px;
+border-radius:7px;cursor:pointer;font-weight:bold}
+button:hover{opacity:.9}
+button.secondary{background:#e8eef8;color:var(--navy)}
+button.danger{background:var(--red)}
+button.success{background:var(--green)}
 button:disabled{opacity:.5;cursor:not-allowed}
-main{max-width:1100px;margin:22px auto;padding:0 16px}
-.hero{
-  background:linear-gradient(110deg,#102a56,#285b96);
-  color:#fff;border-radius:14px;padding:30px 24px;margin-bottom:16px
-}
-.hero h1{font-size:26px;margin:0 0 12px}
-.hero p{line-height:1.6;color:#e7edf7}
-.hero-actions{display:flex;gap:9px;flex-wrap:wrap}
-.panel{
-  background:#fff;border:1px solid var(--line);border-radius:13px;
-  padding:18px;margin:14px 0;box-shadow:0 3px 12px #102a5608
-}
-h2{font-size:19px;margin:0 0 14px}
-h3{font-size:16px;margin:0 0 8px}
-.muted{color:var(--muted);font-size:13px;line-height:1.6}
-.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
-.service{border:1px solid var(--line);padding:14px;border-radius:10px}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:22px}
+.container{max-width:1100px;margin:25px auto;padding:0 15px}
+.hero{background:linear-gradient(120deg,#102a56,#2861a7);color:white;
+padding:55px 25px;border-radius:14px;text-align:center}
+.hero h1{font-size:34px;margin:0 0 14px}
+.hero p{font-size:17px;line-height:1.6}
+.section-title{color:var(--navy);margin:30px 0 15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.card{background:white;padding:20px;border-radius:11px;
+border:1px solid var(--border);margin-bottom:15px}
+.card h3{margin-top:0;color:var(--navy)}
+input,select,textarea{width:100%;padding:12px;margin:7px 0 15px;
+border:1px solid #ccd5e2;border-radius:7px;font-size:15px;background:white}
+label{font-size:14px;font-weight:bold}
+textarea{min-height:95px;resize:vertical}
+.form-card{max-width:520px;margin:30px auto}
 .hidden{display:none!important}
-.formbox{max-width:480px;margin:28px auto}
-.field{margin:12px 0}
-.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
-input,textarea,select{
-  width:100%;padding:12px;border:1px solid #ccd6e3;
-  border-radius:8px;font:inherit;background:#fff;color:var(--text)
-}
-textarea{min-height:90px;resize:vertical}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted);font-size:13px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .row>*{flex:1}
-.notice{
-  padding:11px;border-radius:8px;background:#edf4ff;
-  color:#204b7d;font-size:13px;margin:10px 0
-}
-.error{background:#fff0ef;color:var(--red)}
-.item{border:1px solid var(--line);border-radius:9px;padding:13px;margin:10px 0}
-.status{font-size:12px;font-weight:700;color:#285b96}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tabs button{font-size:13px}
+.tabs button.active{background:#2861a7}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;
+font-size:12px;font-weight:bold;background:#edf1f7;color:#34445a}
+.status.Completed,.status.Verified{background:#d9f5e5;color:#12683d}
+.status.Rejected{background:#ffe1e1;color:#a32727}
+.status.Pending,.status.New{background:#fff0c9;color:#795300}
+.status.In.Progress{background:#dceaff;color:#174e91}
+.item{border:1px solid var(--border);padding:15px;border-radius:9px;margin:12px 0;background:#fff}
+.item p{margin:7px 0;line-height:1.5}
+footer{text-align:center;color:var(--muted);padding:30px 10px}
+hr{border:0;border-top:1px solid var(--border);margin:18px 0}
+img.qr{max-width:190px;width:100%;display:block;margin:12px auto;border:1px solid var(--border);padding:5px}
+.notice{padding:12px;border-radius:8px;background:#edf4ff;margin:12px 0;font-size:14px}
+#message{position:sticky;top:0;z-index:10;padding:10px;text-align:center;
+background:#e4f5eb;color:#145b35;display:none}
 @media(max-width:600px){
-  header{align-items:flex-start}
-  nav{justify-content:flex-end}
-  nav button{padding:8px 10px;font-size:12px}
-  .hero{padding:24px 18px}
-  .hero h1{font-size:22px}
+ .hero h1{font-size:27px}
+ header{padding:14px}
+ .brand{font-size:22px}
+ .container{margin:15px auto}
 }
 </style>
 </head>
-
 <body>
 
+<div id="message"></div>
+
 <header>
-  <div>
-    <div class="brand">DocSetu</div>
-    <div class="tag">Your Documents. Our Assistance.</div>
+  <div class="brand">DocSetu<small>Your Documents. Our Assistance.</small></div>
+  <div class="row" style="flex:0 1 auto">
+    <button class="secondary" onclick="showHome()">Home</button>
+    <button id="loginNav" onclick="showAuth()">Login</button>
+    <button id="logoutNav" class="hidden" onclick="logout()">Logout</button>
   </div>
-  <nav id="topNav">
-    <button class="light" data-action="login">Login</button>
-    <button data-action="signup">Create Account</button>
-    <button class="secondary hidden" id="logoutBtn" data-action="logout">Logout</button>
-  </nav>
 </header>
 
-<main>
+<main class="container">
 
-<section id="homeView">
+<!-- HOME -->
+<section id="home">
   <div class="hero">
     <h1>Documents ka kaam, ab aasaan.</h1>
     <p>Forms, applications aur documents ke kaam mein sahi guidance aur assistance paaiye.</p>
-    <div class="hero-actions">
-      <button data-action="signup">Get Started</button>
-      <button class="light" data-action="login">Customer Login</button>
-    </div>
+    <button onclick="showAuth()">Get Started</button>
   </div>
 
-  <div class="panel">
-    <h2>Hamari Services</h2>
-    <div class="services">
-      <div class="service">
-        <h3>Form Assistance</h3>
-        <div class="muted">Online forms bharne mein madad.</div>
-      </div>
-      <div class="service">
-        <h3>Document Guidance</h3>
-        <div class="muted">Documents aur process ki jaankari.</div>
-      </div>
-      <div class="service">
-        <h3>Application Support</h3>
-        <div class="muted">Application process mein assistance.</div>
-      </div>
-      <div class="service">
-        <h3>Digital Document Help</h3>
-        <div class="muted">Digital documents organize karne mein madad.</div>
-      </div>
-    </div>
+  <h2 class="section-title">Hamari Services</h2>
+  <div id="homeServices" class="grid">
+    <div class="card"><h3>Form Assistance</h3>Online forms bharne mein madad.</div>
+    <div class="card"><h3>Document Guidance</h3>Documents aur process ki jaankari.</div>
+    <div class="card"><h3>Application Support</h3>Application process mein assistance.</div>
+    <div class="card"><h3>Digital Document Help</h3>Digital documents organize karne mein madad.</div>
   </div>
-
-  <div class="panel">
-    <h2>Customer Account</h2>
-    <p class="muted">Naya account banayein ya apne account mein login karein.</p>
-    <button data-action="signup">Create Account</button>
-    <button class="secondary" data-action="login">Login</button>
-  </div>
-
-  <div class="panel">
-    <h3>Important Information</h3>
-    <p class="muted">
-      DocSetu ek independent document assistance service hai.
-      Hum kisi government department ya authority ka hissa nahi hain.
-      Har application ki eligibility aur approval sambandhit authority ke
-      niyamon par nirbhar karta hai. Hum approval ki guarantee nahi dete.
-      Kisi bhi application mein sahi aur asli jaankari dena zaroori hai.
-    </p>
+  <div class="card" style="margin-top:25px;text-align:center">
+    <h3>Customer Account</h3>
+    <p>Apni enquiry submit karein aur uska status check karein.</p>
+    <button onclick="showAuth()">Login / Create Account</button>
   </div>
 </section>
 
-<section id="authView" class="hidden">
-  <div class="panel formbox">
+<!-- AUTH -->
+<section id="auth" class="hidden">
+  <div class="card form-card">
     <h2 id="authTitle">Login</h2>
-    <div id="authMessage" class="notice hidden"></div>
-
-    <div class="field hidden" id="nameField">
+    <div id="signupNameBox" class="hidden">
       <label>Full Name</label>
-      <input id="fullName" autocomplete="name" placeholder="Apna naam likhein">
+      <input id="signupName" placeholder="Apna poora naam">
     </div>
-
-    <div class="field">
-      <label>Email</label>
-      <input id="email" type="email" autocomplete="email" placeholder="Email address">
-    </div>
-
-    <div class="field">
-      <label>Password</label>
-      <input id="password" type="password" autocomplete="current-password" placeholder="Password">
-    </div>
-
-    <button id="authSubmit" style="width:100%">Login</button>
-
-    <p class="muted" style="margin-top:14px">
-      <a href="#" id="forgotLink">Password bhool gaye?</a>
-    </p>
-
-    <p class="muted">
-      <span id="switchPrompt">Naya account chahiye?</span>
-      <a href="#" id="switchAuth">Create Account</a>
-    </p>
-
-    <button class="secondary" data-action="home">Back to Home</button>
+    <label>Email</label>
+    <input id="authEmail" type="email" placeholder="Email address">
+    <label>Password</label>
+    <input id="authPassword" type="password" placeholder="Password">
+    <button id="authButton" style="width:100%" onclick="login()">Login</button>
+    <p class="muted" id="authError"></p>
+    <hr>
+    <button class="secondary" style="width:100%" onclick="toggleSignup()">Create Account</button>
+    <button class="secondary" style="width:100%;margin-top:8px" onclick="forgotPassword()">Forgot Password?</button>
+    <button class="secondary" style="width:100%;margin-top:8px" onclick="showHome()">Back to Home</button>
   </div>
 </section>
 
-<section id="customerView" class="hidden">
-  <div class="panel">
-    <div class="row">
-      <div>
-        <h2>Customer Dashboard</h2>
-        <div class="muted" id="customerEmail"></div>
-      </div>
-      <button class="secondary" data-action="home">Home</button>
-    </div>
+<!-- CUSTOMER DASHBOARD -->
+<section id="customer" class="hidden">
+  <h2 class="section-title">Customer Dashboard</h2>
+  <div class="card">
+    <h3 id="customerWelcome">Welcome</h3>
+    <p class="muted" id="customerEmail"></p>
   </div>
 
-  <div class="panel">
-    <h2>New Enquiry</h2>
-    <div id="enquiryMessage" class="notice hidden"></div>
-
-    <div class="field">
-      <label>Service</label>
-      <select id="serviceName">
-        <option value="">Service select karein</option>
-        <option>Form Assistance</option>
-        <option>Document Guidance</option>
-        <option>Application Support</option>
-        <option>Digital Document Help</option>
-        <option>Other</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Mobile Number</label>
-      <input id="phone" type="tel" placeholder="10 digit mobile number">
-    </div>
-
-    <div class="field">
-      <label>Details</label>
-      <textarea id="description" placeholder="Apne kaam ki details likhein"></textarea>
-    </div>
-
-    <button id="submitEnquiry">Submit Enquiry</button>
+  <div class="tabs">
+    <button class="active" onclick="customerTab('newEnquiry',this)">New Enquiry</button>
+    <button onclick="customerTab('myEnquiries',this)">My Enquiries</button>
+    <button onclick="customerTab('myPayments',this)">My Payments</button>
+    <button onclick="customerTab('profile',this)">My Profile</button>
   </div>
 
-  <div class="panel">
-    <h2>My Enquiries</h2>
-    <div id="myEnquiries" class="muted">Loading...</div>
+  <div id="newEnquiry" class="customerTab card">
+    <h3>New Enquiry</h3>
+    <label>Service Select Karein</label>
+    <select id="serviceSelect"></select>
+    <label>Mobile Number</label>
+    <input id="customerPhone" type="tel" maxlength="10" placeholder="10 digit mobile number">
+    <label>Details</label>
+    <textarea id="enquiryDetails" placeholder="Apne kaam ki details likhein"></textarea>
+    <button onclick="submitEnquiry()">Submit Enquiry</button>
+  </div>
+
+  <div id="myEnquiries" class="customerTab hidden">
+    <h3>My Enquiries</h3>
+    <div id="customerEnquiries"></div>
+  </div>
+
+  <div id="myPayments" class="customerTab hidden">
+    <h3>My Payments</h3>
+    <div id="customerPayments"></div>
+  </div>
+
+  <div id="profile" class="customerTab hidden card">
+    <h3>My Profile</h3>
+    <label>Full Name</label>
+    <input id="profileName">
+    <label>Email</label>
+    <input id="profileEmail" disabled>
+    <button onclick="saveProfile()">Save Profile</button>
   </div>
 </section>
 
-<section id="adminView" class="hidden">
-  <div class="panel">
-    <div class="row">
-      <div>
-        <h2>Admin Dashboard</h2>
-        <div class="muted" id="adminEmail"></div>
-      </div>
-      <button class="secondary" data-action="home">Home</button>
-    </div>
+<!-- ADMIN DASHBOARD -->
+<section id="admin" class="hidden">
+  <h2 class="section-title">Admin Dashboard</h2>
+  <div class="card">
+    <h3>DocSetu Administration</h3>
+    <p>Enquiries, customers, payments aur services manage karein.</p>
+  </div>
+  <div class="tabs">
+    <button class="active" onclick="adminTab('allEnquiries',this)">Enquiries</button>
+    <button onclick="adminTab('allPayments',this)">Payments</button>
+    <button onclick="adminTab('allServices',this)">Services & Prices</button>
+    <button onclick="adminTab('paymentSettings',this)">Payment Settings</button>
+    <button onclick="adminTab('customers',this)">Customers</button>
   </div>
 
-  <div class="panel">
-    <h2>All Enquiries</h2>
-    <div class="row">
-      <input id="adminSearch" placeholder="Search service, phone or details">
-      <select id="statusFilter">
+  <div id="allEnquiries" class="adminTab">
+    <div class="card">
+      <h3>All Enquiries</h3>
+      <input id="searchEnquiry" placeholder="Search name, phone, service..." oninput="renderAdminEnquiries()">
+      <select id="statusFilter" onchange="renderAdminEnquiries()">
         <option value="">All Status</option>
-        <option>New</option>
-        <option>In Progress</option>
-        <option>Completed</option>
-        <option>Rejected</option>
+        <option>New</option><option>In Progress</option>
+        <option>Completed</option><option>Rejected</option>
       </select>
+      <div id="adminEnquiries"></div>
     </div>
-    <div id="allEnquiries" class="muted">Loading...</div>
+  </div>
+
+  <div id="allPayments" class="adminTab hidden">
+    <div class="card">
+      <h3>Payment Verification</h3>
+      <div id="adminPayments"></div>
+    </div>
+  </div>
+
+  <div id="allServices" class="adminTab hidden">
+    <div class="card">
+      <h3>Manage Services & Prices</h3>
+      <div id="serviceManager"></div>
+      <hr>
+      <h3>Add New Service</h3>
+      <label>Service Name</label><input id="newServiceName">
+      <label>Description</label><input id="newServiceDescription">
+      <label>Price (₹)</label><input id="newServicePrice" type="number" min="0">
+      <button onclick="addService()">Add Service</button>
+    </div>
+  </div>
+
+  <div id="paymentSettings" class="adminTab hidden">
+    <div class="card">
+      <h3>UPI Payment Settings</h3>
+      <label>UPI ID</label><input id="settingUPI" placeholder="example@upi">
+      <label>Account Holder Name</label><input id="settingName">
+      <label>QR Code Image URL (optional)</label><input id="settingQR" placeholder="Image URL">
+      <label>Payment Instructions</label><textarea id="settingInstructions"></textarea>
+      <button onclick="savePaymentSettings()">Save Payment Settings</button>
+      <p class="muted">Customer ko ye details payment karne ke liye dikhengi.</p>
+    </div>
+  </div>
+
+  <div id="customers" class="adminTab hidden">
+    <div class="card">
+      <h3>Customer Records</h3>
+      <div id="customerList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAYMENT MODAL -->
+<section id="paymentPage" class="hidden">
+  <div class="card form-card">
+    <h2>Make Payment</h2>
+    <p id="paymentServiceName"></p>
+    <h2 id="paymentAmount" style="color:var(--green)"></h2>
+    <div id="paymentInstructions" class="notice"></div>
+    <div id="paymentQR"></div>
+    <p><b>UPI ID:</b> <span id="paymentUPI"></span></p>
+    <p><b>Account Name:</b> <span id="paymentAccountName"></span></p>
+    <button class="secondary" onclick="copyUPI()">Copy UPI ID</button>
+    <hr>
+    <label>UPI Transaction ID</label>
+    <input id="transactionID" placeholder="Enter transaction ID">
+    <label>Payment Screenshot</label>
+    <input id="paymentScreenshot" type="file" accept="image/*">
+    <button style="width:100%" onclick="submitPayment()">Submit Payment Proof</button>
+    <p class="muted">Payment verification ke baad hi kaam shuru hoga. Screenshot aur transaction ID check kiye jayenge.</p>
+    <button class="secondary" onclick="backToCustomer()">Back to Dashboard</button>
   </div>
 </section>
 
 </main>
 
-<footer>© 2026 DocSetu. Independent Document Assistance Service.</footer>
+<footer>
+  <b>DocSetu</b><br>
+  Your Documents. Our Assistance.<br>
+  <small>Document Assistance Platform</small>
+</footer>
 
 <script>
-(() => {
-"use strict";
-
-/* SUPABASE CONFIGURATION */
 const SUPABASE_URL = "https://hqzxhbuhecaltjoxhffe.supabase.co";
 const SUPABASE_KEY = "sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
+const BUCKET = "docsetu-payment-proofs";
 
-const $ = id => document.getElementById(id);
-const views = ["homeView","authView","customerView","adminView"];
+const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let supabaseClient = null;
-let authMode = "login";
 let currentUser = null;
-let allRows = [];
+let currentProfile = null;
+let services = [];
+let enquiries = [];
+let payments = [];
+let paymentEnquiry = null;
+let paymentSettings = {};
 
-function showMessage(id,message,isError=false){
-  const el=$(id);
-  el.textContent=message;
-  el.classList.remove("hidden","error");
-  if(isError) el.classList.add("error");
-}
-
-function showView(name){
-  views.forEach(id=>{
-    $(id).classList.toggle("hidden",id!==name);
-  });
+function msg(text,error=false){
+  const el=document.getElementById("message");
+  el.textContent=text;
+  el.style.display="block";
+  el.style.background=error?"#ffe1e1":"#e4f5eb";
+  el.style.color=error?"#a32727":"#145b35";
   window.scrollTo({top:0,behavior:"smooth"});
+  setTimeout(()=>el.style.display="none",5000);
 }
-
-function setAuthMode(mode){
-  authMode=mode;
-  const signup=mode==="signup";
-
-  $("authTitle").textContent=signup?"Create Account":"Login";
-  $("authSubmit").textContent=signup?"Create Account":"Login";
-  $("nameField").classList.toggle("hidden",!signup);
-  $("forgotLink").classList.toggle("hidden",signup);
-  $("switchPrompt").textContent=signup?"Pehle se account hai?":"Naya account chahiye?";
-  $("switchAuth").textContent=signup?"Login karein":"Create Account";
-  $("authMessage").classList.add("hidden");
-
-  showView("authView");
+function show(id){
+  ["home","auth","customer","admin","paymentPage"].forEach(x=>
+    document.getElementById(x).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
 }
-
-function friendlyError(err){
-  return err?.message || "Kuch problem aa gayi. Dobara koshish karein.";
+function showHome(){show("home")}
+function showAuth(){show("auth")}
+function toggleSignup(){
+  const box=document.getElementById("signupNameBox");
+  const signup=box.classList.contains("hidden");
+  box.classList.toggle("hidden");
+  document.getElementById("authTitle").textContent=signup?"Create Account":"Login";
+  document.getElementById("authButton").textContent=signup?"Create Account":"Login";
+  document.getElementById("authButton").onclick=signup?signup:login;
+  document.getElementById("authError").textContent="";
 }
+function customerTab(id,btn){
+  document.querySelectorAll(".customerTab").forEach(x=>x.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  document.querySelectorAll("#customer .tabs button").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  if(id==="myEnquiries")loadMyEnquiries();
+  if(id==="myPayments")loadMyPayments();
+}
+function adminTab(id,btn){
+  document.querySelectorAll(".adminTab").forEach(x=>x.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  document.querySelectorAll("#admin .tabs button").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  if(id==="allPayments")loadAdminPayments();
+  if(id==="allEnquiries")loadAllEnquiries();
+  if(id==="allServices")loadServiceManager();
+  if(id==="paymentSettings")loadPaymentSettings();
+  if(id==="customers")loadCustomers();
+}
+async function login(){
+  const email=document.getElementById("authEmail").value.trim();
+  const password=document.getElementById("authPassword").value;
+  if(!email||!password)return msg("Email aur password bharein.",true);
+  const {error}=await db.auth.signInWithPassword({email,password});
+  if(error){document.getElementById("authError").textContent=error.message;return}
+  await init();
+}
+async function signup(){
+  const name=document.getElementById("signupName").value.trim();
+  const email=document.getElementById("authEmail").value.trim();
+  const password=document.getElementById("authPassword").value;
+  if(!name||!email||password.length<6)return msg("Naam, email aur kam se kam 6 character ka password bharein.",true);
+  const {error}=await db.auth.signUp({
+    email,password,options:{data:{full_name:name}}
+  });
+  if(error)return msg(error.message,true);
+  msg("Account request submit ho gayi. Email verification ki zarurat ho sakti hai. Verify karke login karein.");
+}
+async function logout(){
+  await db.auth.signOut();
+  currentUser=null;currentProfile=null;
+  document.getElementById("logoutNav").classList.add("hidden");
+  document.getElementById("loginNav").classList.remove("hidden");
+  showHome();msg("Logout successful.");
+}
+async function forgotPassword(){
+  const email=document.getElementById("authEmail").value.trim();
+  if(!email)return msg("Pehle email address likhein.",true);
+  const {error}=await db.auth.resetPasswordForEmail(email,{
+    redirectTo:location.origin+location.pathname
+  });
+  if(error)return msg(error.message,true);
+  msg("Password reset email bhej di gayi.");
+}
+async function init(){
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){showHome();return}
+  currentUser=session.user;
+  document.getElementById("loginNav").classList.add("hidden");
+  document.getElementById("logoutNav").classList.remove("hidden");
 
-async function openDashboard(user){
-  currentUser=user;
-  $("logoutBtn").classList.remove("hidden");
+  const {data:profile,error}=await db.from("profiles")
+    .select("id,full_name,role").eq("id",currentUser.id).maybeSingle();
+  if(error){msg("Profile load nahi hua: "+error.message,true);return}
+  if(!profile){msg("Profile record nahi mila. Signup profile trigger check karna hoga.",true);showHome();return}
+  currentProfile=profile;
+  await loadServices();
+  await loadPaymentSettingsData();
 
-  const {data:profile,error}=await supabaseClient
-    .from("profiles")
-    .select("full_name,role")
-    .eq("id",user.id)
-    .maybeSingle();
-
-  if(error) console.warn("Profile read:",error.message);
-
-  const isAdmin=profile?.role==="admin";
-
-  if(isAdmin){
-    $("adminEmail").textContent=user.email||"";
-    showView("adminView");
+  if(profile.role==="admin"){
+    show("admin");
     await loadAllEnquiries();
   }else{
-    $("customerEmail").textContent=user.email||"";
-    showView("customerView");
+    show("customer");
+    document.getElementById("customerWelcome").textContent="Welcome, "+(profile.full_name||"Customer");
+    document.getElementById("customerEmail").textContent=currentUser.email||"";
+    document.getElementById("profileName").value=profile.full_name||"";
+    document.getElementById("profileEmail").value=currentUser.email||"";
     await loadMyEnquiries();
   }
 }
-
-async function loadMyEnquiries(){
-  $("myEnquiries").textContent="Loading...";
-
-  const {data,error}=await supabaseClient
-    .from("enquiries")
-    .select("id,service_name,description,status,created_at,phone")
-    .eq("user_id",currentUser.id)
-    .order("created_at",{ascending:false});
-
-  if(error){
-    $("myEnquiries").textContent="Enquiries load nahi hui: "+error.message;
-    return;
-  }
-
-  renderEnquiries(data||[],"myEnquiries",false);
-}
-
-async function loadAllEnquiries(){
-  $("allEnquiries").textContent="Loading...";
-
-  const {data,error}=await supabaseClient
-    .from("enquiries")
-    .select("id,user_id,service_name,description,status,created_at,phone")
-    .order("created_at",{ascending:false});
-
-  if(error){
-    $("allEnquiries").textContent="Admin enquiries load nahi hui: "+error.message;
-    return;
-  }
-
-  allRows=data||[];
-  filterAdminRows();
-}
-
-function renderEnquiries(rows,target,isAdmin){
-  const el=$(target);
-
-  if(!rows.length){
-    el.textContent="Abhi koi enquiry nahi hai.";
-    return;
-  }
-
-  el.innerHTML="";
-
-  rows.forEach(row=>{
-    const card=document.createElement("div");
-    card.className="item";
-
-    const title=document.createElement("h3");
-    title.textContent=row.service_name||"Enquiry";
-
-    const detail=document.createElement("p");
-    detail.className="muted";
-    detail.textContent=row.description||"";
-
-    const meta=document.createElement("div");
-    meta.className="status";
-    meta.textContent="Status: "+(row.status||"New")+" · "+
-      new Date(row.created_at).toLocaleString("en-IN");
-
-    card.append(title,detail,meta);
-
-    if(row.phone){
-      const phone=document.createElement("p");
-      phone.className="muted";
-      phone.textContent="Phone: "+row.phone;
-      card.append(phone);
-    }
-
-    if(isAdmin){
-      const select=document.createElement("select");
-
-      ["New","In Progress","Completed","Rejected"].forEach(s=>{
-        const o=document.createElement("option");
-        o.value=s;
-        o.textContent=s;
-        if(s===(row.status||"New")) o.selected=true;
-        select.append(o);
-      });
-
-      select.addEventListener("change",()=>{
-        updateStatus(row.id,select.value,select);
-      });
-
-      card.append(select);
-    }
-
-    el.append(card);
+async function loadServices(){
+  const {data,error}=await db.from("services").select("*").eq("active",true).order("name");
+  if(error){msg("Services load nahi hui: "+error.message,true);return}
+  services=data||[];
+  const select=document.getElementById("serviceSelect");
+  select.innerHTML='<option value="">Service select karein</option>';
+  services.forEach(s=>{
+    const op=document.createElement("option");
+    op.value=s.id;op.textContent=s.name+" — ₹"+Number(s.price).toFixed(2);
+    select.appendChild(op);
+  });
+  const home=document.getElementById("homeServices");
+  home.innerHTML="";
+  services.forEach(s=>{
+    const div=document.createElement("div");
+    div.className="card";
+    div.innerHTML="<h3></h3><p></p><b></b>";
+    div.querySelector("h3").textContent=s.name;
+    div.querySelector("p").textContent=s.description||"Document assistance service";
+    div.querySelector("b").textContent="₹"+Number(s.price).toFixed(2);
+    home.appendChild(div);
   });
 }
-
-function filterAdminRows(){
-  const q=$("adminSearch").value.toLowerCase();
-  const status=$("statusFilter").value;
-
-  const filtered=allRows.filter(r=>
-    (!status||r.status===status) &&
-    [r.service_name,r.phone,r.description]
-      .join(" ").toLowerCase().includes(q)
-  );
-
-  renderEnquiries(filtered,"allEnquiries",true);
-}
-
-async function updateStatus(id,status,control){
-  control.disabled=true;
-
-  const {error}=await supabaseClient
-    .from("enquiries")
-    .update({status})
-    .eq("id",id);
-
-  control.disabled=false;
-
-  if(error){
-    alert("Status update nahi hua: "+error.message);
-    return;
-  }
-
-  const row=allRows.find(r=>String(r.id)===String(id));
-  if(row) row.status=status;
-
-  filterAdminRows();
-}
-
-async function login(){
-  const email=$("email").value.trim();
-  const password=$("password").value;
-
-  if(!email||!password){
-    showMessage("authMessage","Email aur password dono bharein.",true);
-    return;
-  }
-
-  $("authSubmit").disabled=true;
-
-  const {data,error}=await supabaseClient.auth.signInWithPassword({
-    email,password
-  });
-
-  $("authSubmit").disabled=false;
-
-  if(error){
-    showMessage("authMessage",friendlyError(error),true);
-    return;
-  }
-
-  await openDashboard(data.user);
-}
-
-async function signup(){
-  const name=$("fullName").value.trim();
-  const email=$("email").value.trim();
-  const password=$("password").value;
-
-  if(!name||!email||!password){
-    showMessage("authMessage","Naam, email aur password bharein.",true);
-    return;
-  }
-
-  if(password.length<6){
-    showMessage("authMessage","Password kam se kam 6 characters ka hona chahiye.",true);
-    return;
-  }
-
-  $("authSubmit").disabled=true;
-
-  const {data,error}=await supabaseClient.auth.signUp({
-    email,
-    password,
-    options:{data:{full_name:name}}
-  });
-
-  $("authSubmit").disabled=false;
-
-  if(error){
-    showMessage("authMessage",friendlyError(error),true);
-    return;
-  }
-
-  if(data.session&&data.user){
-    showMessage("authMessage","Account ban gaya. Dashboard khol rahe hain.");
-    await openDashboard(data.user);
-  }else{
-    showMessage(
-      "authMessage",
-      "Account request submit ho gayi. Email verification link check karein, phir login karein."
-    );
-  }
-}
-
 async function submitEnquiry(){
-  const service_name=$("serviceName").value;
-  const phone=$("phone").value.trim();
-  const description=$("description").value.trim();
-
-  if(!service_name||!phone||!description){
-    showMessage("enquiryMessage","Service, mobile number aur details bharein.",true);
-    return;
-  }
-
-  if(!/^[0-9+\-\s]{10,15}$/.test(phone)){
-    showMessage("enquiryMessage","Mobile number check karein.",true);
-    return;
-  }
-
-  $("submitEnquiry").disabled=true;
-
-  const {error}=await supabaseClient.from("enquiries").insert({
+  const serviceId=document.getElementById("serviceSelect").value;
+  const phone=document.getElementById("customerPhone").value.trim();
+  const details=document.getElementById("enquiryDetails").value.trim();
+  const service=services.find(s=>s.id===serviceId);
+  if(!service)return msg("Service select karein.",true);
+  if(!/^[0-9]{10}$/.test(phone))return msg("10 digit mobile number likhein.",true);
+  if(!details)return msg("Enquiry details likhein.",true);
+  const {data,error}=await db.from("enquiries").insert({
     user_id:currentUser.id,
-    service_name,
-    phone,
-    description,
-    status:"New"
-  });
-
-  $("submitEnquiry").disabled=false;
-
-  if(error){
-    showMessage("enquiryMessage","Enquiry submit nahi hui: "+error.message,true);
-    return;
-  }
-
-  $("serviceName").value="";
-  $("phone").value="";
-  $("description").value="";
-
-  showMessage("enquiryMessage","Aapki enquiry successfully submit ho gayi.");
+    service_name:service.name,
+    phone,description:details,status:"New"
+  }).select().single();
+  if(error)return msg("Enquiry submit nahi hui: "+error.message,true);
+  document.getElementById("enquiryDetails").value="";
+  msg("Aapki enquiry successfully submit ho gayi.");
   await loadMyEnquiries();
-}
-
-async function logout(){
-  const {error}=await supabaseClient.auth.signOut();
-
-  if(error){
-    alert(friendlyError(error));
-    return;
+  if(Number(service.price)>0){
+    if(confirm("Is service ki fee ₹"+service.price+" hai. Kya ab payment karna chahenge?")){
+      openPayment(data,service);
+    }
+  }else{
+    msg("Enquiry submit ho gayi. Admin fee update karega agar payment required ho.");
   }
-
-  currentUser=null;
-  $("logoutBtn").classList.add("hidden");
-  showView("homeView");
 }
-
-async function forgotPassword(){
-  const email=$("email").value.trim();
-
-  if(!email){
-    showMessage("authMessage","Pehle email address bharein.",true);
-    return;
-  }
-
-  const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{
-    redirectTo:location.href.split("?")[0]
+async function loadMyEnquiries(){
+  const {data,error}=await db.from("enquiries").select("*")
+    .eq("user_id",currentUser.id).order("created_at",{ascending:false});
+  if(error)return msg(error.message,true);
+  const box=document.getElementById("customerEnquiries");
+  box.innerHTML="";
+  (data||[]).forEach(e=>{
+    const service=services.find(s=>s.name===e.service_name);
+    const div=document.createElement("div");div.className="item";
+    div.innerHTML="<h3></h3><p></p><p></p><p></p><div class='row'></div>";
+    div.querySelector("h3").textContent=e.service_name;
+    div.querySelectorAll("p")[0].textContent=e.description||"";
+    div.querySelectorAll("p")[1].textContent="Mobile: "+(e.phone||"");
+    div.querySelectorAll("p")[2].textContent="Date: "+new Date(e.created_at).toLocaleString("en-IN");
+    const row=div.querySelector(".row");
+    const st=document.createElement("span");st.className="status "+e.status.replace(" ",".");st.textContent=e.status;
+    row.appendChild(st);
+    const pay=document.createElement("button");pay.textContent="Payment";
+    pay.onclick=()=>openPayment(e,service);
+    row.appendChild(pay);
+    box.appendChild(div);
   });
-
-  showMessage(
-    "authMessage",
-    error?"Password reset request nahi hui: "+friendlyError(error):
-      "Password reset link email par bhej diya gaya.",
-    !!error
-  );
+  if(!data?.length)box.textContent="Abhi koi enquiry nahi hai.";
 }
-
-function init(){
-  if(!window.supabase){
-    alert("Supabase library load nahi hui. Internet connection check karke page refresh karein.");
-    return;
-  }
-
-  supabaseClient=window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-  document.addEventListener("click",async e=>{
-    const btn=e.target.closest("[data-action]");
-    if(!btn) return;
-
-    const action=btn.dataset.action;
-
-    if(action==="login"||action==="signup"){
-      setAuthMode(action);
-    }
-
-    if(action==="home"){
-      showView("homeView");
-    }
-
-    if(action==="logout"){
-      await logout();
-    }
-  });
-
-  $("authSubmit").addEventListener("click",()=>{
-    if(authMode==="signup"){
-      signup();
-    }else{
-      login();
-    }
-  });
-
-  $("switchAuth").addEventListener("click",e=>{
-    e.preventDefault();
-    setAuthMode(authMode==="signup"?"login":"signup");
-  });
-
-  $("forgotLink").addEventListener("click",e=>{
-    e.preventDefault();
-    forgotPassword();
-  });
-
-  $("submitEnquiry").addEventListener("click",submitEnquiry);
-  $("adminSearch").addEventListener("input",filterAdminRows);
-  $("statusFilter").addEventListener("change",filterAdminRows);
-
-  supabaseClient.auth.getSession().then(({data})=>{
-    if(data.session){
-      openDashboard(data.session.user);
-    }
-  });
-
-  supabaseClient.auth.onAuthStateChange((_event,session)=>{
-    if(session&&!currentUser){
-      openDashboard(session.user);
-    }
-
-    if(!session){
-      currentUser=null;
-      $("logoutBtn").classList.add("hidden");
-    }
-  });
-}
-
-if(document.readyState==="loading"){
-  document.addEventListener("DOMContentLoaded",init);
-}else{
-  init();
-}
-
-})();
-</script>
-</body>
-</html>
+async function openPayment(enquiry,service){
+  paymentEnquiry=enquiry;
+  await loadPaymentSettingsData();
+  const amount=Number(service?.price||0);
+  if(amount<=0)return msg("Is service ki fee abhi set nahi hai. Admin se contact karein.",true);
+  document.getElementById("paymentServiceName").textContent="Service: "+enquiry.service_name;
+  document.getElementById("paymentAmount").textContent="₹"+amount.toFixed(2);
+  document.getElementById("paymentUPI").textContent=paymentSettings.upi_id||"Admin ne
