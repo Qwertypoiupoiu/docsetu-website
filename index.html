@@ -2,595 +2,407 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#102a56">
 <title>DocSetu - Your Documents. Our Assistance.</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-:root{
-  --navy:#102a56;
-  --blue:#2861a7;
-  --light:#f3f6fb;
-  --white:#fff;
-  --text:#26354a;
-  --muted:#718096;
-  --green:#168653;
-  --red:#c0392b;
-  --border:#e2e8f0;
-}
+:root{--navy:#102a56;--blue:#2861a7;--bg:#f3f6fb;--green:#168653;--red:#c0392b;--border:#e2e8f0}
 *{box-sizing:border-box}
-body{margin:0;background:var(--light);color:var(--text);font-family:Arial,sans-serif}
-header{background:var(--navy);color:white;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.brand{font-size:25px;font-weight:bold}
-.brand small{display:block;font-size:11px;font-weight:normal;margin-top:4px}
-button{background:var(--navy);color:white;border:0;padding:11px 17px;border-radius:7px;cursor:pointer;font-weight:bold}
-button:hover{opacity:.9}
+body{margin:0;background:var(--bg);color:#26354a;font-family:Arial,sans-serif}
+header{background:var(--navy);color:white;padding:15px 5%;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{font-size:24px;font-weight:bold}.brand small{display:block;font-size:11px;font-weight:normal}
+button{border:0;border-radius:7px;padding:11px 16px;background:var(--navy);color:white;font-weight:bold;cursor:pointer;margin:3px}
 button.secondary{background:#e8eef8;color:var(--navy)}
-button.danger{background:var(--red)}
-button.success{background:var(--green)}
-button:disabled{opacity:.5;cursor:not-allowed}
+button.green{background:var(--green)}button.red{background:var(--red)}
+button:disabled{opacity:.5}
 .container{max-width:1100px;margin:25px auto;padding:0 15px}
-.hero{background:linear-gradient(120deg,#102a56,#2861a7);color:white;padding:55px 25px;border-radius:14px;text-align:center}
-.hero h1{font-size:34px;margin:0 0 14px}
-.hero p{font-size:17px;line-height:1.6}
-.section-title{color:var(--navy);margin:30px 0 15px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.card{background:white;padding:20px;border-radius:11px;border:1px solid var(--border);margin-bottom:15px}
-.card h3{margin-top:0;color:var(--navy)}
-input,select,textarea{width:100%;padding:12px;margin:7px 0 15px;border:1px solid #ccd5e2;border-radius:7px;font-size:15px;background:white}
-label{font-size:14px;font-weight:bold}
-textarea{min-height:95px;resize:vertical}
+.hero{background:linear-gradient(120deg,#102a56,#2861a7);color:white;padding:45px 20px;text-align:center;border-radius:13px}
+.card{background:white;padding:20px;border:1px solid var(--border);border-radius:10px;margin:15px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5e2;border-radius:7px;margin:7px 0 15px;font-size:15px}
+textarea{min-height:90px}label{font-weight:bold;font-size:14px}
+.hidden{display:none!important}.muted{color:#718096;font-size:13px}
 .form-card{max-width:520px;margin:30px auto}
-.hidden{display:none!important}
-.muted{color:var(--muted);font-size:13px}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.row>*{flex:1}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.tabs button{font-size:13px}
-.tabs button.active{background:#2861a7}
-.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:12px;font-weight:bold;background:#edf1f7;color:#34445a}
-.status.Completed,.status.Verified{background:#d9f5e5;color:#12683d}
-.status.Rejected{background:#ffe1e1;color:#a32727}
-.status.Pending,.status.New{background:#fff0c9;color:#795300}
-.status.In.Progress{background:#dceaff;color:#174e91}
-.item{border:1px solid var(--border);padding:15px;border-radius:9px;margin:12px 0;background:#fff}
-.item p{margin:7px 0;line-height:1.5;overflow-wrap:anywhere}
-footer{text-align:center;color:var(--muted);padding:30px 10px}
-hr{border:0;border-top:1px solid var(--border);margin:18px 0}
-img.qr{max-width:190px;width:100%;display:block;margin:12px auto;border:1px solid var(--border);padding:5px}
-.notice{padding:12px;border-radius:8px;background:#edf4ff;margin:12px 0;font-size:14px}
-#message{position:sticky;top:0;z-index:10;padding:10px;text-align:center;background:#e4f5eb;color:#145b35;display:none}
-.small-btn{padding:7px 10px;font-size:12px}
-@media(max-width:600px){
- .hero h1{font-size:27px}
- header{padding:14px}
- .brand{font-size:22px}
- .container{margin:15px auto}
- .tabs button{flex:1}
-}
+.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:15px 0}
+.item{background:white;border:1px solid var(--border);border-radius:8px;padding:14px;margin:12px 0;overflow-wrap:anywhere}
+#message{display:none;padding:12px;text-align:center;position:sticky;top:0;z-index:20}
+footer{text-align:center;padding:30px;color:#718096}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;background:#edf1f7;font-size:12px}
+@media(max-width:600px){.hero h1{font-size:26px}header{padding:13px}.container{margin:15px auto}}
 </style>
 </head>
-
 <body>
 <div id="message"></div>
 
 <header>
-  <div class="brand">DocSetu<small>Your Documents. Our Assistance.</small></div>
-  <div class="row" style="flex:0 1 auto">
-    <button class="secondary" onclick="showHome()">Home</button>
-    <button id="loginNav" onclick="showAuth()">Login</button>
-    <button id="logoutNav" class="hidden" onclick="logout()">Logout</button>
-  </div>
+ <div class="brand">DocSetu<small>Your Documents. Our Assistance.</small></div>
+ <div>
+  <button class="secondary" onclick="showHome()">Home</button>
+  <button id="loginNav" onclick="showAuth()">Login</button>
+  <button id="logoutNav" class="hidden" onclick="logout()">Logout</button>
+ </div>
 </header>
 
 <main class="container">
 
-<!-- HOME -->
 <section id="home">
-  <div class="hero">
-    <h1>Documents ka kaam, ab aasaan.</h1>
-    <p>Forms, applications aur documents ke kaam mein sahi guidance aur assistance paaiye.</p>
-    <button onclick="showAuth()">Get Started</button>
-  </div>
-
-  <h2 class="section-title">Hamari Services</h2>
-  <div id="homeServices" class="grid">
-    <div class="card"><h3>Form Assistance</h3>Online forms bharne mein madad.</div>
-    <div class="card"><h3>Document Guidance</h3>Documents aur process ki jaankari.</div>
-    <div class="card"><h3>Application Support</h3>Application process mein assistance.</div>
-    <div class="card"><h3>Digital Document Help</h3>Digital documents organize karne mein madad.</div>
-  </div>
-
-  <div class="card" style="margin-top:25px;text-align:center">
-    <h3>Customer Account</h3>
-    <p>Apni enquiry submit karein aur uska status check karein.</p>
-    <button onclick="showAuth()">Login / Create Account</button>
-  </div>
+ <div class="hero">
+  <h1>Documents ka kaam, ab aasaan.</h1>
+  <p>Forms, applications aur documents ke kaam mein sahi guidance aur assistance paaiye.</p>
+  <button onclick="showAuth()">Get Started</button>
+ </div>
+ <h2>Hamari Services</h2>
+ <div id="homeServices" class="grid">
+  <div class="card">Form Assistance</div>
+  <div class="card">Document Guidance</div>
+  <div class="card">Application Support</div>
+  <div class="card">Digital Document Help</div>
+ </div>
+ <div class="card">
+  <h3>Customer Account</h3>
+  <p>Apni enquiry submit karein aur status check karein.</p>
+  <button onclick="showAuth()">Login / Create Account</button>
+ </div>
 </section>
 
-<!-- AUTH -->
 <section id="auth" class="hidden">
-  <div class="card form-card">
-    <h2 id="authTitle">Login</h2>
-
-    <div id="signupNameBox" class="hidden">
-      <label>Full Name</label>
-      <input id="signupName" placeholder="Apna poora naam">
-    </div>
-
-    <label>Email</label>
-    <input id="authEmail" type="email" placeholder="Email address">
-
-    <label>Password</label>
-    <input id="authPassword" type="password" placeholder="Password">
-
-    <button id="authButton" style="width:100%" onclick="login()">Login</button>
-    <p class="muted" id="authError"></p>
-    <hr>
-
-    <button class="secondary" style="width:100%" onclick="toggleSignup()">Create Account</button>
-    <button class="secondary" style="width:100%;margin-top:8px" onclick="forgotPassword()">Forgot Password?</button>
-    <button class="secondary" style="width:100%;margin-top:8px" onclick="showHome()">Back to Home</button>
+ <div class="card form-card">
+  <h2 id="authTitle">Login</h2>
+  <div id="signupBox" class="hidden">
+   <label>Full Name</label>
+   <input id="signupName" placeholder="Apna poora naam">
   </div>
+  <label>Email</label>
+  <input id="authEmail" type="email" placeholder="Email address">
+  <label>Password</label>
+  <input id="authPassword" type="password" placeholder="Password">
+  <button id="authButton" onclick="login()" style="width:100%">Login</button>
+  <p id="authError" class="muted"></p>
+  <hr>
+  <button class="secondary" onclick="toggleSignup()">Create Account</button>
+  <button class="secondary" onclick="forgotPassword()">Forgot Password</button>
+  <button class="secondary" onclick="showHome()">Back to Home</button>
+ </div>
 </section>
 
-<!-- CUSTOMER -->
 <section id="customer" class="hidden">
-  <h2 class="section-title">Customer Dashboard</h2>
-
-  <div class="card">
-    <h3 id="customerWelcome">Welcome</h3>
-    <p class="muted" id="customerEmail"></p>
-  </div>
-
-  <div class="tabs">
-    <button class="active" onclick="customerTab('newEnquiry',this)">New Enquiry</button>
-    <button onclick="customerTab('myEnquiries',this)">My Enquiries</button>
-    <button onclick="customerTab('myPayments',this)">My Payments</button>
-    <button onclick="customerTab('profile',this)">My Profile</button>
-  </div>
-
-  <div id="newEnquiry" class="customerTab card">
-    <h3>New Enquiry</h3>
-    <label>Service Select Karein</label>
-    <select id="serviceSelect"></select>
-    <label>Mobile Number</label>
-    <input id="customerPhone" type="tel" maxlength="10" placeholder="10 digit mobile number">
-    <label>Details</label>
-    <textarea id="enquiryDetails" placeholder="Apne kaam ki details likhein"></textarea>
-    <button onclick="submitEnquiry()">Submit Enquiry</button>
-  </div>
-
-  <div id="myEnquiries" class="customerTab hidden">
-    <h3>My Enquiries</h3>
-    <div id="customerEnquiries"></div>
-  </div>
-
-  <div id="myPayments" class="customerTab hidden">
-    <h3>My Payments</h3>
-    <div id="customerPayments"></div>
-  </div>
-
-  <div id="profile" class="customerTab hidden card">
-    <h3>My Profile</h3>
-    <label>Full Name</label>
-    <input id="profileName">
-    <label>Email</label>
-    <input id="profileEmail" disabled>
-    <button onclick="saveProfile()">Save Profile</button>
-  </div>
+ <h2>Customer Dashboard</h2>
+ <div class="card">
+  <h3 id="customerWelcome">Welcome</h3>
+  <p id="customerEmail" class="muted"></p>
+ </div>
+ <div class="tabs">
+  <button onclick="customerTab('newEnquiry')">New Enquiry</button>
+  <button onclick="customerTab('myEnquiries')">My Enquiries</button>
+  <button onclick="customerTab('myPayments')">My Payments</button>
+  <button onclick="customerTab('profile')">My Profile</button>
+ </div>
+ <div id="newEnquiry" class="customerTab card">
+  <h3>New Enquiry</h3>
+  <label>Service</label><select id="serviceSelect"></select>
+  <label>Mobile Number</label><input id="customerPhone" maxlength="10" type="tel" placeholder="10 digit mobile number">
+  <label>Details</label><textarea id="enquiryDetails" placeholder="Apne kaam ki details likhein"></textarea>
+  <button onclick="submitEnquiry()">Submit Enquiry</button>
+ </div>
+ <div id="myEnquiries" class="customerTab hidden"><h3>My Enquiries</h3><div id="customerEnquiries"></div></div>
+ <div id="myPayments" class="customerTab hidden"><h3>My Payments</h3><div id="customerPayments"></div></div>
+ <div id="profile" class="customerTab card hidden">
+  <h3>My Profile</h3>
+  <label>Full Name</label><input id="profileName">
+  <label>Email</label><input id="profileEmail" disabled>
+  <button onclick="saveProfile()">Save Profile</button>
+ </div>
 </section>
 
-<!-- ADMIN -->
 <section id="admin" class="hidden">
-  <h2 class="section-title">Admin Dashboard</h2>
-
-  <div class="card">
-    <h3>DocSetu Administration</h3>
-    <p>Enquiries, customers, payments aur services manage karein.</p>
-  </div>
-
-  <div class="tabs">
-    <button class="active" onclick="adminTab('allEnquiries',this)">Enquiries</button>
-    <button onclick="adminTab('allPayments',this)">Payments</button>
-    <button onclick="adminTab('allServices',this)">Services & Prices</button>
-    <button onclick="adminTab('paymentSettings',this)">Payment Settings</button>
-    <button onclick="adminTab('customers',this)">Customers</button>
-  </div>
-
-  <div id="allEnquiries" class="adminTab">
-    <div class="card">
-      <h3>All Enquiries</h3>
-      <input id="searchEnquiry" placeholder="Search name, phone, service..." oninput="renderAdminEnquiries()">
-      <select id="statusFilter" onchange="renderAdminEnquiries()">
-        <option value="">All Status</option>
-        <option>New</option>
-        <option>In Progress</option>
-        <option>Completed</option>
-        <option>Rejected</option>
-      </select>
-      <div id="adminEnquiries"></div>
-    </div>
-  </div>
-
-  <div id="allPayments" class="adminTab hidden">
-    <div class="card">
-      <h3>Payment Verification</h3>
-      <div id="adminPayments"></div>
-    </div>
-  </div>
-
-  <div id="allServices" class="adminTab hidden">
-    <div class="card">
-      <h3>Manage Services & Prices</h3>
-      <div id="serviceManager"></div>
-      <hr>
-      <h3>Add New Service</h3>
-      <label>Service Name</label>
-      <input id="newServiceName">
-      <label>Description</label>
-      <input id="newServiceDescription">
-      <label>Price (₹)</label>
-      <input id="newServicePrice" type="number" min="0">
-      <button onclick="addService()">Add Service</button>
-    </div>
-  </div>
-
-  <div id="paymentSettings" class="adminTab hidden">
-    <div class="card">
-      <h3>UPI Payment Settings</h3>
-      <label>UPI ID</label>
-      <input id="settingUPI" placeholder="example@upi">
-      <label>Account Holder Name</label>
-      <input id="settingName">
-      <label>QR Code Image URL (optional)</label>
-      <input id="settingQR" placeholder="Image URL">
-      <label>Payment Instructions</label>
-      <textarea id="settingInstructions"></textarea>
-      <button onclick="savePaymentSettings()">Save Payment Settings</button>
-      <p class="muted">Customer ko ye details payment karne ke liye dikhengi.</p>
-    </div>
-  </div>
-
-  <div id="customers" class="adminTab hidden">
-    <div class="card">
-      <h3>Customer Records</h3>
-      <div id="customerList"></div>
-    </div>
-  </div>
+ <h2>Admin Dashboard</h2>
+ <div class="card"><h3>DocSetu Administration</h3>Enquiries, payments aur services manage karein.</div>
+ <div class="tabs">
+  <button onclick="adminTab('allEnquiries')">Enquiries</button>
+  <button onclick="adminTab('allPayments')">Payments</button>
+  <button onclick="adminTab('allServices')">Services & Prices</button>
+  <button onclick="adminTab('paymentSettings')">Payment Settings</button>
+  <button onclick="adminTab('customers')">Customers</button>
+ </div>
+ <div id="allEnquiries" class="adminTab card">
+  <h3>All Enquiries</h3>
+  <input id="searchEnquiry" placeholder="Search enquiries" oninput="renderAdminEnquiries()">
+  <select id="statusFilter" onchange="renderAdminEnquiries()">
+   <option value="">All Status</option><option>New</option><option>In Progress</option><option>Completed</option><option>Rejected</option>
+  </select>
+  <div id="adminEnquiries"></div>
+ </div>
+ <div id="allPayments" class="adminTab card hidden"><h3>Payment Verification</h3><div id="adminPayments"></div></div>
+ <div id="allServices" class="adminTab card hidden">
+  <h3>Manage Services & Prices</h3><div id="serviceManager"></div>
+  <hr><h3>Add Service</h3>
+  <input id="newServiceName" placeholder="Service name">
+  <input id="newServiceDescription" placeholder="Description">
+  <input id="newServicePrice" type="number" min="0" placeholder="Price">
+  <button onclick="addService()">Add Service</button>
+ </div>
+ <div id="paymentSettings" class="adminTab card hidden">
+  <h3>UPI Payment Settings</h3>
+  <label>UPI ID</label><input id="settingUPI">
+  <label>Account Name</label><input id="settingName">
+  <label>QR Image URL</label><input id="settingQR">
+  <label>Instructions</label><textarea id="settingInstructions"></textarea>
+  <button onclick="savePaymentSettings()">Save Settings</button>
+ </div>
+ <div id="customers" class="adminTab card hidden"><h3>Customer Records</h3><div id="customerList"></div></div>
 </section>
 
-<!-- PAYMENT PAGE -->
 <section id="paymentPage" class="hidden">
-  <div class="card form-card">
-    <h2>Make Payment</h2>
-    <p id="paymentServiceName"></p>
-    <h2 id="paymentAmount" style="color:var(--green)"></h2>
-    <div id="paymentInstructions" class="notice"></div>
-    <div id="paymentQR"></div>
-    <p><b>UPI ID:</b> <span id="paymentUPI"></span></p>
-    <p><b>Account Name:</b> <span id="paymentAccountName"></span></p>
-    <button class="secondary" onclick="copyUPI()">Copy UPI ID</button>
-    <hr>
-    <label>UPI Transaction ID</label>
-    <input id="transactionID" placeholder="Enter transaction ID">
-    <label>Payment Screenshot</label>
-    <input id="paymentScreenshot" type="file" accept="image/*">
-    <button style="width:100%" onclick="submitPayment()">Submit Payment Proof</button>
-    <p class="muted">Payment verification ke baad hi kaam shuru hoga. Transaction ID aur screenshot check kiye jayenge.</p>
-    <button class="secondary" onclick="backToCustomer()">Back to Dashboard</button>
-  </div>
+ <div class="card form-card">
+  <h2>Make Payment</h2>
+  <p id="paymentServiceName"></p><h2 id="paymentAmount"></h2>
+  <div id="paymentInstructions"></div><div id="paymentQR"></div>
+  <p><b>UPI ID:</b> <span id="paymentUPI"></span></p>
+  <p><b>Account:</b> <span id="paymentAccountName"></span></p>
+  <button class="secondary" onclick="copyUPI()">Copy UPI ID</button>
+  <label>Transaction ID</label><input id="transactionID">
+  <label>Payment Screenshot</label><input id="paymentScreenshot" type="file" accept="image/*">
+  <button onclick="submitPayment()">Submit Payment Proof</button>
+  <button class="secondary" onclick="backToCustomer()">Back to Dashboard</button>
+ </div>
 </section>
 
 </main>
-
-<footer>
-  <b>DocSetu</b><br>
-  Your Documents. Our Assistance.<br>
-  <small>Document Assistance Platform</small>
-</footer>
+<footer>DocSetu · Your Documents. Our Assistance.</footer>
 
 <script>
 "use strict";
 
-/* SUPABASE CONNECTION */
-const SUPABASE_URL = "https://hqzxhbuhecaltjoxhffe.supabase.co";
-const SUPABASE_KEY = "sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
-const BUCKET = "docsetu-payment-proofs";
+const SUPABASE_URL="https://hqzxhbuhecaltjoxhffe.supabase.co";
+const SUPABASE_KEY="sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
+const BUCKET="docsetu-payment-proofs";
 
-let db = null;
-let currentUser = null;
-let currentProfile = null;
-let services = [];
-let enquiries = [];
-let payments = [];
-let paymentEnquiry = null;
-let paymentSettings = {};
+let db=null,currentUser=null,currentProfile=null;
+let services=[],enquiries=[],payments=[],paymentSettings={},paymentEnquiry=null;
 
+function msg(t,error=false){
+ const e=document.getElementById("message");
+ e.textContent=t;e.style.display="block";
+ e.style.background=error?"#ffe1e1":"#e4f5eb";
+ e.style.color=error?"#a32727":"#145b35";
+ window.scrollTo(0,0);
+}
 function initClient(){
-  if(!window.supabase || !window.supabase.createClient){
-    msg("Supabase library load nahi hui. Internet check karke page refresh karein.",true);
-    return false;
-  }
-  if(!db){
-    db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  }
-  return true;
+ if(!window.supabase||!window.supabase.createClient){
+  msg("Supabase library load nahi hui. Internet check karein.",true);return false;
+ }
+ if(!db)db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+ return true;
 }
-
-function msg(text,error=false){
-  const el=document.getElementById("message");
-  el.textContent=text;
-  el.style.display="block";
-  el.style.background=error?"#ffe1e1":"#e4f5eb";
-  el.style.color=error?"#a32727":"#145b35";
-  window.scrollTo({top:0,behavior:"smooth"});
-  setTimeout(()=>{el.style.display="none"},5000);
-}
-
 function show(id){
-  ["home","auth","customer","admin","paymentPage"].forEach(x=>{
-    document.getElementById(x).classList.add("hidden");
-  });
-  document.getElementById(id).classList.remove("hidden");
+ ["home","auth","customer","admin","paymentPage"].forEach(x=>document.getElementById(x).classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
 }
-
 function showHome(){show("home")}
 function showAuth(){show("auth")}
-
-function setLoggedInUI(loggedIn){
-  document.getElementById("loginNav").classList.toggle("hidden",loggedIn);
-  document.getElementById("logoutNav").classList.toggle("hidden",!loggedIn);
+function setLoggedInUI(v){
+ document.getElementById("loginNav").classList.toggle("hidden",v);
+ document.getElementById("logoutNav").classList.toggle("hidden",!v);
 }
-
-function escapeHTML(value){
-  return String(value??"").replace(/[&<>"']/g,ch=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  })[ch]);
+function esc(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
+function statusClass(v){return String(v||"").replace(/\s+/g,".")}
 
-function statusClass(value){
-  return String(value||"").replace(/\s+/g,".");
-}
-
-/* SIGNUP / LOGIN */
 function toggleSignup(){
-  const box=document.getElementById("signupNameBox");
-  const signup=box.classList.contains("hidden");
-  box.classList.toggle("hidden");
-  document.getElementById("authTitle").textContent=signup?"Create Account":"Login";
-  document.getElementById("authButton").textContent=signup?"Create Account":"Login";
-  document.getElementById("authButton").onclick=signup?signupAccount:login;
-  document.getElementById("authError").textContent="";
+ const box=document.getElementById("signupBox");
+ const signup=box.classList.contains("hidden");
+ box.classList.toggle("hidden");
+ document.getElementById("authTitle").textContent=signup?"Create Account":"Login";
+ document.getElementById("authButton").textContent=signup?"Create Account":"Login";
+ document.getElementById("authButton").onclick=signup?signupAccount:login;
+ document.getElementById("authError").textContent="";
 }
-
 async function login(){
-  if(!initClient())return;
-  const button=document.getElementById("authButton");
-  const email=document.getElementById("authEmail").value.trim();
-  const password=document.getElementById("authPassword").value;
-  if(!email||!password)return msg("Email aur password bharein.",true);
-
-  button.disabled=true;
-  button.textContent="Please wait...";
-
-  try{
-    const {error}=await db.auth.signInWithPassword({email,password});
-    if(error){
-      document.getElementById("authError").textContent=error.message;
-      return;
-    }
-    await init();
-  }catch(err){
-    msg("Login error: "+err.message,true);
-  }finally{
-    button.disabled=false;
-    button.textContent="Login";
-  }
+ if(!initClient())return;
+ const b=document.getElementById("authButton");
+ const email=document.getElementById("authEmail").value.trim();
+ const password=document.getElementById("authPassword").value;
+ if(!email||!password)return msg("Email aur password bharein.",true);
+ b.disabled=true;b.textContent="Please wait...";
+ try{
+  const {error}=await db.auth.signInWithPassword({email,password});
+  if(error){document.getElementById("authError").textContent=error.message;return}
+  await init();
+ }catch(e){msg("Login error: "+e.message,true)}
+ finally{b.disabled=false;b.textContent="Login"}
 }
-
 async function signupAccount(){
-  if(!initClient())return;
-  const name=document.getElementById("signupName").value.trim();
-  const email=document.getElementById("authEmail").value.trim();
-  const password=document.getElementById("authPassword").value;
-
-  if(!name||!email||password.length<6){
-    return msg("Naam, email aur kam se kam 6 character ka password bharein.",true);
-  }
-
-  try{
-    const {data,error}=await db.auth.signUp({
-      email,
-      password,
-      options:{data:{full_name:name}}
-    });
-    if(error)return msg(error.message,true);
-
-    if(data.user && data.session){
-      msg("Account ban gaya. Ab login karein.");
-    }else{
-      msg("Account request submit ho gayi. Email verify karke login karein.");
-    }
-    document.getElementById("signupNameBox").classList.add("hidden");
-    document.getElementById("authTitle").textContent="Login";
-    document.getElementById("authButton").textContent="Login";
-    document.getElementById("authButton").onclick=login;
-  }catch(err){
-    msg("Signup error: "+err.message,true);
-  }
-}
-
-async function forgotPassword(){
-  if(!initClient())return;
-  const email=document.getElementById("authEmail").value.trim();
-  if(!email)return msg("Pehle email address likhein.",true);
-
-  try{
-    const {error}=await db.auth.resetPasswordForEmail(email,{
-      redirectTo:location.origin+location.pathname
-    });
-    if(error)return msg(error.message,true);
-    msg("Password reset email bhej di gayi.");
-  }catch(err){
-    msg(err.message,true);
-  }
-}
-
-async function logout(){
-  if(!initClient())return;
-  const {error}=await db.auth.signOut();
+ if(!initClient())return;
+ const name=document.getElementById("signupName").value.trim();
+ const email=document.getElementById("authEmail").value.trim();
+ const password=document.getElementById("authPassword").value;
+ if(!name||!email||password.length<6)return msg("Naam, email aur kam se kam 6 character password bharein.",true);
+ try{
+  const {data,error}=await db.auth.signUp({email,password,options:{data:{full_name:name}}});
   if(error)return msg(error.message,true);
-
-  currentUser=null;
-  currentProfile=null;
-  setLoggedInUI(false);
-  showHome();
-  msg("Logout successful.");
+  msg(data.session?"Account ban gaya.":"Account ban gaya. Email verify karein.");
+  document.getElementById("signupBox").classList.add("hidden");
+  document.getElementById("authTitle").textContent="Login";
+  document.getElementById("authButton").textContent="Login";
+  document.getElementById("authButton").onclick=login;
+ }catch(e){msg(e.message,true)}
+}
+async function forgotPassword(){
+ if(!initClient())return;
+ const email=document.getElementById("authEmail").value.trim();
+ if(!email)return msg("Pehle email likhein.",true);
+ try{
+  const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+  if(error)throw error;
+  msg("Password reset email bhej di gayi.");
+ }catch(e){msg(e.message,true)}
+}
+async function logout(){
+ if(!initClient())return;
+ try{
+  const {error}=await db.auth.signOut();if(error)throw error;
+  currentUser=null;currentProfile=null;setLoggedInUI(false);showHome();msg("Logout successful.");
+ }catch(e){msg(e.message,true)}
 }
 
-/* LOAD USER AND DASHBOARD */
 async function init(){
-  if(!initClient())return;
-
-  try{
-    const {data:{session},error:sessionError}=await db.auth.getSession();
-    if(sessionError)throw sessionError;
-
-    if(!session){
-      currentUser=null;
-      currentProfile=null;
-      setLoggedInUI(false);
-      showHome();
-      return;
-    }
-
-    currentUser=session.user;
-    setLoggedInUI(true);
-
-    const {data:profile,error}=await db.from("profiles")
-      .select("id,full_name,role")
-      .eq("id",currentUser.id)
-      .maybeSingle();
-
-    if(error){
-      msg("Profile load nahi hua: "+error.message,true);
-      return;
-    }
-
-    if(!profile){
-      msg("Profile record nahi mila. Admin se profile setup check karwayein.",true);
-      showHome();
-      return;
-    }
-
-    currentProfile=profile;
-    await loadServices();
-    await loadPaymentSettingsData();
-
-    if(profile.role==="admin"){
-      show("admin");
-      await loadAllEnquiries();
-    }else{
-      show("customer");
-      document.getElementById("customerWelcome").textContent=
-        "Welcome, "+(profile.full_name||"Customer");
-      document.getElementById("customerEmail").textContent=currentUser.email||"";
-      document.getElementById("profileName").value=profile.full_name||"";
-      document.getElementById("profileEmail").value=currentUser.email||"";
-      await loadMyEnquiries();
-    }
-  }catch(err){
-    msg("Dashboard error: "+err.message,true);
+ if(!initClient())return;
+ try{
+  const {data,error}=await db.auth.getSession();if(error)throw error;
+  const session=data.session;
+  if(!session){currentUser=null;setLoggedInUI(false);showHome();return}
+  currentUser=session.user;setLoggedInUI(true);
+  const {data:profile,error:pe}=await db.from("profiles").select("id,full_name,role").eq("id",currentUser.id).maybeSingle();
+  if(pe)throw pe;
+  if(!profile){showHome();msg("Profile record nahi mila. Admin se profile setup check karwayein.",true);return}
+  currentProfile=profile;
+  await loadServices();await loadPaymentSettingsData();
+  if(profile.role==="admin"){show("admin");await loadAllEnquiries()}
+  else{
+   show("customer");
+   document.getElementById("customerWelcome").textContent="Welcome, "+(profile.full_name||"Customer");
+   document.getElementById("customerEmail").textContent=currentUser.email||"";
+   document.getElementById("profileName").value=profile.full_name||"";
+   document.getElementById("profileEmail").value=currentUser.email||"";
+   await loadMyEnquiries();
   }
+ }catch(e){msg("Dashboard error: "+e.message,true)}
 }
 
-/* SERVICES */
 async function loadServices(){
-  const {data,error}=await db.from("services")
-    .select("*").eq("active",true).order("name");
-
-  if(error){
-    msg("Services load nahi hui: "+error.message,true);
-    return;
-  }
-
-  services=data||[];
-  const select=document.getElementById("serviceSelect");
-  select.innerHTML='<option value="">Service select karein</option>';
-
-  services.forEach(s=>{
-    const op=document.createElement("option");
-    op.value=s.id;
-    op.textContent=s.name+" — ₹"+Number(s.price).toFixed(2);
-    select.appendChild(op);
-  });
-
-  const home=document.getElementById("homeServices");
-  home.innerHTML="";
-
-  services.forEach(s=>{
-    const div=document.createElement("div");
-    div.className="card";
-    const heading=document.createElement("h3");
-    const description=document.createElement("p");
-    const price=document.createElement("b");
-    heading.textContent=s.name;
-    description.textContent=s.description||"Document assistance service";
-    price.textContent="₹"+Number(s.price).toFixed(2);
-    div.append(heading,description,price);
-    home.appendChild(div);
-  });
-
-  if(!services.length){
-    home.textContent="Services abhi available nahi hain.";
-  }
+ const {data,error}=await db.from("services").select("*").eq("active",true).order("name");
+ if(error){msg("Services error: "+error.message,true);return}
+ services=data||[];
+ const sel=document.getElementById("serviceSelect");
+ sel.innerHTML='<option value="">Service select karein</option>';
+ services.forEach(s=>{
+  const o=document.createElement("option");o.value=s.id;o.textContent=s.name+" - ₹"+Number(s.price).toFixed(2);sel.appendChild(o);
+ });
+ const home=document.getElementById("homeServices");home.innerHTML="";
+ services.forEach(s=>{
+  const d=document.createElement("div");d.className="card";
+  d.innerHTML="<h3>"+esc(s.name)+"</h3><p>"+esc(s.description||"Document assistance service")+"</p><b>₹"+Number(s.price).toFixed(2)+"</b>";
+  home.appendChild(d);
+ });
+ if(!services.length)home.textContent="Services abhi available nahi hain.";
 }
-
 async function loadServiceManager(){
-  const {data,error}=await db.from("services").select("*").order("name");
-  if(error)return msg("Services error: "+error.message,true);
-
-  const box=document.getElementById("serviceManager");
-  box.innerHTML="";
-
-  (data||[]).forEach(s=>{
-    const div=document.createElement("div");
-    div.className="item";
-    div.innerHTML=`
-      <b>${escapeHTML(s.name)}</b>
-      <label>Price (₹)</label>
-      <input type="number" min="0" id="price-${s.id}" value="${Number(s.price)}">
-      <label>
-        <input type="checkbox" id="active-${s.id}" ${s.active?"checked":""} style="width:auto">
-        Active service
-      </label>
-      <button class="small-btn" onclick="updateService('${s.id}')">Save Service</button>
-    `;
-    box.appendChild(div);
-  });
-
-  if(!data?.length)box.textContent="Koi service nahi mili.";
+ const {data,error}=await db.from("services").select("*").order("name");
+ if(error){msg(error.message,true);return}
+ const box=document.getElementById("serviceManager");box.innerHTML="";
+ (data||[]).forEach(s=>{
+  const d=document.createElement("div");d.className="item";
+  d.innerHTML="<b>"+esc(s.name)+"</b><label>Price</label><input id='price-"+s.id+"' type='number' min='0' value='"+Number(s.price)+"'><label><input id='active-"+s.id+"' type='checkbox' "+(s.active?"checked":"")+" style='width:auto'> Active</label><button onclick=\"updateService('"+s.id+"')\">Save Service</button>";
+  box.appendChild(d);
+ });
 }
-
 async function updateService(id){
-  const price=Number(document.getElementById("price-"+id).value);
-  const active=document.getElementById("active-"+id).checked;
-
-  if(!Number.isFinite(price)||price<0)return msg("Sahi price likhein.",true);
-
-  const {error}=await db.from("services")
-    .update({price,active})
-    .eq("id",id);
-
-  if(error)return msg("Service update nahi hui: "+error.message,true);
-  msg("Service update ho gayi.");
-  await loadServices();
-  await loadServiceManager();
+ const price=Number(document.getElementById("price-"+id).value);
+ const active=document.getElementById("active-"+id).checked;
+ if(!Number.isFinite(price)||price<0)return msg("Sahi price likhein.",true);
+ const {error}=await db.from("services").update({price,active}).eq("id",id);
+ if(error)return msg(error.message,true);
+ msg("Service update ho gayi.");await loadServices();await loadServiceManager();
+}
+async function addService(){
+ const name=document.getElementById("newServiceName").value.trim();
+ const description=document.getElementById("newServiceDescription").value.trim();
+ const price=Number(document.getElementById("newServicePrice").value);
+ if(!name)return msg("Service name likhein.",true);
+ if(!Number.isFinite(price)||price<0)return msg("Sahi price likhein.",true);
+ const {error}=await db.from("services").insert({name,description,price,active:true});
+ if(error)return msg(error.message,true);
+ document.getElementById("newServiceName").value="";
+ document.getElementById("newServiceDescription").value="";
+ document.getElementById("newServicePrice").value="";
+ msg("Nayi service add ho gayi.");await loadServices();await loadServiceManager();
 }
 
-async function addService(){
-  const name=document.getElementById("newServiceName").value.trim();
-  const description=document.getElementById("n
+async function submitEnquiry(){
+ if(!currentUser)return msg("Pehle login karein.",true);
+ const serviceId=document.getElementById("serviceSelect").value;
+ const phone=document.getElementById("customerPhone").value.trim();
+ const description=document.getElementById("enquiryDetails").value.trim();
+ const service=services.find(s=>String(s.id)===String(serviceId));
+ if(!serviceId||!service)return msg("Service select karein.",true);
+ if(!/^[0-9]{10}$/.test(phone))return msg("10 digit mobile number likhein.",true);
+ if(!description)return msg("Details likhein.",true);
+ const {error}=await db.from("enquiries").insert({
+  user_id:currentUser.id,service_name:service.name,description,phone,status:"New"
+ });
+ if(error)return msg("Enquiry submit nahi hui: "+error.message,true);
+ document.getElementById("customerPhone").value="";
+ document.getElementById("enquiryDetails").value="";
+ msg("Enquiry successfully submit ho gayi.");
+ await loadMyEnquiries();
+}
+async function loadMyEnquiries(){
+ const {data,error}=await db.from("enquiries").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false});
+ if(error){msg(error.message,true);return}
+ const box=document.getElementById("customerEnquiries");box.innerHTML="";
+ (data||[]).forEach(e=>{
+  const d=document.createElement("div");d.className="item";
+  d.innerHTML="<b>"+esc(e.service_name)+"</b><p>"+esc(e.description)+"</p><p>Mobile: "+esc(e.phone||"")+"</p><span class='status'>"+esc(e.status)+"</span><p class='muted'>"+new Date(e.created_at).toLocaleString("en-IN")+"</p><button onclick=\"openPayment('"+e.id+"')\">Make Payment</button>";
+  box.appendChild(d);
+ });
+ if(!data?.length)box.textContent="Abhi koi enquiry nahi hai.";
+}
+function customerTab(id){
+ document.querySelectorAll(".customerTab").forEach(x=>x.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ if(id==="myPayments")loadMyPayments();
+}
+function adminTab(id){
+ document.querySelectorAll(".adminTab").forEach(x=>x.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ if(id==="allEnquiries")loadAllEnquiries();
+ if(id==="allPayments")loadAdminPayments();
+ if(id==="allServices")loadServiceManager();
+ if(id==="paymentSettings")loadPaymentSettingsForm();
+ if(id==="customers")loadCustomers();
+}
+async function loadAllEnquiries(){
+ const {data,error}=await db.from("enquiries").select("*").order("created_at",{ascending:false});
+ if(error){msg(error.message,true);return}
+ enquiries=data||[];renderAdminEnquiries();
+}
+function renderAdminEnquiries(){
+ const box=document.getElementById("adminEnquiries");if(!box)return;
+ const q=(document.getElementById("searchEnquiry").value||"").toLowerCase();
+ const status=document.getElementById("statusFilter").value;
+ box.innerHTML="";
+ enquiries.filter(e=>{
+  const str=[e.service_name,e.description,e.phone,e.user_id].join(" ").toLowerCase();
+  return str.includes(q)&&(!status||e.status===status);
+ }).forEach(e=>{
+  const d=document.createElement("div");d.className="item";
+  d.innerHTML="<b>"+esc(e.service_name)+"</b><p>"+esc(e.description)+"</p><p>Phone: "+esc(e.phone||"")+"</p><p>User ID: "+esc(e.user_id)+"</p><span class='status'>"+esc(e.status)+"</span><label>Update Status</label><select id='st-"+e.id+"'><option "+(e.status==="New"?"selected":"")+">New</option><option "+(e.status==="In Progress"?"selected":"")+">In Progress</option><option "+(e.status==="Completed"?"selected":"")+">Completed</option><option "+(e.status==="Rejected"?"selected":"")+">Rejected</option></select><button onclick=\"updateEnquiryStatus('"+e.id+"')\">Save Status</button>";
+  box.appendChild(d);
+ });
+ if(!box.children.length)box.textContent="Koi enquiry nahi mili.";
+}
+async function updateEnquiryStatus(id){
+ const status=document.getElementById("st-"+id).value;
+ const {error}=await db.from("enquiries").update({status,updated_at:new Date().toISOStr
