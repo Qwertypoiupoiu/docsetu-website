@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -6,574 +7,840 @@
 <meta name="theme-color" content="#102a56">
 <title>DocSetu - Your Documents. Our Assistance.</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--navy:#102a56;--blue:#2861a7;--bg:#f3f6fb;--green:#168653;--red:#c0392b;--border:#e2e8f0}
+:root{
+ --navy:#102a56;
+ --blue:#2861a8;
+ --light:#f3f6fb;
+ --white:#fff;
+ --text:#202b3c;
+ --muted:#6b7789;
+ --green:#16834a;
+ --red:#c0392b;
+ --border:#e0e6ef;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#26354a;font-family:Arial,sans-serif}
-header{background:var(--navy);color:white;padding:15px 5%;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.brand{font-size:24px;font-weight:bold}.brand small{display:block;font-size:11px;font-weight:normal}
-button{border:0;border-radius:7px;padding:11px 16px;background:var(--navy);color:white;font-weight:bold;cursor:pointer;margin:3px}
-button.secondary{background:#e8eef8;color:var(--navy)}
-button.green{background:var(--green)}button.red{background:var(--red)}
+body{
+ margin:0;
+ font-family:Arial, sans-serif;
+ background:var(--light);
+ color:var(--text);
+}
+header{
+ background:var(--navy);
+ color:white;
+ padding:16px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:12px;
+}
+header h2{margin:0;font-size:23px}
+header small{display:block;margin-top:4px;color:#dce7f8}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+button{
+ border:0;
+ border-radius:8px;
+ padding:11px 15px;
+ background:var(--blue);
+ color:white;
+ font-size:14px;
+ cursor:pointer;
+}
+button:active{opacity:.7}
+button.secondary{background:#e8edf5;color:var(--navy)}
+button.danger{background:var(--red)}
+button.success{background:var(--green)}
 button:disabled{opacity:.5;cursor:not-allowed}
-.container{max-width:1100px;margin:25px auto;padding:0 15px}
-.hero{background:linear-gradient(120deg,#102a56,#2861a7);color:white;padding:45px 20px;text-align:center;border-radius:13px}
-.card{background:white;padding:20px;border:1px solid var(--border);border-radius:10px;margin:15px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}
-input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5e2;border-radius:7px;margin:7px 0 15px;font-size:15px}
-textarea{min-height:90px}label{font-weight:bold;font-size:14px;display:block}
-.hidden{display:none!important}.muted{color:#718096;font-size:13px}
-.form-card{max-width:520px;margin:30px auto}
-.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:15px 0}
-.item{background:white;border:1px solid var(--border);border-radius:8px;padding:14px;margin:12px 0;overflow-wrap:anywhere}
-#message{display:none;padding:12px;text-align:center;position:sticky;top:0;z-index:20}
-footer{text-align:center;padding:30px;color:#718096}
-.status{display:inline-block;padding:5px 9px;border-radius:20px;background:#edf1f7;font-size:12px}
-hr{border:0;border-top:1px solid var(--border);margin:18px 0}
-img.qr{max-width:190px;display:block;margin:15px auto}
-@media(max-width:600px){.hero h1{font-size:26px}header{padding:13px}.container{margin:15px auto}}
+.container{max-width:1100px;margin:22px auto;padding:0 14px}
+.card{
+ background:white;
+ border:1px solid var(--border);
+ border-radius:12px;
+ padding:18px;
+ margin-bottom:16px;
+ box-shadow:0 2px 8px #102a5610;
+}
+.hero{
+ background:linear-gradient(130deg,#102a56,#2861a8);
+ color:white;
+ padding:45px 22px;
+ border-radius:14px;
+ text-align:center;
+}
+.hero h1{font-size:30px;margin:0 0 12px}
+.hero p{line-height:1.6}
+h2,h3{color:var(--navy)}
+input,select,textarea{
+ width:100%;
+ padding:12px;
+ border:1px solid #ccd5e2;
+ border-radius:8px;
+ font-size:15px;
+ margin:7px 0 14px;
+ background:white;
+}
+textarea{min-height:95px;resize:vertical}
+label{font-weight:600;font-size:14px}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:14px;
+}
+.service{
+ border:1px solid var(--border);
+ padding:15px;
+ border-radius:10px;
+ background:#fff;
+}
+.service h3{margin-top:0}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.notice{
+ padding:12px;
+ border-radius:8px;
+ background:#edf4ff;
+ margin:12px 0;
+}
+.message{margin:10px 0;font-weight:600}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:11px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}
+th{background:#f1f4f9;color:var(--navy)}
+.table-wrap{overflow-x:auto}
+.status{
+ display:inline-block;
+ padding:5px 9px;
+ border-radius:20px;
+ background:#edf1f7;
+ font-size:12px;
+}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
+footer{text-align:center;color:var(--muted);padding:25px}
+@media(max-width:600px){
+ header{align-items:flex-start}
+ header h2{font-size:20px}
+ .hero h1{font-size:25px}
+ .card{padding:14px}
+}
 </style>
 </head>
+
 <body>
 
-<div id="message"></div>
-
 <header>
- <div class="brand">DocSetu<small>Your Documents. Our Assistance.</small></div>
  <div>
-  <button class="secondary" onclick="showHome()">Home</button>
-  <button id="loginNav" onclick="showAuth()">Login</button>
-  <button id="logoutNav" class="hidden" onclick="logout()">Logout</button>
+  <h2>DocSetu</h2>
+  <small>Your Documents. Our Assistance.</small>
  </div>
+ <nav>
+  <button class="secondary" onclick="showHome()">Home</button>
+  <button class="secondary" onclick="showAuth()">Login</button>
+  <button class="secondary hidden" id="dashboardNav" onclick="openDashboard()">Dashboard</button>
+  <button class="danger hidden" id="logoutNav" onclick="logout()">Logout</button>
+ </nav>
 </header>
 
-<main class="container">
+<div class="container">
 
-<section id="home">
+<section id="homeView">
  <div class="hero">
   <h1>Documents ka kaam, ab aasaan.</h1>
   <p>Forms, applications aur documents ke kaam mein sahi guidance aur assistance paaiye.</p>
   <button onclick="showAuth()">Get Started</button>
  </div>
- <h2>Hamari Services</h2>
- <div id="homeServices" class="grid">
-  <div class="card">Form Assistance</div>
-  <div class="card">Document Guidance</div>
-  <div class="card">Application Support</div>
- </div>
+
  <div class="card">
-  <h3>Customer Account</h3>
-  <p>Apni enquiry submit karein aur status check karein.</p>
-  <button onclick="showAuth()">Login / Create Account</button>
+  <h2>Hamari Services</h2>
+  <div id="homeServices" class="grid">
+   <p class="muted">Services load ho rahi hain...</p>
+  </div>
+ </div>
+
+ <div class="card">
+  <h2>DocSetu kyun?</h2>
+  <p>Document guidance, online form assistance aur application support ek hi jagah.</p>
  </div>
 </section>
 
-<section id="auth" class="hidden">
- <div class="card form-card">
-  <h2 id="authTitle">Login</h2>
+<section id="authView" class="hidden">
+ <div class="card">
+  <h2 id="authHeading">Login</h2>
+  <div id="authMessage" class="message"></div>
+
+  <div id="loginBox">
+   <label>Email</label>
+   <input id="loginEmail" type="email" placeholder="Email address">
+
+   <label>Password</label>
+   <input id="loginPassword" type="password" placeholder="Password">
+
+   <button onclick="login()">Login</button>
+   <button class="secondary" onclick="forgotPassword()">Forgot Password?</button>
+   <p>Account nahi hai?
+    <button class="secondary" onclick="toggleSignup(true)">Create Account</button>
+   </p>
+  </div>
+
   <div id="signupBox" class="hidden">
    <label>Full Name</label>
-   <input id="signupName" placeholder="Apna poora naam">
+   <input id="signupName" placeholder="Apna naam">
+
+   <label>Email</label>
+   <input id="signupEmail" type="email" placeholder="Email address">
+
+   <label>Password</label>
+   <input id="signupPassword" type="password" placeholder="Kam se kam 6 characters">
+
+   <button onclick="signupAccount()">Create Account</button>
+   <button class="secondary" onclick="toggleSignup(false)">Back to Login</button>
   </div>
-  <label>Email</label>
-  <input id="authEmail" type="email" placeholder="Email address">
-  <label>Password</label>
-  <input id="authPassword" type="password" placeholder="Password">
-  <button id="authButton" onclick="login()" style="width:100%">Login</button>
-  <p id="authError" class="muted"></p>
-  <hr>
-  <button class="secondary" onclick="toggleSignup()">Create Account</button>
-  <button class="secondary" onclick="forgotPassword()">Forgot Password</button>
-  <button class="secondary" onclick="showHome()">Back to Home</button>
  </div>
 </section>
 
-<section id="customer" class="hidden">
- <h2>Customer Dashboard</h2>
+<section id="customerView" class="hidden">
  <div class="card">
-  <h3 id="customerWelcome">Welcome</h3>
+  <h2>Customer Dashboard</h2>
   <p id="customerEmail" class="muted"></p>
+  <div class="tabs">
+   <button onclick="customerTab('new')">New Enquiry</button>
+   <button class="secondary" onclick="customerTab('mine')">My Enquiries</button>
+  </div>
  </div>
- <div class="tabs">
-  <button onclick="customerTab('newEnquiry')">New Enquiry</button>
-  <button onclick="customerTab('myEnquiries')">My Enquiries</button>
-  <button onclick="customerTab('myPayments')">My Payments</button>
-  <button onclick="customerTab('profile')">My Profile</button>
- </div>
- <div id="newEnquiry" class="customerTab card">
+
+ <div id="newEnquiryBox" class="card">
   <h3>New Enquiry</h3>
-  <label>Service</label><select id="serviceSelect"></select>
-  <label>Mobile Number</label><input id="customerPhone" maxlength="10" type="tel" placeholder="10 digit mobile number">
-  <label>Details</label><textarea id="enquiryDetails" placeholder="Apne kaam ki details likhein"></textarea>
+  <div id="enquiryMessage" class="message"></div>
+
+  <label>Service</label>
+  <select id="serviceSelect">
+   <option value="">Service select karein</option>
+  </select>
+
+  <label>Mobile Number</label>
+  <input id="customerPhone" type="tel" maxlength="10" placeholder="10 digit mobile number">
+
+  <label>Details</label>
+  <textarea id="enquiryDetails" placeholder="Apne kaam ki details likhein"></textarea>
+
   <button onclick="submitEnquiry()">Submit Enquiry</button>
  </div>
- <div id="myEnquiries" class="customerTab hidden">
-  <h3>My Enquiries</h3><div id="customerEnquiries"></div>
- </div>
- <div id="myPayments" class="customerTab hidden">
-  <h3>My Payments</h3><div id="customerPayments"></div>
- </div>
- <div id="profile" class="customerTab card hidden">
-  <h3>My Profile</h3>
-  <label>Full Name</label><input id="profileName">
-  <label>Email</label><input id="profileEmail" disabled>
-  <button onclick="saveProfile()">Save Profile</button>
+
+ <div id="myEnquiriesBox" class="card hidden">
+  <h3>My Enquiries</h3>
+  <div id="myEnquiries">Loading...</div>
  </div>
 </section>
 
-<section id="admin" class="hidden">
- <h2>Admin Dashboard</h2>
- <div class="card"><h3>DocSetu Administration</h3>Enquiries, payments aur services manage karein.</div>
- <div class="tabs">
-  <button onclick="adminTab('allEnquiries')">Enquiries</button>
-  <button onclick="adminTab('allPayments')">Payments</button>
-  <button onclick="adminTab('allServices')">Services & Prices</button>
-  <button onclick="adminTab('paymentSettings')">Payment Settings</button>
-  <button onclick="adminTab('customers')">Customers</button>
+<section id="adminView" class="hidden">
+ <div class="card">
+  <h2>Admin Dashboard</h2>
+  <p id="adminEmail" class="muted"></p>
+  <div class="tabs">
+   <button onclick="adminTab('enquiries')">All Enquiries</button>
+   <button class="secondary" onclick="adminTab('services')">Manage Services</button>
+  </div>
  </div>
 
- <div id="allEnquiries" class="adminTab card">
+ <div id="adminEnquiriesBox" class="card">
   <h3>All Enquiries</h3>
-  <input id="searchEnquiry" placeholder="Search enquiries" oninput="renderAdminEnquiries()">
+  <input id="searchEnquiry" placeholder="Name, email, mobile ya service search karein" oninput="renderAdminEnquiries()">
   <select id="statusFilter" onchange="renderAdminEnquiries()">
    <option value="">All Status</option>
-   <option>New</option><option>In Progress</option><option>Completed</option><option>Rejected</option>
+   <option value="New">New</option>
+   <option value="In Progress">In Progress</option>
+   <option value="Completed">Completed</option>
+   <option value="Rejected">Rejected</option>
   </select>
-  <div id="adminEnquiries"></div>
+  <div id="adminEnquiries" class="table-wrap">Loading...</div>
  </div>
 
- <div id="allPayments" class="adminTab card hidden">
-  <h3>Payment Verification</h3><div id="adminPayments"></div>
- </div>
+ <div id="serviceManagerBox" class="card hidden">
+  <h3>Manage Services</h3>
+  <div id="serviceMessage" class="message"></div>
 
- <div id="allServices" class="adminTab card hidden">
-  <h3>Manage Services & Prices</h3><div id="serviceManager"></div>
-  <hr><h3>Add Service</h3>
+  <label>Service Name</label>
   <input id="newServiceName" placeholder="Service name">
-  <input id="newServiceDescription" placeholder="Description">
-  <input id="newServicePrice" type="number" min="0" placeholder="Price">
+
+  <label>Description</label>
+  <textarea id="newServiceDescription" placeholder="Service details"></textarea>
+
+  <label>Price (₹)</label>
+  <input id="newServicePrice" type="number" min="0" placeholder="0">
+
   <button onclick="addService()">Add Service</button>
- </div>
-
- <div id="paymentSettings" class="adminTab card hidden">
-  <h3>UPI Payment Settings</h3>
-  <label>UPI ID</label><input id="settingUPI">
-  <label>Account Name</label><input id="settingName">
-  <label>QR Image URL</label><input id="settingQR">
-  <label>Instructions</label><textarea id="settingInstructions"></textarea>
-  <button onclick="savePaymentSettings()">Save Settings</button>
- </div>
-
- <div id="customers" class="adminTab card hidden">
-  <h3>Customer Records</h3><div id="customerList"></div>
+  <hr>
+  <div id="serviceManagerList">Loading...</div>
  </div>
 </section>
 
-<section id="paymentPage" class="hidden">
- <div class="card form-card">
-  <h2>Make Payment</h2>
-  <p id="paymentServiceName"></p><h2 id="paymentAmount"></h2>
-  <div id="paymentInstructions"></div><div id="paymentQR"></div>
-  <p><b>UPI ID:</b> <span id="paymentUPI"></span></p>
-  <p><b>Account:</b> <span id="paymentAccountName"></span></p>
-  <button class="secondary" onclick="copyUPI()">Copy UPI ID</button>
-  <label>Transaction ID</label><input id="transactionID" placeholder="UPI transaction ID">
-  <label>Payment Screenshot</label><input id="paymentScreenshot" type="file" accept="image/*">
-  <button onclick="submitPayment()">Submit Payment Proof</button>
-  <button class="secondary" onclick="backToCustomer()">Back to Dashboard</button>
+<section id="resetView" class="hidden">
+ <div class="card">
+  <h2>Password Reset</h2>
+  <p>Apna naya password enter karein.</p>
+  <input id="newPassword" type="password" placeholder="New password">
+  <button onclick="updatePassword()">Update Password</button>
+  <div id="resetMessage" class="message"></div>
  </div>
 </section>
 
-</main>
-<footer>DocSetu · Your Documents. Our Assistance.</footer>
+</div>
+
+<footer>© DocSetu - Your Documents. Our Assistance.</footer>
 
 <script>
 "use strict";
 
-const SUPABASE_URL="https://hqzxhbuhecaltjoxhffe.supabase.co";
-const SUPABASE_KEY="sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
-const BUCKET="docsetu-payment-proofs";
+const SUPABASE_URL = "https://hqzxhbuhecaltjoxhffe.supabase.co";
+const SUPABASE_KEY = "sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
 
-let db=null;
-let currentUser=null;
-let currentProfile=null;
-let services=[];
-let enquiries=[];
-let payments=[];
-let paymentSettings={};
-let paymentEnquiry=null;
-
-function msg(message,error=false){
- const box=document.getElementById("message");
- box.textContent=message;
- box.style.display="block";
- box.style.background=error?"#ffe1e1":"#e4f5eb";
- box.style.color=error?"#a32727":"#145b35";
- window.scrollTo(0,0);
-}
+let db = null;
+let currentUser = null;
+let currentRole = "customer";
+let allAdminEnquiries = [];
+let allServices = [];
 
 function initClient(){
- if(!window.supabase||!window.supabase.createClient){
-  msg("Supabase library load nahi hui. Internet check karein.",true);
+ if(!window.supabase){
+  alert("Supabase library load nahi hui. Internet check karein.");
   return false;
  }
- if(!db)db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+ db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
  return true;
 }
 
-function show(id){
- ["home","auth","customer","admin","paymentPage"].forEach(id=>{
-  document.getElementById(id).classList.add("hidden");
+function el(id){
+ return document.getElementById(id);
+}
+
+function msg(id,text,isError=false){
+ const box=el(id);
+ if(!box)return;
+ box.textContent=text;
+ box.style.color=isError?"#c0392b":"#16834a";
+}
+
+function show(view){
+ ["homeView","authView","customerView","adminView","resetView"].forEach(id=>{
+  el(id).classList.add("hidden");
  });
- document.getElementById(id).classList.remove("hidden");
+ el(view).classList.remove("hidden");
  window.scrollTo(0,0);
 }
 
-function showHome(){show("home")}
-function showAuth(){show("auth")}
+function showHome(){
+ show("homeView");
+}
 
-function setLoggedInUI(value){
- document.getElementById("loginNav").classList.toggle("hidden",value);
- document.getElementById("logoutNav").classList.toggle("hidden",!value);
+function showAuth(){
+ if(currentUser){
+  openDashboard();
+  return;
+ }
+ show("authView");
+}
+
+function toggleSignup(showSignup){
+ el("loginBox").classList.toggle("hidden",showSignup);
+ el("signupBox").classList.toggle("hidden",!showSignup);
+ el("authHeading").textContent=showSignup?"Create Account":"Login";
+ msg("authMessage","");
+}
+
+function setLoggedInUI(loggedIn){
+ el("dashboardNav").classList.toggle("hidden",!loggedIn);
+ el("logoutNav").classList.toggle("hidden",!loggedIn);
 }
 
 function esc(value){
  return String(value??"").replace(/[&<>"']/g,char=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[char]));
-}
-
-function toggleSignup(){
- const box=document.getElementById("signupBox");
- const signup=box.classList.contains("hidden");
- box.classList.toggle("hidden");
- document.getElementById("authTitle").textContent=signup?"Create Account":"Login";
- document.getElementById("authButton").textContent=signup?"Create Account":"Login";
- document.getElementById("authButton").onclick=signup?signupAccount:login;
- document.getElementById("authError").textContent="";
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#039;"
+ })[char]);
 }
 
 async function login(){
- if(!initClient())return;
- const button=document.getElementById("authButton");
- const email=document.getElementById("authEmail").value.trim();
- const password=document.getElementById("authPassword").value;
- if(!email||!password)return msg("Email aur password bharein.",true);
+ const email=el("loginEmail").value.trim();
+ const password=el("loginPassword").value;
 
- button.disabled=true;
- button.textContent="Please wait...";
-
- try{
-  const {error}=await db.auth.signInWithPassword({email,password});
-  if(error){
-   document.getElementById("authError").textContent=error.message;
-   return;
-  }
-  await init();
- }catch(error){
-  msg("Login error: "+error.message,true);
- }finally{
-  button.disabled=false;
-  button.textContent="Login";
+ if(!email||!password){
+  msg("authMessage","Email aur password dono bharein.",true);
+  return;
  }
+
+ msg("authMessage","Login ho raha hai...");
+
+ const {data,error}=await db.auth.signInWithPassword({email,password});
+
+ if(error){
+  msg("authMessage",error.message,true);
+  return;
+ }
+
+ currentUser=data.user;
+ await loadUserProfile();
 }
 
 async function signupAccount(){
- if(!initClient())return;
- const name=document.getElementById("signupName").value.trim();
- const email=document.getElementById("authEmail").value.trim();
- const password=document.getElementById("authPassword").value;
+ const name=el("signupName").value.trim();
+ const email=el("signupEmail").value.trim();
+ const password=el("signupPassword").value;
 
- if(!name||!email||password.length<6){
-  return msg("Naam, email aur kam se kam 6 character password bharein.",true);
+ if(!name||!email||!password){
+  msg("authMessage","Saari details bharein.",true);
+  return;
+ }
+ if(password.length<6){
+  msg("authMessage","Password kam se kam 6 characters ka hona chahiye.",true);
+  return;
  }
 
- try{
-  const {data,error}=await db.auth.signUp({
-   email,password,
-   options:{data:{full_name:name}}
-  });
-  if(error)throw error;
+ msg("authMessage","Account ban raha hai...");
 
-  if(data.user&&data.session){
-   const {error:profileError}=await db.from("profiles").upsert({
-    id:data.user.id,
-    full_name:name,
-    role:"customer"
-   },{onConflict:"id"});
-   if(profileError)throw profileError;
+ const {data,error}=await db.auth.signUp({
+  email,
+  password,
+  options:{data:{full_name:name}}
+ });
+
+ if(error){
+  msg("authMessage",error.message,true);
+  return;
+ }
+
+ if(data.user){
+  const {error:profileError}=await db.from("profiles").upsert({
+   id:data.user.id,
+   full_name:name
+  },{onConflict:"id"});
+
+  if(profileError){
+   msg("authMessage","Account ban gaya, lekin profile save nahi hui: "+profileError.message,true);
+   return;
   }
+ }
 
-  msg(data.session?"Account ban gaya.":"Account ban gaya. Email verify karein.");
-  document.getElementById("signupBox").classList.add("hidden");
-  document.getElementById("authTitle").textContent="Login";
-  document.getElementById("authButton").textContent="Login";
-  document.getElementById("authButton").onclick=login;
- }catch(error){
-  msg("Signup error: "+error.message,true);
+ if(data.session){
+  currentUser=data.user;
+  await loadUserProfile();
+ }else{
+  msg("authMessage","Account ban gaya. Email confirmation ke baad login karein.");
+  toggleSignup(false);
  }
 }
 
 async function forgotPassword(){
- if(!initClient())return;
- const email=document.getElementById("authEmail").value.trim();
- if(!email)return msg("Pehle email likhein.",true);
-
- try{
-  const {error}=await db.auth.resetPasswordForEmail(email,{
-   redirectTo:location.origin+location.pathname
-  });
-  if(error)throw error;
-  msg("Password reset email bhej di gayi.");
- }catch(error){
-  msg(error.message,true);
+ const email=el("loginEmail").value.trim();
+ if(!email){
+  msg("authMessage","Pehle email enter karein.",true);
+  return;
  }
+
+ const {error}=await db.auth.resetPasswordForEmail(email,{
+  redirectTo:window.location.origin+window.location.pathname
+ });
+
+ if(error)msg("authMessage",error.message,true);
+ else msg("authMessage","Password reset link email par bhej diya gaya hai.");
+}
+
+async function updatePassword(){
+ const password=el("newPassword").value;
+ if(password.length<6){
+  msg("resetMessage","Password kam se kam 6 characters ka hona chahiye.",true);
+  return;
+ }
+
+ const {error}=await db.auth.updateUser({password});
+ if(error)msg("resetMessage",error.message,true);
+ else msg("resetMessage","Password successfully update ho gaya.");
 }
 
 async function logout(){
- if(!initClient())return;
- try{
-  const {error}=await db.auth.signOut();
-  if(error)throw error;
-  currentUser=null;
-  currentProfile=null;
-  setLoggedInUI(false);
-  showHome();
-  msg("Logout successful.");
- }catch(error){
-  msg(error.message,true);
+ const {error}=await db.auth.signOut();
+ if(error){
+  alert(error.message);
+  return;
+ }
+ currentUser=null;
+ currentRole="customer";
+ setLoggedInUI(false);
+ showHome();
+}
+
+async function loadUserProfile(){
+ if(!currentUser)return;
+
+ const {data,error}=await db.from("profiles")
+  .select("full_name,role")
+  .eq("id",currentUser.id)
+  .maybeSingle();
+
+ if(error){
+  alert("Profile load nahi hui: "+error.message);
+  return;
+ }
+
+ currentRole=data?.role||"customer";
+ setLoggedInUI(true);
+
+ if(currentRole==="admin"){
+  el("adminEmail").textContent=currentUser.email;
+  show("adminView");
+  await loadAllEnquiries();
+  await loadServiceManager();
+ }else{
+  el("customerEmail").textContent=currentUser.email;
+  show("customerView");
+  await loadServices();
+  customerTab("new");
  }
 }
 
-async function init(){
- if(!initClient())return;
-
- try{
-  const {data,error}=await db.auth.getSession();
-  if(error)throw error;
-
-  const session=data.session;
-  if(!session){
-   currentUser=null;
-   setLoggedInUI(false);
-   showHome();
-   return;
-  }
-
-  currentUser=session.user;
-  setLoggedInUI(true);
-
-  const {data:profile,error:profileError}=await db
-   .from("profiles")
-   .select("id,full_name,role")
-   .eq("id",currentUser.id)
-   .maybeSingle();
-
-  if(profileError)throw profileError;
-
-  if(!profile){
-   showHome();
-   msg("Profile record nahi mila. Admin se profile setup check karwayein.",true);
-   return;
-  }
-
-  currentProfile=profile;
-  await loadServices();
-  await loadPaymentSettingsData();
-
-  if(profile.role==="admin"){
-   show("admin");
-   await loadAllEnquiries();
-  }else{
-   show("customer");
-   document.getElementById("customerWelcome").textContent=
-    "Welcome, "+(profile.full_name||"Customer");
-   document.getElementById("customerEmail").textContent=currentUser.email||"";
-   document.getElementById("profileName").value=profile.full_name||"";
-   document.getElementById("profileEmail").value=currentUser.email||"";
-   await loadMyEnquiries();
-  }
- }catch(error){
-  msg("Dashboard error: "+error.message,true);
+function openDashboard(){
+ if(!currentUser){
+  showAuth();
+  return;
+ }
+ if(currentRole==="admin"){
+  show("adminView");
+  loadAllEnquiries();
+ }else{
+  show("customerView");
+  loadServices();
  }
 }
 
 async function loadServices(){
  const {data,error}=await db.from("services")
-  .select("*").eq("active",true).order("name");
+  .select("*")
+  .eq("active",true)
+  .order("name");
 
  if(error){
-  msg("Services error: "+error.message,true);
+  console.error(error);
   return;
  }
 
- services=data||[];
- const select=document.getElementById("serviceSelect");
- select.innerHTML='<option value="">Service select karein</option>';
+ allServices=data||[];
 
- services.forEach(service=>{
-  const option=document.createElement("option");
-  option.value=service.id;
-  option.textContent=service.name+" - ₹"+Number(service.price).toFixed(2);
-  select.appendChild(option);
- });
+ el("homeServices").innerHTML=allServices.length?
+  allServices.map(s=>`
+   <div class="service">
+    <h3>${esc(s.name)}</h3>
+    <p>${esc(s.description||"Document assistance")}</p>
+    <strong>₹${esc(s.price??0)}</strong>
+   </div>
+  `).join(""):"<p>Abhi services available nahi hain.</p>";
 
- const home=document.getElementById("homeServices");
- home.innerHTML="";
-
- services.forEach(service=>{
-  const card=document.createElement("div");
-  card.className="card";
-  card.innerHTML="<h3>"+esc(service.name)+"</h3><p>"+
-   esc(service.description||"Document assistance service")+
-   "</p><b>₹"+Number(service.price).toFixed(2)+"</b>";
-  home.appendChild(card);
- });
-
- if(!services.length)home.textContent="Services abhi available nahi hain.";
-}
-
-async function loadServiceManager(){
- const {data,error}=await db.from("services").select("*").order("name");
- if(error)return msg(error.message,true);
-
- const box=document.getElementById("serviceManager");
- box.innerHTML="";
-
- (data||[]).forEach(service=>{
-  const item=document.createElement("div");
-  item.className="item";
-  item.innerHTML="<b>"+esc(service.name)+"</b>"+
-   "<label>Price</label><input id='price-"+service.id+"' type='number' min='0' value='"+Number(service.price)+"'>"+
-   "<label><input id='active-"+service.id+"' type='checkbox' "+
-   (service.active?"checked":"")+" style='width:auto'> Active</label>"+
-   "<button onclick=\"updateService('"+service.id+"')\">Save Service</button>";
-  box.appendChild(item);
- });
-}
-
-async function updateService(id){
- const price=Number(document.getElementById("price-"+id).value);
- const active=document.getElementById("active-"+id).checked;
-
- if(!Number.isFinite(price)||price<0)return msg("Sahi price likhein.",true);
-
- const {error}=await db.from("services").update({price,active}).eq("id",id);
- if(error)return msg(error.message,true);
-
- msg("Service update ho gayi.");
- await loadServices();
- await loadServiceManager();
-}
-
-async function addService(){
- const name=document.getElementById("newServiceName").value.trim();
- const description=document.getElementById("newServiceDescription").value.trim();
- const price=Number(document.getElementById("newServicePrice").value);
-
- if(!name)return msg("Service name likhein.",true);
- if(!Number.isFinite(price)||price<0)return msg("Sahi price likhein.",true);
-
- const {error}=await db.from("services").insert({
-  name,description,price,active:true
- });
- if(error)return msg(error.message,true);
-
- document.getElementById("newServiceName").value="";
- document.getElementById("newServiceDescription").value="";
- document.getElementById("newServicePrice").value="";
-
- msg("Nayi service add ho gayi.");
- await loadServices();
- await loadServiceManager();
+ el("serviceSelect").innerHTML=
+  '<option value="">Service select karein</option>'+
+  allServices.map(s=>`
+   <option value="${esc(s.name)}">${esc(s.name)} - ₹${esc(s.price??0)}</option>
+  `).join("");
 }
 
 async function submitEnquiry(){
- if(!currentUser)return msg("Pehle login karein.",true);
+ if(!currentUser){
+  showAuth();
+  return;
+ }
 
- const serviceId=document.getElementById("serviceSelect").value;
- const phone=document.getElementById("customerPhone").value.trim();
- const description=document.getElementById("enquiryDetails").value.trim();
- const service=services.find(item=>String(item.id)===String(serviceId));
+ const service=el("serviceSelect").value;
+ const phone=el("customerPhone").value.trim();
+ const description=el("enquiryDetails").value.trim();
 
- if(!service)return msg("Service select karein.",true);
- if(!/^[0-9]{10}$/.test(phone))return msg("10 digit mobile number likhein.",true);
- if(!description)return msg("Details likhein.",true);
+ if(!service||!phone||!description){
+  msg("enquiryMessage","Saari details bharein.",true);
+  return;
+ }
+
+ if(!/^[0-9]{10}$/.test(phone)){
+  msg("enquiryMessage","Sahi 10 digit mobile number enter karein.",true);
+  return;
+ }
+
+ msg("enquiryMessage","Enquiry submit ho rahi hai...");
 
  const {error}=await db.from("enquiries").insert({
   user_id:currentUser.id,
-  service_name:service.name,
-  description,
-  phone,
+  service_name:service,
+  description:description,
+  phone:phone,
   status:"New"
  });
 
- if(error)return msg("Enquiry submit nahi hui: "+error.message,true);
+ if(error){
+  msg("enquiryMessage",error.message,true);
+  return;
+ }
 
- document.getElementById("customerPhone").value="";
- document.getElementById("enquiryDetails").value="";
- msg("Enquiry successfully submit ho gayi.");
- await loadMyEnquiries();
+ el("customerPhone").value="";
+ el("enquiryDetails").value="";
+ msg("enquiryMessage","Aapki enquiry successfully submit ho gayi.");
+}
+
+function customerTab(tab){
+ if(tab==="new"){
+  el("newEnquiryBox").classList.remove("hidden");
+  el("myEnquiriesBox").classList.add("hidden");
+ }else{
+  el("newEnquiryBox").classList.add("hidden");
+  el("myEnquiriesBox").classList.remove("hidden");
+  loadMyEnquiries();
+ }
 }
 
 async function loadMyEnquiries(){
+ const box=el("myEnquiries");
+ box.innerHTML="Loading...";
+
  const {data,error}=await db.from("enquiries")
-  .select("*").eq("user_id",currentUser.id)
+  .select("*")
+  .eq("user_id",currentUser.id)
   .order("created_at",{ascending:false});
 
- if(error)return msg(error.message,true);
+ if(error){
+  box.textContent=error.message;
+  return;
+ }
 
- const box=document.getElementById("customerEnquiries");
- box.innerHTML="";
+ if(!data||data.length===0){
+  box.innerHTML="<p>Abhi koi enquiry nahi hai.</p>";
+  return;
+ }
 
- (data||[]).forEach(enquiry=>{
-  const item=document.createElement("div");
-  item.className="item";
-  item.innerHTML="<b>"+esc(enquiry.service_name)+"</b>"+
-   "<p>"+esc(enquiry.description)+"</p>"+
-   "<p>Mobile: "+esc(enquiry.phone||"")+"</p>"+
-   "<span class='status'>"+esc(enquiry.status)+"</span>"+
-   "<p class='muted'>"+new Date(enquiry.created_at).toLocaleString("en-IN")+"</p>"+
-   "<button onclick=\"openPayment('"+enquiry.id+"')\">Make Payment</button>";
-  box.appendChild(item);
- });
-
- if(!data?.length)box.textContent="Abhi koi enquiry nahi hai.";
+ box.innerHTML=data.map(item=>`
+  <div class="service">
+   <h3>${esc(item.service_name)}</h3>
+   <p>${esc(item.description)}</p>
+   <p>Mobile: ${esc(item.phone)}</p>
+   <p>Status: <span class="status">${esc(item.status)}</span></p>
+   <small class="muted">${new Date(item.created_at).toLocaleString("en-IN")}</small>
+  </div>
+ `).join("");
 }
 
-function customerTab(id){
- document.querySelectorAll(".customerTab").forEach(item=>item.classList.add("hidden"));
- document.getElementById(id).classList.remove("hidden");
-
- if(id==="myPayments")loadMyPayments();
-}
-
-function adminTab(id){
- document.querySelectorAll(".adminTab").forEach(item=>item.classList.add("hidden"));
- document.getElementById(id).classList.remove("hidden");
-
- if(id==="allEnquiries")loadAllEnquiries();
- if(id==="allPayments")loadAdminPayments();
- if(id==="allServices")loadServiceManager();
- if(id==="paymentSettings")loadPaymentSettingsForm();
- if(id==="customers")loadCustomers();
+function adminTab(tab){
+ if(tab==="enquiries"){
+  el("adminEnquiriesBox").classList.remove("hidden");
+  el("serviceManagerBox").classList.add("hidden");
+  loadAllEnquiries();
+ }else{
+  el("adminEnquiriesBox").classList.add("hidden");
+  el("serviceManagerBox").classList.remove("hidden");
+  loadServiceManager();
+ }
 }
 
 async function loadAllEnquiries(){
- const {data,error}=await db.from("enquiries")
-  .select("*").order("created_at",{ascending:false});
+ el("adminEnquiries").textContent="Loading...";
 
- if(error)return msg(error.message,true);
- enquiries=data||[];
+ const {data,error}=await db.from("enquiries")
+  .select("*")
+  .order("created_at",{ascending:false});
+
+ if(error){
+  el("adminEnquiries").textContent=error.message;
+  return;
+ }
+
+ allAdminEnquiries=data||[];
  renderAdminEnquiries();
 }
 
 function renderAdminEnquiries(){
- const box=document.getElementById("adminEnquiries");
+ const box=el("adminEnquiries");
  if(!box)return;
 
- const q=(document.getElementById("searchEnquiry").value||"").toLowerCase();
- const status=document.getElementById("statusFilter").value;
- box.innerHTML="";
+ const q=(el("searchEnquiry").value||"").toLowerCase();
+ const status=el("statusFilter").value;
 
- en
+ const filtered=allAdminEnquiries.filter(item=>{
+  const searchable=[
+   item.service_name,
+   item.description,
+   item.phone,
+   item.status,
+   item.user_id
+  ].join(" ").toLowerCase();
+
+  return searchable.includes(q)&&(!status||item.status===status);
+ });
+
+ if(filtered.length===0){
+  box.innerHTML="<p>Koi enquiry nahi mili.</p>";
+  return;
+ }
+
+ box.innerHTML=`
+  <table>
+   <thead>
+    <tr>
+     <th>Service / Details</th>
+     <th>Mobile</th>
+     <th>Date</th>
+     <th>Status</th>
+     <th>Update</th>
+    </tr>
+   </thead>
+   <tbody>
+    ${filtered.map(item=>`
+     <tr>
+      <td>
+       <strong>${esc(item.service_name)}</strong>
+       <p>${esc(item.description)}</p>
+       <small>User ID: ${esc(item.user_id)}</small>
+      </td>
+      <td>${esc(item.phone)}</td>
+      <td>${new Date(item.created_at).toLocaleDateString("en-IN")}</td>
+      <td><span class="status">${esc(item.status)}</span></td>
+      <td>
+       <select id="status-${esc(item.id)}">
+        ${["New","In Progress","Completed","Rejected"].map(s=>`
+         <option value="${s}" ${item.status===s?"selected":""}>${s}</option>
+        `).join("")}
+       </select>
+       <button onclick="updateStatus('${esc(item.id)}')">Save</button>
+      </td>
+     </tr>
+    `).join("")}
+   </tbody>
+  </table>
+ `;
+}
+
+async function updateStatus(id){
+ const select=el("status-"+id);
+ if(!select)return;
+
+ const newStatus=select.value;
+
+ const {error}=await db.from("enquiries")
+  .update({status:newStatus,updated_at:new Date().toISOString()})
+  .eq("id",id);
+
+ if(error){
+  alert("Status update nahi hua: "+error.message);
+  return;
+ }
+
+ alert("Status successfully update ho gaya.");
+ await loadAllEnquiries();
+}
+
+async function loadServiceManager(){
+ const box=el("serviceManagerList");
+ if(!box)return;
+
+ const {data,error}=await db.from("services")
+  .select("*")
+  .order("name");
+
+ if(error){
+  box.textContent=error.message;
+  return;
+ }
+
+ allServices=data||[];
+
+ if(allServices.length===0){
+  box.innerHTML="<p>Koi service nahi hai.</p>";
+  return;
+ }
+
+ box.innerHTML=allServices.map(s=>`
+  <div class="service">
+   <h3>${esc(s.name)}</h3>
+   <p>${esc(s.description||"")}</p>
+   <p>Price: ₹${esc(s.price??0)}</p>
+   <p>Status: ${s.active?"Active":"Inactive"}</p>
+   <button onclick="updateService('${esc(s.id)}',${s.active?"false":"true"})">
+    ${s.active?"Deactivate":"Activate"}
+   </button>
+  </div>
+ `).join("");
+}
+
+async function addService(){
+ const name=el("newServiceName").value.trim();
+ const description=el("newServiceDescription").value.trim();
+ const price=Number(el("newServicePrice").value||0);
+
+ if(!name){
+  msg("serviceMessage","Service name enter karein.",true);
+  return;
+ }
+
+ if(price<0||!Number.isFinite(price)){
+  msg("serviceMessage","Sahi price enter karein.",true);
+  return;
+ }
+
+ const {error}=await db.from("services").insert({
+  name,
+  description,
+  price,
+  active:true
+ });
+
+ if(error){
+  msg("serviceMessage",error.message,true);
+  return;
+ }
+
+ el("newServiceName").value="";
+ el("newServiceDescription").value="";
+ el("newServicePrice").value="";
+ msg("serviceMessage","Service add ho gayi.");
+ await loadServiceManager();
+}
+
+async function updateService(id,active){
+ const {error}=await db.from("services")
+  .update({active:active==="true"})
+  .eq("id",id);
+
+ if(error){
+  alert(error.message);
+  return;
+ }
+
+ await loadServiceManager();
+ await loadServices();
+}
+
+async function init(){
+ if(!initClient())return;
+
+ const {data,error}=await db.auth.getSession();
+
+ if(error){
+  console.error(error);
+ }
+
+ if(data?.session){
+  currentUser=data.session.user;
+  await loadUserProfile();
+ }else{
+  setLoggedInUI(false);
+  showHome();
+ }
+
+ await loadServices();
+
+ db.auth.onAuthStateChange((event,session)=>{
+  if(event==="PASSWORD_RECOVERY"){
+   show("resetView");
+  }
+ });
+}
+
+document.addEventListener("DOMContentLoaded",init);
+</script>
+</body>
+</
