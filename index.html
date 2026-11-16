@@ -15,13 +15,13 @@ header{background:var(--navy);color:white;padding:15px 5%;display:flex;justify-c
 button{border:0;border-radius:7px;padding:11px 16px;background:var(--navy);color:white;font-weight:bold;cursor:pointer;margin:3px}
 button.secondary{background:#e8eef8;color:var(--navy)}
 button.green{background:var(--green)}button.red{background:var(--red)}
-button:disabled{opacity:.5}
+button:disabled{opacity:.5;cursor:not-allowed}
 .container{max-width:1100px;margin:25px auto;padding:0 15px}
 .hero{background:linear-gradient(120deg,#102a56,#2861a7);color:white;padding:45px 20px;text-align:center;border-radius:13px}
 .card{background:white;padding:20px;border:1px solid var(--border);border-radius:10px;margin:15px 0}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}
 input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5e2;border-radius:7px;margin:7px 0 15px;font-size:15px}
-textarea{min-height:90px}label{font-weight:bold;font-size:14px}
+textarea{min-height:90px}label{font-weight:bold;font-size:14px;display:block}
 .hidden{display:none!important}.muted{color:#718096;font-size:13px}
 .form-card{max-width:520px;margin:30px auto}
 .tabs{display:flex;gap:5px;flex-wrap:wrap;margin:15px 0}
@@ -29,10 +29,13 @@ textarea{min-height:90px}label{font-weight:bold;font-size:14px}
 #message{display:none;padding:12px;text-align:center;position:sticky;top:0;z-index:20}
 footer{text-align:center;padding:30px;color:#718096}
 .status{display:inline-block;padding:5px 9px;border-radius:20px;background:#edf1f7;font-size:12px}
+hr{border:0;border-top:1px solid var(--border);margin:18px 0}
+img.qr{max-width:190px;display:block;margin:15px auto}
 @media(max-width:600px){.hero h1{font-size:26px}header{padding:13px}.container{margin:15px auto}}
 </style>
 </head>
 <body>
+
 <div id="message"></div>
 
 <header>
@@ -57,7 +60,6 @@ footer{text-align:center;padding:30px;color:#718096}
   <div class="card">Form Assistance</div>
   <div class="card">Document Guidance</div>
   <div class="card">Application Support</div>
-  <div class="card">Digital Document Help</div>
  </div>
  <div class="card">
   <h3>Customer Account</h3>
@@ -105,8 +107,12 @@ footer{text-align:center;padding:30px;color:#718096}
   <label>Details</label><textarea id="enquiryDetails" placeholder="Apne kaam ki details likhein"></textarea>
   <button onclick="submitEnquiry()">Submit Enquiry</button>
  </div>
- <div id="myEnquiries" class="customerTab hidden"><h3>My Enquiries</h3><div id="customerEnquiries"></div></div>
- <div id="myPayments" class="customerTab hidden"><h3>My Payments</h3><div id="customerPayments"></div></div>
+ <div id="myEnquiries" class="customerTab hidden">
+  <h3>My Enquiries</h3><div id="customerEnquiries"></div>
+ </div>
+ <div id="myPayments" class="customerTab hidden">
+  <h3>My Payments</h3><div id="customerPayments"></div>
+ </div>
  <div id="profile" class="customerTab card hidden">
   <h3>My Profile</h3>
   <label>Full Name</label><input id="profileName">
@@ -125,15 +131,21 @@ footer{text-align:center;padding:30px;color:#718096}
   <button onclick="adminTab('paymentSettings')">Payment Settings</button>
   <button onclick="adminTab('customers')">Customers</button>
  </div>
+
  <div id="allEnquiries" class="adminTab card">
   <h3>All Enquiries</h3>
   <input id="searchEnquiry" placeholder="Search enquiries" oninput="renderAdminEnquiries()">
   <select id="statusFilter" onchange="renderAdminEnquiries()">
-   <option value="">All Status</option><option>New</option><option>In Progress</option><option>Completed</option><option>Rejected</option>
+   <option value="">All Status</option>
+   <option>New</option><option>In Progress</option><option>Completed</option><option>Rejected</option>
   </select>
   <div id="adminEnquiries"></div>
  </div>
- <div id="allPayments" class="adminTab card hidden"><h3>Payment Verification</h3><div id="adminPayments"></div></div>
+
+ <div id="allPayments" class="adminTab card hidden">
+  <h3>Payment Verification</h3><div id="adminPayments"></div>
+ </div>
+
  <div id="allServices" class="adminTab card hidden">
   <h3>Manage Services & Prices</h3><div id="serviceManager"></div>
   <hr><h3>Add Service</h3>
@@ -142,6 +154,7 @@ footer{text-align:center;padding:30px;color:#718096}
   <input id="newServicePrice" type="number" min="0" placeholder="Price">
   <button onclick="addService()">Add Service</button>
  </div>
+
  <div id="paymentSettings" class="adminTab card hidden">
   <h3>UPI Payment Settings</h3>
   <label>UPI ID</label><input id="settingUPI">
@@ -150,7 +163,10 @@ footer{text-align:center;padding:30px;color:#718096}
   <label>Instructions</label><textarea id="settingInstructions"></textarea>
   <button onclick="savePaymentSettings()">Save Settings</button>
  </div>
- <div id="customers" class="adminTab card hidden"><h3>Customer Records</h3><div id="customerList"></div></div>
+
+ <div id="customers" class="adminTab card hidden">
+  <h3>Customer Records</h3><div id="customerList"></div>
+ </div>
 </section>
 
 <section id="paymentPage" class="hidden">
@@ -161,7 +177,7 @@ footer{text-align:center;padding:30px;color:#718096}
   <p><b>UPI ID:</b> <span id="paymentUPI"></span></p>
   <p><b>Account:</b> <span id="paymentAccountName"></span></p>
   <button class="secondary" onclick="copyUPI()">Copy UPI ID</button>
-  <label>Transaction ID</label><input id="transactionID">
+  <label>Transaction ID</label><input id="transactionID" placeholder="UPI transaction ID">
   <label>Payment Screenshot</label><input id="paymentScreenshot" type="file" accept="image/*">
   <button onclick="submitPayment()">Submit Payment Proof</button>
   <button class="secondary" onclick="backToCustomer()">Back to Dashboard</button>
@@ -178,37 +194,54 @@ const SUPABASE_URL="https://hqzxhbuhecaltjoxhffe.supabase.co";
 const SUPABASE_KEY="sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
 const BUCKET="docsetu-payment-proofs";
 
-let db=null,currentUser=null,currentProfile=null;
-let services=[],enquiries=[],payments=[],paymentSettings={},paymentEnquiry=null;
+let db=null;
+let currentUser=null;
+let currentProfile=null;
+let services=[];
+let enquiries=[];
+let payments=[];
+let paymentSettings={};
+let paymentEnquiry=null;
 
-function msg(t,error=false){
- const e=document.getElementById("message");
- e.textContent=t;e.style.display="block";
- e.style.background=error?"#ffe1e1":"#e4f5eb";
- e.style.color=error?"#a32727":"#145b35";
+function msg(message,error=false){
+ const box=document.getElementById("message");
+ box.textContent=message;
+ box.style.display="block";
+ box.style.background=error?"#ffe1e1":"#e4f5eb";
+ box.style.color=error?"#a32727":"#145b35";
  window.scrollTo(0,0);
 }
+
 function initClient(){
  if(!window.supabase||!window.supabase.createClient){
-  msg("Supabase library load nahi hui. Internet check karein.",true);return false;
+  msg("Supabase library load nahi hui. Internet check karein.",true);
+  return false;
  }
  if(!db)db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
  return true;
 }
+
 function show(id){
- ["home","auth","customer","admin","paymentPage"].forEach(x=>document.getElementById(x).classList.add("hidden"));
+ ["home","auth","customer","admin","paymentPage"].forEach(id=>{
+  document.getElementById(id).classList.add("hidden");
+ });
  document.getElementById(id).classList.remove("hidden");
+ window.scrollTo(0,0);
 }
+
 function showHome(){show("home")}
 function showAuth(){show("auth")}
-function setLoggedInUI(v){
- document.getElementById("loginNav").classList.toggle("hidden",v);
- document.getElementById("logoutNav").classList.toggle("hidden",!v);
+
+function setLoggedInUI(value){
+ document.getElementById("loginNav").classList.toggle("hidden",value);
+ document.getElementById("logoutNav").classList.toggle("hidden",!value);
 }
-function esc(v){
- return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function esc(value){
+ return String(value??"").replace(/[&<>"']/g,char=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[char]));
 }
-function statusClass(v){return String(v||"").replace(/\s+/g,".")}
 
 function toggleSignup(){
  const box=document.getElementById("signupBox");
@@ -219,190 +252,328 @@ function toggleSignup(){
  document.getElementById("authButton").onclick=signup?signupAccount:login;
  document.getElementById("authError").textContent="";
 }
+
 async function login(){
  if(!initClient())return;
- const b=document.getElementById("authButton");
+ const button=document.getElementById("authButton");
  const email=document.getElementById("authEmail").value.trim();
  const password=document.getElementById("authPassword").value;
  if(!email||!password)return msg("Email aur password bharein.",true);
- b.disabled=true;b.textContent="Please wait...";
+
+ button.disabled=true;
+ button.textContent="Please wait...";
+
  try{
   const {error}=await db.auth.signInWithPassword({email,password});
-  if(error){document.getElementById("authError").textContent=error.message;return}
+  if(error){
+   document.getElementById("authError").textContent=error.message;
+   return;
+  }
   await init();
- }catch(e){msg("Login error: "+e.message,true)}
- finally{b.disabled=false;b.textContent="Login"}
+ }catch(error){
+  msg("Login error: "+error.message,true);
+ }finally{
+  button.disabled=false;
+  button.textContent="Login";
+ }
 }
+
 async function signupAccount(){
  if(!initClient())return;
  const name=document.getElementById("signupName").value.trim();
  const email=document.getElementById("authEmail").value.trim();
  const password=document.getElementById("authPassword").value;
- if(!name||!email||password.length<6)return msg("Naam, email aur kam se kam 6 character password bharein.",true);
+
+ if(!name||!email||password.length<6){
+  return msg("Naam, email aur kam se kam 6 character password bharein.",true);
+ }
+
  try{
-  const {data,error}=await db.auth.signUp({email,password,options:{data:{full_name:name}}});
-  if(error)return msg(error.message,true);
+  const {data,error}=await db.auth.signUp({
+   email,password,
+   options:{data:{full_name:name}}
+  });
+  if(error)throw error;
+
+  if(data.user&&data.session){
+   const {error:profileError}=await db.from("profiles").upsert({
+    id:data.user.id,
+    full_name:name,
+    role:"customer"
+   },{onConflict:"id"});
+   if(profileError)throw profileError;
+  }
+
   msg(data.session?"Account ban gaya.":"Account ban gaya. Email verify karein.");
   document.getElementById("signupBox").classList.add("hidden");
   document.getElementById("authTitle").textContent="Login";
   document.getElementById("authButton").textContent="Login";
   document.getElementById("authButton").onclick=login;
- }catch(e){msg(e.message,true)}
+ }catch(error){
+  msg("Signup error: "+error.message,true);
+ }
 }
+
 async function forgotPassword(){
  if(!initClient())return;
  const email=document.getElementById("authEmail").value.trim();
  if(!email)return msg("Pehle email likhein.",true);
+
  try{
-  const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+  const {error}=await db.auth.resetPasswordForEmail(email,{
+   redirectTo:location.origin+location.pathname
+  });
   if(error)throw error;
   msg("Password reset email bhej di gayi.");
- }catch(e){msg(e.message,true)}
+ }catch(error){
+  msg(error.message,true);
+ }
 }
+
 async function logout(){
  if(!initClient())return;
  try{
-  const {error}=await db.auth.signOut();if(error)throw error;
-  currentUser=null;currentProfile=null;setLoggedInUI(false);showHome();msg("Logout successful.");
- }catch(e){msg(e.message,true)}
+  const {error}=await db.auth.signOut();
+  if(error)throw error;
+  currentUser=null;
+  currentProfile=null;
+  setLoggedInUI(false);
+  showHome();
+  msg("Logout successful.");
+ }catch(error){
+  msg(error.message,true);
+ }
 }
 
 async function init(){
  if(!initClient())return;
+
  try{
-  const {data,error}=await db.auth.getSession();if(error)throw error;
+  const {data,error}=await db.auth.getSession();
+  if(error)throw error;
+
   const session=data.session;
-  if(!session){currentUser=null;setLoggedInUI(false);showHome();return}
-  currentUser=session.user;setLoggedInUI(true);
-  const {data:profile,error:pe}=await db.from("profiles").select("id,full_name,role").eq("id",currentUser.id).maybeSingle();
-  if(pe)throw pe;
-  if(!profile){showHome();msg("Profile record nahi mila. Admin se profile setup check karwayein.",true);return}
+  if(!session){
+   currentUser=null;
+   setLoggedInUI(false);
+   showHome();
+   return;
+  }
+
+  currentUser=session.user;
+  setLoggedInUI(true);
+
+  const {data:profile,error:profileError}=await db
+   .from("profiles")
+   .select("id,full_name,role")
+   .eq("id",currentUser.id)
+   .maybeSingle();
+
+  if(profileError)throw profileError;
+
+  if(!profile){
+   showHome();
+   msg("Profile record nahi mila. Admin se profile setup check karwayein.",true);
+   return;
+  }
+
   currentProfile=profile;
-  await loadServices();await loadPaymentSettingsData();
-  if(profile.role==="admin"){show("admin");await loadAllEnquiries()}
-  else{
+  await loadServices();
+  await loadPaymentSettingsData();
+
+  if(profile.role==="admin"){
+   show("admin");
+   await loadAllEnquiries();
+  }else{
    show("customer");
-   document.getElementById("customerWelcome").textContent="Welcome, "+(profile.full_name||"Customer");
+   document.getElementById("customerWelcome").textContent=
+    "Welcome, "+(profile.full_name||"Customer");
    document.getElementById("customerEmail").textContent=currentUser.email||"";
    document.getElementById("profileName").value=profile.full_name||"";
    document.getElementById("profileEmail").value=currentUser.email||"";
    await loadMyEnquiries();
   }
- }catch(e){msg("Dashboard error: "+e.message,true)}
+ }catch(error){
+  msg("Dashboard error: "+error.message,true);
+ }
 }
 
 async function loadServices(){
- const {data,error}=await db.from("services").select("*").eq("active",true).order("name");
- if(error){msg("Services error: "+error.message,true);return}
+ const {data,error}=await db.from("services")
+  .select("*").eq("active",true).order("name");
+
+ if(error){
+  msg("Services error: "+error.message,true);
+  return;
+ }
+
  services=data||[];
- const sel=document.getElementById("serviceSelect");
- sel.innerHTML='<option value="">Service select karein</option>';
- services.forEach(s=>{
-  const o=document.createElement("option");o.value=s.id;o.textContent=s.name+" - ₹"+Number(s.price).toFixed(2);sel.appendChild(o);
+ const select=document.getElementById("serviceSelect");
+ select.innerHTML='<option value="">Service select karein</option>';
+
+ services.forEach(service=>{
+  const option=document.createElement("option");
+  option.value=service.id;
+  option.textContent=service.name+" - ₹"+Number(service.price).toFixed(2);
+  select.appendChild(option);
  });
- const home=document.getElementById("homeServices");home.innerHTML="";
- services.forEach(s=>{
-  const d=document.createElement("div");d.className="card";
-  d.innerHTML="<h3>"+esc(s.name)+"</h3><p>"+esc(s.description||"Document assistance service")+"</p><b>₹"+Number(s.price).toFixed(2)+"</b>";
-  home.appendChild(d);
+
+ const home=document.getElementById("homeServices");
+ home.innerHTML="";
+
+ services.forEach(service=>{
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML="<h3>"+esc(service.name)+"</h3><p>"+
+   esc(service.description||"Document assistance service")+
+   "</p><b>₹"+Number(service.price).toFixed(2)+"</b>";
+  home.appendChild(card);
  });
+
  if(!services.length)home.textContent="Services abhi available nahi hain.";
 }
+
 async function loadServiceManager(){
  const {data,error}=await db.from("services").select("*").order("name");
- if(error){msg(error.message,true);return}
- const box=document.getElementById("serviceManager");box.innerHTML="";
- (data||[]).forEach(s=>{
-  const d=document.createElement("div");d.className="item";
-  d.innerHTML="<b>"+esc(s.name)+"</b><label>Price</label><input id='price-"+s.id+"' type='number' min='0' value='"+Number(s.price)+"'><label><input id='active-"+s.id+"' type='checkbox' "+(s.active?"checked":"")+" style='width:auto'> Active</label><button onclick=\"updateService('"+s.id+"')\">Save Service</button>";
-  box.appendChild(d);
+ if(error)return msg(error.message,true);
+
+ const box=document.getElementById("serviceManager");
+ box.innerHTML="";
+
+ (data||[]).forEach(service=>{
+  const item=document.createElement("div");
+  item.className="item";
+  item.innerHTML="<b>"+esc(service.name)+"</b>"+
+   "<label>Price</label><input id='price-"+service.id+"' type='number' min='0' value='"+Number(service.price)+"'>"+
+   "<label><input id='active-"+service.id+"' type='checkbox' "+
+   (service.active?"checked":"")+" style='width:auto'> Active</label>"+
+   "<button onclick=\"updateService('"+service.id+"')\">Save Service</button>";
+  box.appendChild(item);
  });
 }
+
 async function updateService(id){
  const price=Number(document.getElementById("price-"+id).value);
  const active=document.getElementById("active-"+id).checked;
+
  if(!Number.isFinite(price)||price<0)return msg("Sahi price likhein.",true);
+
  const {error}=await db.from("services").update({price,active}).eq("id",id);
  if(error)return msg(error.message,true);
- msg("Service update ho gayi.");await loadServices();await loadServiceManager();
+
+ msg("Service update ho gayi.");
+ await loadServices();
+ await loadServiceManager();
 }
+
 async function addService(){
  const name=document.getElementById("newServiceName").value.trim();
  const description=document.getElementById("newServiceDescription").value.trim();
  const price=Number(document.getElementById("newServicePrice").value);
+
  if(!name)return msg("Service name likhein.",true);
  if(!Number.isFinite(price)||price<0)return msg("Sahi price likhein.",true);
- const {error}=await db.from("services").insert({name,description,price,active:true});
+
+ const {error}=await db.from("services").insert({
+  name,description,price,active:true
+ });
  if(error)return msg(error.message,true);
+
  document.getElementById("newServiceName").value="";
  document.getElementById("newServiceDescription").value="";
  document.getElementById("newServicePrice").value="";
- msg("Nayi service add ho gayi.");await loadServices();await loadServiceManager();
+
+ msg("Nayi service add ho gayi.");
+ await loadServices();
+ await loadServiceManager();
 }
 
 async function submitEnquiry(){
  if(!currentUser)return msg("Pehle login karein.",true);
+
  const serviceId=document.getElementById("serviceSelect").value;
  const phone=document.getElementById("customerPhone").value.trim();
  const description=document.getElementById("enquiryDetails").value.trim();
- const service=services.find(s=>String(s.id)===String(serviceId));
- if(!serviceId||!service)return msg("Service select karein.",true);
+ const service=services.find(item=>String(item.id)===String(serviceId));
+
+ if(!service)return msg("Service select karein.",true);
  if(!/^[0-9]{10}$/.test(phone))return msg("10 digit mobile number likhein.",true);
  if(!description)return msg("Details likhein.",true);
+
  const {error}=await db.from("enquiries").insert({
-  user_id:currentUser.id,service_name:service.name,description,phone,status:"New"
+  user_id:currentUser.id,
+  service_name:service.name,
+  description,
+  phone,
+  status:"New"
  });
+
  if(error)return msg("Enquiry submit nahi hui: "+error.message,true);
+
  document.getElementById("customerPhone").value="";
  document.getElementById("enquiryDetails").value="";
  msg("Enquiry successfully submit ho gayi.");
  await loadMyEnquiries();
 }
+
 async function loadMyEnquiries(){
- const {data,error}=await db.from("enquiries").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false});
- if(error){msg(error.message,true);return}
- const box=document.getElementById("customerEnquiries");box.innerHTML="";
- (data||[]).forEach(e=>{
-  const d=document.createElement("div");d.className="item";
-  d.innerHTML="<b>"+esc(e.service_name)+"</b><p>"+esc(e.description)+"</p><p>Mobile: "+esc(e.phone||"")+"</p><span class='status'>"+esc(e.status)+"</span><p class='muted'>"+new Date(e.created_at).toLocaleString("en-IN")+"</p><button onclick=\"openPayment('"+e.id+"')\">Make Payment</button>";
-  box.appendChild(d);
+ const {data,error}=await db.from("enquiries")
+  .select("*").eq("user_id",currentUser.id)
+  .order("created_at",{ascending:false});
+
+ if(error)return msg(error.message,true);
+
+ const box=document.getElementById("customerEnquiries");
+ box.innerHTML="";
+
+ (data||[]).forEach(enquiry=>{
+  const item=document.createElement("div");
+  item.className="item";
+  item.innerHTML="<b>"+esc(enquiry.service_name)+"</b>"+
+   "<p>"+esc(enquiry.description)+"</p>"+
+   "<p>Mobile: "+esc(enquiry.phone||"")+"</p>"+
+   "<span class='status'>"+esc(enquiry.status)+"</span>"+
+   "<p class='muted'>"+new Date(enquiry.created_at).toLocaleString("en-IN")+"</p>"+
+   "<button onclick=\"openPayment('"+enquiry.id+"')\">Make Payment</button>";
+  box.appendChild(item);
  });
+
  if(!data?.length)box.textContent="Abhi koi enquiry nahi hai.";
 }
+
 function customerTab(id){
- document.querySelectorAll(".customerTab").forEach(x=>x.classList.add("hidden"));
+ document.querySelectorAll(".customerTab").forEach(item=>item.classList.add("hidden"));
  document.getElementById(id).classList.remove("hidden");
+
  if(id==="myPayments")loadMyPayments();
 }
+
 function adminTab(id){
- document.querySelectorAll(".adminTab").forEach(x=>x.classList.add("hidden"));
+ document.querySelectorAll(".adminTab").forEach(item=>item.classList.add("hidden"));
  document.getElementById(id).classList.remove("hidden");
+
  if(id==="allEnquiries")loadAllEnquiries();
  if(id==="allPayments")loadAdminPayments();
  if(id==="allServices")loadServiceManager();
  if(id==="paymentSettings")loadPaymentSettingsForm();
  if(id==="customers")loadCustomers();
 }
+
 async function loadAllEnquiries(){
- const {data,error}=await db.from("enquiries").select("*").order("created_at",{ascending:false});
- if(error){msg(error.message,true);return}
- enquiries=data||[];renderAdminEnquiries();
+ const {data,error}=await db.from("enquiries")
+  .select("*").order("created_at",{ascending:false});
+
+ if(error)return msg(error.message,true);
+ enquiries=data||[];
+ renderAdminEnquiries();
 }
+
 function renderAdminEnquiries(){
- const box=document.getElementById("adminEnquiries");if(!box)return;
+ const box=document.getElementById("adminEnquiries");
+ if(!box)return;
+
  const q=(document.getElementById("searchEnquiry").value||"").toLowerCase();
  const status=document.getElementById("statusFilter").value;
  box.innerHTML="";
- enquiries.filter(e=>{
-  const str=[e.service_name,e.description,e.phone,e.user_id].join(" ").toLowerCase();
-  return str.includes(q)&&(!status||e.status===status);
- }).forEach(e=>{
-  const d=document.createElement("div");d.className="item";
-  d.innerHTML="<b>"+esc(e.service_name)+"</b><p>"+esc(e.description)+"</p><p>Phone: "+esc(e.phone||"")+"</p><p>User ID: "+esc(e.user_id)+"</p><span class='status'>"+esc(e.status)+"</span><label>Update Status</label><select id='st-"+e.id+"'><option "+(e.status==="New"?"selected":"")+">New</option><option "+(e.status==="In Progress"?"selected":"")+">In Progress</option><option "+(e.status==="Completed"?"selected":"")+">Completed</option><option "+(e.status==="Rejected"?"selected":"")+">Rejected</option></select><button onclick=\"updateEnquiryStatus('"+e.id+"')\">Save Status</button>";
-  box.appendChild(d);
- });
- if(!box.children.length)box.textContent="Koi enquiry nahi mili.";
-}
-async function updateEnquiryStatus(id){
- const status=document.getElementById("st-"+id).value;
- const {error}=await db.from("enquiries").update({status,updated_at:new Date().toISOStr
+
+ en
