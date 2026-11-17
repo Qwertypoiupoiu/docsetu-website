@@ -7,117 +7,52 @@
 <meta name="theme-color" content="#102a56">
 <title>DocSetu - Your Documents. Our Assistance.</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
 :root{
- --navy:#102a56;
- --blue:#2861a8;
- --light:#f3f6fb;
- --white:#fff;
- --text:#202b3c;
- --muted:#6b7789;
- --green:#16834a;
- --red:#c0392b;
- --border:#e0e6ef;
+ --navy:#102a56;--blue:#2861a8;--light:#f3f6fb;
+ --white:#fff;--text:#202b3c;--muted:#6b7789;
+ --green:#16834a;--red:#c0392b;--border:#e0e6ef;
 }
 *{box-sizing:border-box}
-body{
- margin:0;
- font-family:Arial, sans-serif;
- background:var(--light);
- color:var(--text);
-}
-header{
- background:var(--navy);
- color:white;
- padding:16px;
- display:flex;
- justify-content:space-between;
- align-items:center;
- flex-wrap:wrap;
- gap:12px;
-}
+body{margin:0;font-family:Arial,sans-serif;background:var(--light);color:var(--text)}
+header{background:var(--navy);color:white;padding:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
 header h2{margin:0;font-size:23px}
 header small{display:block;margin-top:4px;color:#dce7f8}
-nav{display:flex;gap:8px;flex-wrap:wrap}
-button{
- border:0;
- border-radius:8px;
- padding:11px 15px;
- background:var(--blue);
- color:white;
- font-size:14px;
- cursor:pointer;
-}
+nav,.tabs{display:flex;gap:8px;flex-wrap:wrap}
+button{border:0;border-radius:8px;padding:11px 15px;background:var(--blue);color:white;font-size:14px;cursor:pointer}
 button:active{opacity:.7}
 button.secondary{background:#e8edf5;color:var(--navy)}
 button.danger{background:var(--red)}
 button.success{background:var(--green)}
 button:disabled{opacity:.5;cursor:not-allowed}
 .container{max-width:1100px;margin:22px auto;padding:0 14px}
-.card{
- background:white;
- border:1px solid var(--border);
- border-radius:12px;
- padding:18px;
- margin-bottom:16px;
- box-shadow:0 2px 8px #102a5610;
-}
-.hero{
- background:linear-gradient(130deg,#102a56,#2861a8);
- color:white;
- padding:45px 22px;
- border-radius:14px;
- text-align:center;
-}
+.card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px #102a5610}
+.hero{background:linear-gradient(130deg,#102a56,#2861a8);color:white;padding:45px 22px;border-radius:14px;text-align:center}
 .hero h1{font-size:30px;margin:0 0 12px}
 .hero p{line-height:1.6}
 h2,h3{color:var(--navy)}
-input,select,textarea{
- width:100%;
- padding:12px;
- border:1px solid #ccd5e2;
- border-radius:8px;
- font-size:15px;
- margin:7px 0 14px;
- background:white;
-}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5e2;border-radius:8px;font-size:15px;margin:7px 0 14px;background:white}
 textarea{min-height:95px;resize:vertical}
 label{font-weight:600;font-size:14px}
-.grid{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
- gap:14px;
-}
-.service{
- border:1px solid var(--border);
- padding:15px;
- border-radius:10px;
- background:#fff;
-}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.service{border:1px solid var(--border);padding:15px;border-radius:10px;background:#fff;margin-bottom:12px}
 .service h3{margin-top:0}
 .hidden{display:none!important}
 .muted{color:var(--muted)}
-.notice{
- padding:12px;
- border-radius:8px;
- background:#edf4ff;
- margin:12px 0;
-}
+.notice{padding:12px;border-radius:8px;background:#edf4ff;margin:12px 0}
 .message{margin:10px 0;font-weight:600}
 table{width:100%;border-collapse:collapse;min-width:650px}
-th,td{padding:11px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}
+th,td{padding:11px;border-bottom:1px solid var(--border);text-align:left;font-size:14px;vertical-align:top}
 th{background:#f1f4f9;color:var(--navy)}
 .table-wrap{overflow-x:auto}
-.status{
- display:inline-block;
- padding:5px 9px;
- border-radius:20px;
- background:#edf1f7;
- font-size:12px;
-}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;background:#edf1f7;font-size:12px}
+.tabs{margin-bottom:15px}
+.qrbox{background:white;padding:12px;border:1px solid var(--border);border-radius:10px;display:inline-block;margin:10px 0}
+.qrbox img{max-width:100%}
 footer{text-align:center;color:var(--muted);padding:25px}
+hr{border:0;border-top:1px solid var(--border);margin:20px 0}
 @media(max-width:600px){
  header{align-items:flex-start}
  header h2{font-size:20px}
@@ -128,7 +63,6 @@ footer{text-align:center;color:var(--muted);padding:25px}
 </head>
 
 <body>
-
 <header>
  <div>
   <h2>DocSetu</h2>
@@ -150,14 +84,10 @@ footer{text-align:center;color:var(--muted);padding:25px}
   <p>Forms, applications aur documents ke kaam mein sahi guidance aur assistance paaiye.</p>
   <button onclick="showAuth()">Get Started</button>
  </div>
-
  <div class="card">
   <h2>Hamari Services</h2>
-  <div id="homeServices" class="grid">
-   <p class="muted">Services load ho rahi hain...</p>
-  </div>
+  <div id="homeServices" class="grid">Services load ho rahi hain...</div>
  </div>
-
  <div class="card">
   <h2>DocSetu kyun?</h2>
   <p>Document guidance, online form assistance aur application support ek hi jagah.</p>
@@ -168,31 +98,22 @@ footer{text-align:center;color:var(--muted);padding:25px}
  <div class="card">
   <h2 id="authHeading">Login</h2>
   <div id="authMessage" class="message"></div>
-
   <div id="loginBox">
    <label>Email</label>
    <input id="loginEmail" type="email" placeholder="Email address">
-
    <label>Password</label>
    <input id="loginPassword" type="password" placeholder="Password">
-
    <button onclick="login()">Login</button>
    <button class="secondary" onclick="forgotPassword()">Forgot Password?</button>
-   <p>Account nahi hai?
-    <button class="secondary" onclick="toggleSignup(true)">Create Account</button>
-   </p>
+   <p>Account nahi hai? <button class="secondary" onclick="toggleSignup(true)">Create Account</button></p>
   </div>
-
   <div id="signupBox" class="hidden">
    <label>Full Name</label>
    <input id="signupName" placeholder="Apna naam">
-
    <label>Email</label>
    <input id="signupEmail" type="email" placeholder="Email address">
-
    <label>Password</label>
    <input id="signupPassword" type="password" placeholder="Kam se kam 6 characters">
-
    <button onclick="signupAccount()">Create Account</button>
    <button class="secondary" onclick="toggleSignup(false)">Back to Login</button>
   </div>
@@ -206,30 +127,44 @@ footer{text-align:center;color:var(--muted);padding:25px}
   <div class="tabs">
    <button onclick="customerTab('new')">New Enquiry</button>
    <button class="secondary" onclick="customerTab('mine')">My Enquiries</button>
+   <button class="secondary" onclick="customerTab('payments')">My Payments</button>
   </div>
  </div>
 
  <div id="newEnquiryBox" class="card">
   <h3>New Enquiry</h3>
   <div id="enquiryMessage" class="message"></div>
-
   <label>Service</label>
-  <select id="serviceSelect">
-   <option value="">Service select karein</option>
-  </select>
-
+  <select id="serviceSelect"><option value="">Service select karein</option></select>
   <label>Mobile Number</label>
   <input id="customerPhone" type="tel" maxlength="10" placeholder="10 digit mobile number">
-
   <label>Details</label>
   <textarea id="enquiryDetails" placeholder="Apne kaam ki details likhein"></textarea>
-
   <button onclick="submitEnquiry()">Submit Enquiry</button>
  </div>
 
  <div id="myEnquiriesBox" class="card hidden">
   <h3>My Enquiries</h3>
   <div id="myEnquiries">Loading...</div>
+ </div>
+
+ <div id="customerPaymentsBox" class="card hidden">
+  <h3>My Payments</h3>
+  <div id="customerPayments">Loading...</div>
+ </div>
+
+ <div id="makePaymentBox" class="card hidden">
+  <h3>Make Payment</h3>
+  <div id="paymentMessage" class="message"></div>
+  <div id="paymentDetails"></div>
+  <div id="paymentQR" class="qrbox hidden"></div>
+  <p id="paymentInstructions" class="notice"></p>
+  <label>UPI Transaction ID / UTR Number</label>
+  <input id="transactionId" placeholder="Transaction ID enter karein">
+  <label>Payment Screenshot</label>
+  <input id="paymentFile" type="file" accept="image/*">
+  <button onclick="submitPayment()">Submit Payment Proof</button>
+  <button class="secondary" onclick="closePayment()">Cancel</button>
  </div>
 </section>
 
@@ -240,12 +175,14 @@ footer{text-align:center;color:var(--muted);padding:25px}
   <div class="tabs">
    <button onclick="adminTab('enquiries')">All Enquiries</button>
    <button class="secondary" onclick="adminTab('services')">Manage Services</button>
+   <button class="secondary" onclick="adminTab('payments')">Payments</button>
+   <button class="secondary" onclick="adminTab('settings')">Payment Settings</button>
   </div>
  </div>
 
  <div id="adminEnquiriesBox" class="card">
   <h3>All Enquiries</h3>
-  <input id="searchEnquiry" placeholder="Name, email, mobile ya service search karein" oninput="renderAdminEnquiries()">
+  <input id="searchEnquiry" placeholder="Service, mobile ya details search karein" oninput="renderAdminEnquiries()">
   <select id="statusFilter" onchange="renderAdminEnquiries()">
    <option value="">All Status</option>
    <option value="New">New</option>
@@ -259,19 +196,35 @@ footer{text-align:center;color:var(--muted);padding:25px}
  <div id="serviceManagerBox" class="card hidden">
   <h3>Manage Services</h3>
   <div id="serviceMessage" class="message"></div>
-
   <label>Service Name</label>
   <input id="newServiceName" placeholder="Service name">
-
   <label>Description</label>
   <textarea id="newServiceDescription" placeholder="Service details"></textarea>
-
   <label>Price (₹)</label>
   <input id="newServicePrice" type="number" min="0" placeholder="0">
-
   <button onclick="addService()">Add Service</button>
   <hr>
   <div id="serviceManagerList">Loading...</div>
+ </div>
+
+ <div id="adminPaymentsBox" class="card hidden">
+  <h3>Payment Verification</h3>
+  <div id="adminPayments">Loading...</div>
+ </div>
+
+ <div id="paymentSettingsBox" class="card hidden">
+  <h3>Payment Settings</h3>
+  <div id="settingsMessage" class="message"></div>
+  <label>UPI ID</label>
+  <input id="settingUpi" placeholder="example@upi">
+  <label>Account Name</label>
+  <input id="settingName" placeholder="Account holder name">
+  <label>Optional QR Image URL</label>
+  <input id="settingQR" placeholder="https://... (optional)">
+  <label>Payment Instructions</label>
+  <textarea id="settingInstructions" placeholder="Customer ke liye instructions"></textarea>
+  <button onclick="savePaymentSettings()">Save Payment Settings</button>
+  <div class="notice">Dynamic QR UPI ID aur enquiry amount se generate hoga. Optional QR image URL sirf backup display ke liye hai.</div>
  </div>
 </section>
 
@@ -286,101 +239,70 @@ footer{text-align:center;color:var(--muted);padding:25px}
 </section>
 
 </div>
-
 <footer>© DocSetu - Your Documents. Our Assistance.</footer>
 
 <script>
 "use strict";
 
-const SUPABASE_URL = "https://hqzxhbuhecaltjoxhffe.supabase.co";
-const SUPABASE_KEY = "sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
+const SUPABASE_URL="https://hqzxhbuhecaltjoxhffe.supabase.co";
+const SUPABASE_KEY="sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
+const BUCKET="docsetu-payment-proofs";
 
-let db = null;
-let currentUser = null;
-let currentRole = "customer";
-let allAdminEnquiries = [];
-let allServices = [];
+let db=null;
+let currentUser=null;
+let currentRole="customer";
+let allAdminEnquiries=[];
+let allServices=[];
+let currentEnquiries=[];
+let customerPaymentRecords=[];
+let paymentSettings=null;
+let selectedPaymentEnquiry=null;
 
-function initClient(){
- if(!window.supabase){
-  alert("Supabase library load nahi hui. Internet check karein.");
-  return false;
- }
- db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
- return true;
-}
-
-function el(id){
- return document.getElementById(id);
-}
-
+function el(id){return document.getElementById(id)}
 function msg(id,text,isError=false){
- const box=el(id);
- if(!box)return;
+ const box=el(id);if(!box)return;
  box.textContent=text;
  box.style.color=isError?"#c0392b":"#16834a";
 }
-
+function esc(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+ })[c]);
+}
+function money(value){return "₹"+Number(value||0).toFixed(2)}
+function initClient(){
+ if(!window.supabase){alert("Supabase library load nahi hui.");return false}
+ db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+ return true;
+}
 function show(view){
- ["homeView","authView","customerView","adminView","resetView"].forEach(id=>{
-  el(id).classList.add("hidden");
- });
+ ["homeView","authView","customerView","adminView","resetView"].forEach(id=>el(id).classList.add("hidden"));
  el(view).classList.remove("hidden");
  window.scrollTo(0,0);
 }
-
-function showHome(){
- show("homeView");
-}
-
+function showHome(){show("homeView")}
 function showAuth(){
- if(currentUser){
-  openDashboard();
-  return;
- }
+ if(currentUser){openDashboard();return}
  show("authView");
 }
-
-function toggleSignup(showSignup){
- el("loginBox").classList.toggle("hidden",showSignup);
- el("signupBox").classList.toggle("hidden",!showSignup);
- el("authHeading").textContent=showSignup?"Create Account":"Login";
+function toggleSignup(value){
+ el("loginBox").classList.toggle("hidden",value);
+ el("signupBox").classList.toggle("hidden",!value);
+ el("authHeading").textContent=value?"Create Account":"Login";
  msg("authMessage","");
 }
-
-function setLoggedInUI(loggedIn){
- el("dashboardNav").classList.toggle("hidden",!loggedIn);
- el("logoutNav").classList.toggle("hidden",!loggedIn);
-}
-
-function esc(value){
- return String(value??"").replace(/[&<>"']/g,char=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#039;"
- })[char]);
+function setLoggedInUI(value){
+ el("dashboardNav").classList.toggle("hidden",!value);
+ el("logoutNav").classList.toggle("hidden",!value);
 }
 
 async function login(){
  const email=el("loginEmail").value.trim();
  const password=el("loginPassword").value;
-
- if(!email||!password){
-  msg("authMessage","Email aur password dono bharein.",true);
-  return;
- }
-
+ if(!email||!password){msg("authMessage","Email aur password dono bharein.",true);return}
  msg("authMessage","Login ho raha hai...");
-
  const {data,error}=await db.auth.signInWithPassword({email,password});
-
- if(error){
-  msg("authMessage",error.message,true);
-  return;
- }
-
+ if(error){msg("authMessage",error.message,true);return}
  currentUser=data.user;
  await loadUserProfile();
 }
@@ -389,41 +311,19 @@ async function signupAccount(){
  const name=el("signupName").value.trim();
  const email=el("signupEmail").value.trim();
  const password=el("signupPassword").value;
-
- if(!name||!email||!password){
-  msg("authMessage","Saari details bharein.",true);
-  return;
- }
- if(password.length<6){
-  msg("authMessage","Password kam se kam 6 characters ka hona chahiye.",true);
-  return;
- }
-
+ if(!name||!email||!password){msg("authMessage","Saari details bharein.",true);return}
+ if(password.length<6){msg("authMessage","Password kam se kam 6 characters ka hona chahiye.",true);return}
  msg("authMessage","Account ban raha hai...");
-
  const {data,error}=await db.auth.signUp({
-  email,
-  password,
-  options:{data:{full_name:name}}
+  email,password,options:{data:{full_name:name}}
  });
-
- if(error){
-  msg("authMessage",error.message,true);
-  return;
- }
-
+ if(error){msg("authMessage",error.message,true);return}
  if(data.user){
-  const {error:profileError}=await db.from("profiles").upsert({
-   id:data.user.id,
-   full_name:name
+  const {error:pe}=await db.from("profiles").upsert({
+   id:data.user.id,full_name:name
   },{onConflict:"id"});
-
-  if(profileError){
-   msg("authMessage","Account ban gaya, lekin profile save nahi hui: "+profileError.message,true);
-   return;
-  }
+  if(pe){msg("authMessage","Account ban gaya, profile save nahi hui: "+pe.message,true);return}
  }
-
  if(data.session){
   currentUser=data.user;
   await loadUserProfile();
@@ -435,26 +335,17 @@ async function signupAccount(){
 
 async function forgotPassword(){
  const email=el("loginEmail").value.trim();
- if(!email){
-  msg("authMessage","Pehle email enter karein.",true);
-  return;
- }
-
+ if(!email){msg("authMessage","Pehle email enter karein.",true);return}
  const {error}=await db.auth.resetPasswordForEmail(email,{
   redirectTo:window.location.origin+window.location.pathname
  });
-
  if(error)msg("authMessage",error.message,true);
  else msg("authMessage","Password reset link email par bhej diya gaya hai.");
 }
 
 async function updatePassword(){
  const password=el("newPassword").value;
- if(password.length<6){
-  msg("resetMessage","Password kam se kam 6 characters ka hona chahiye.",true);
-  return;
- }
-
+ if(password.length<6){msg("resetMessage","Password kam se kam 6 characters ka hona chahiye.",true);return}
  const {error}=await db.auth.updateUser({password});
  if(error)msg("resetMessage",error.message,true);
  else msg("resetMessage","Password successfully update ho gaya.");
@@ -462,37 +353,24 @@ async function updatePassword(){
 
 async function logout(){
  const {error}=await db.auth.signOut();
- if(error){
-  alert(error.message);
-  return;
- }
- currentUser=null;
- currentRole="customer";
- setLoggedInUI(false);
- showHome();
+ if(error){alert(error.message);return}
+ currentUser=null;currentRole="customer";
+ setLoggedInUI(false);showHome();
 }
 
 async function loadUserProfile(){
  if(!currentUser)return;
-
  const {data,error}=await db.from("profiles")
-  .select("full_name,role")
-  .eq("id",currentUser.id)
-  .maybeSingle();
-
- if(error){
-  alert("Profile load nahi hui: "+error.message);
-  return;
- }
-
+  .select("full_name,role").eq("id",currentUser.id).maybeSingle();
+ if(error){alert("Profile load nahi hui: "+error.message);return}
  currentRole=data?.role||"customer";
  setLoggedInUI(true);
-
  if(currentRole==="admin"){
   el("adminEmail").textContent=currentUser.email;
   show("adminView");
   await loadAllEnquiries();
   await loadServiceManager();
+  await loadPaymentSettings();
  }else{
   el("customerEmail").textContent=currentUser.email;
   show("customerView");
@@ -502,150 +380,317 @@ async function loadUserProfile(){
 }
 
 function openDashboard(){
- if(!currentUser){
-  showAuth();
-  return;
- }
+ if(!currentUser){showAuth();return}
  if(currentRole==="admin"){
-  show("adminView");
-  loadAllEnquiries();
+  show("adminView");loadAllEnquiries();
  }else{
-  show("customerView");
-  loadServices();
+  show("customerView");loadServices();
  }
 }
 
 async function loadServices(){
  const {data,error}=await db.from("services")
-  .select("*")
-  .eq("active",true)
-  .order("name");
-
- if(error){
-  console.error(error);
-  return;
- }
-
+  .select("*").eq("active",true).order("name");
+ if(error){console.error(error);return}
  allServices=data||[];
-
  el("homeServices").innerHTML=allServices.length?
-  allServices.map(s=>`
-   <div class="service">
-    <h3>${esc(s.name)}</h3>
-    <p>${esc(s.description||"Document assistance")}</p>
-    <strong>₹${esc(s.price??0)}</strong>
-   </div>
-  `).join(""):"<p>Abhi services available nahi hain.</p>";
-
- el("serviceSelect").innerHTML=
-  '<option value="">Service select karein</option>'+
-  allServices.map(s=>`
-   <option value="${esc(s.name)}">${esc(s.name)} - ₹${esc(s.price??0)}</option>
-  `).join("");
+  allServices.map(s=>`<div class="service"><h3>${esc(s.name)}</h3><p>${esc(s.description||"Document assistance")}</p><strong>${money(s.price)}</strong></div>`).join("")
+  :"<p>Abhi services available nahi hain.</p>";
+ el("serviceSelect").innerHTML='<option value="">Service select karein</option>'+
+  allServices.map(s=>`<option value="${esc(s.name)}">${esc(s.name)} - ${money(s.price)}</option>`).join("");
 }
 
 async function submitEnquiry(){
- if(!currentUser){
-  showAuth();
-  return;
- }
-
+ if(!currentUser){showAuth();return}
  const service=el("serviceSelect").value;
  const phone=el("customerPhone").value.trim();
  const description=el("enquiryDetails").value.trim();
-
- if(!service||!phone||!description){
-  msg("enquiryMessage","Saari details bharein.",true);
-  return;
- }
-
- if(!/^[0-9]{10}$/.test(phone)){
-  msg("enquiryMessage","Sahi 10 digit mobile number enter karein.",true);
-  return;
- }
-
+ if(!service||!phone||!description){msg("enquiryMessage","Saari details bharein.",true);return}
+ if(!/^[0-9]{10}$/.test(phone)){msg("enquiryMessage","Sahi 10 digit mobile number enter karein.",true);return}
  msg("enquiryMessage","Enquiry submit ho rahi hai...");
-
  const {error}=await db.from("enquiries").insert({
-  user_id:currentUser.id,
-  service_name:service,
-  description:description,
-  phone:phone,
-  status:"New"
+  user_id:currentUser.id,service_name:service,
+  description,phone,status:"New"
  });
-
- if(error){
-  msg("enquiryMessage",error.message,true);
-  return;
- }
-
+ if(error){msg("enquiryMessage",error.message,true);return}
  el("customerPhone").value="";
  el("enquiryDetails").value="";
  msg("enquiryMessage","Aapki enquiry successfully submit ho gayi.");
 }
 
 function customerTab(tab){
- if(tab==="new"){
-  el("newEnquiryBox").classList.remove("hidden");
-  el("myEnquiriesBox").classList.add("hidden");
- }else{
-  el("newEnquiryBox").classList.add("hidden");
-  el("myEnquiriesBox").classList.remove("hidden");
-  loadMyEnquiries();
- }
+ el("newEnquiryBox").classList.toggle("hidden",tab!=="new");
+ el("myEnquiriesBox").classList.toggle("hidden",tab!=="mine");
+ el("customerPaymentsBox").classList.toggle("hidden",tab!=="payments");
+ el("makePaymentBox").classList.add("hidden");
+ if(tab==="mine")loadMyEnquiries();
+ if(tab==="payments")loadCustomerPayments();
 }
 
 async function loadMyEnquiries(){
- const box=el("myEnquiries");
- box.innerHTML="Loading...";
-
+ const box=el("myEnquiries");box.textContent="Loading...";
  const {data,error}=await db.from("enquiries")
-  .select("*")
-  .eq("user_id",currentUser.id)
+  .select("*").eq("user_id",currentUser.id)
   .order("created_at",{ascending:false});
+ if(error){box.textContent=error.message;return}
+ currentEnquiries=data||[];
+ if(!currentEnquiries.length){box.innerHTML="<p>Abhi koi enquiry nahi hai.</p>";return}
+ box.innerHTML=currentEnquiries.map(item=>`
+  <div class="service">
+   <h3>${esc(item.service_name)}</h3>
+   <p>${esc(item.description)}</p>
+   <p>Mobile: ${esc(item.phone)}</p>
+   <p>Status: <span class="status">${esc(item.status)}</span></p>
+   <p>Fee: <strong>${money(item.fee)}</strong></p>
+   <small class="muted">${new Date(item.created_at).toLocaleString("en-IN")}</small>
+  </div>`).join("");
+}
+
+async function loadCustomerPayments(){
+ const box=el("customerPayments");box.textContent="Loading...";
+ const [enqRes,payRes,setRes]=await Promise.all([
+  db.from("enquiries").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}),
+  db.from("payments").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}),
+  db.from("payment_settings").select("*").eq("id",true).maybeSingle()
+ ]);
+ if(enqRes.error){box.textContent=enqRes.error.message;return}
+ if(payRes.error){box.textContent=payRes.error.message;return}
+ if(setRes.error){box.textContent=setRes.error.message;return}
+ currentEnquiries=enqRes.data||[];
+ customerPaymentRecords=payRes.data||[];
+ paymentSettings=setRes.data;
+ if(!currentEnquiries.length){box.innerHTML="<p>Abhi koi enquiry nahi hai.</p>";return}
+
+ box.innerHTML=currentEnquiries.map(enq=>{
+  const p=customerPaymentRecords.find(x=>x.enquiry_id===enq.id);
+  let action="";
+  if(Number(enq.fee)>0){
+   if(p&&p.status==="Verified")action='<p><span class="status">Payment Verified</span></p>';
+   else if(p&&p.status==="Pending")action='<p><span class="status">Payment Pending Verification</span></p>';
+   else action=`<button onclick="startPayment('${esc(enq.id)}')">${p&&p.status==="Rejected"?"Pay Again":"Pay Now"}</button>`;
+  }else{
+   action='<p class="muted">Admin ne abhi fee set nahi ki hai.</p>';
+  }
+  return `<div class="service">
+   <h3>${esc(enq.service_name)}</h3>
+   <p>Enquiry: ${esc(enq.description)}</p>
+   <p>Fee: <strong>${money(enq.fee)}</strong></p>
+   ${p?`<p>Payment: <span class="status">${esc(p.status)}</span></p><p>Transaction ID: ${esc(p.transaction_id)}</p>${p.admin_note?`<p>Admin Note: ${esc(p.admin_note)}</p>`:""}`:""}
+   ${action}
+  </div>`;
+ }).join("");
+}
+
+async function startPayment(enquiryId){
+ const enquiry=currentEnquiries.find(x=>x.id===enquiryId);
+ if(!enquiry||Number(enquiry.fee)<=0){alert("Is enquiry ki fee abhi set nahi hai.");return}
+ const old=customerPaymentRecords.find(x=>x.enquiry_id===enquiryId);
+ if(old&&old.status==="Pending"){alert("Aapka payment pehle se verification ke liye bheja hua hai.");return}
+ if(old&&old.status==="Verified"){alert("Ye payment pehle hi verify ho chuka hai.");return}
+ selectedPaymentEnquiry=enquiry;
+ el("customerPaymentsBox").classList.add("hidden");
+ el("makePaymentBox").classList.remove("hidden");
+ msg("paymentMessage","");
+ el("transactionId").value="";
+ el("paymentFile").value="";
+ el("paymentDetails").innerHTML=`
+  <div class="notice">
+   <strong>${esc(enquiry.service_name)}</strong><br>
+   Enquiry Fee: <strong>${money(enquiry.fee)}</strong>
+  </div>`;
+ el("paymentInstructions").textContent=paymentSettings?.instructions||"Payment karne ke baad screenshot upload karein.";
+ 
+el("paymentQR").innerHTML="";
+el("paymentQR").classList.remove("hidden");
+
+if(paymentSettings?.upi_id && window.QRCode){
+ const upi=`upi://pay?pa=${encodeURIComponent(paymentSettings.upi_id)}&pn=${encodeURIComponent(paymentSettings.account_name||"DocSetu")}&am=${Number(enquiry.fee).toFixed(2)}&cu=INR`;
+ new QRCode(el("paymentQR"),{text:upi,width:190,height:190});
+}else if(paymentSettings?.qr_image_url){
+ el("paymentQR").innerHTML=`<img src="${esc(paymentSettings.qr_image_url)}" alt="Payment QR">`;
+}else{
+ el("paymentQR").innerHTML="<p>Admin ne abhi UPI details set nahi ki hain.</p>";
+}
+}
+
+function closePayment(){
+ el("makePaymentBox").classList.add("hidden");
+ el("customerPaymentsBox").classList.remove("hidden");
+}
+
+async function submitPayment(){
+ if(!selectedPaymentEnquiry||!currentUser)return;
+
+ const transactionId=el("transactionId").value.trim();
+ const file=el("paymentFile").files[0];
+
+ if(!transactionId||!file){
+  msg("paymentMessage","Transaction ID aur screenshot dono zaroori hain.",true);
+  return;
+ }
+ if(!file.type.startsWith("image/")){
+  msg("paymentMessage","Sirf image upload karein.",true);
+  return;
+ }
+ if(file.size>5*1024*1024){
+  msg("paymentMessage","Image 5 MB se chhoti honi chahiye.",true);
+  return;
+ }
+
+ msg("paymentMessage","Payment proof upload ho raha hai...");
+
+ const path=currentUser.id+"/"+Date.now()+"_"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+
+ const {error:uploadError}=await db.storage.from(BUCKET).upload(path,file);
+ if(uploadError){
+  msg("paymentMessage",uploadError.message,true);
+  return;
+ }
+
+ const {error}=await db.from("payments").insert({
+  user_id:currentUser.id,
+  enquiry_id:selectedPaymentEnquiry.id,
+  amount:Number(selectedPaymentEnquiry.fee),
+  transaction_id:transactionId,
+  screenshot_path:path,
+  status:"Pending"
+ });
+
+ if(error){
+  msg("paymentMessage",error.message,true);
+  return;
+ }
+
+ msg("paymentMessage","Payment proof submit ho gaya. Admin verification karega.");
+ await loadCustomerPayments();
+ closePayment();
+}
+
+async function loadPaymentSettings(){
+ const {data,error}=await db.from("payment_settings")
+  .select("*").eq("id",true).maybeSingle();
+
+ if(error){
+  console.error(error);
+  return;
+ }
+ paymentSettings=data;
+
+ if(data){
+  el("settingUpi").value=data.upi_id||"";
+  el("settingName").value=data.account_name||"";
+  el("settingQR").value=data.qr_image_url||"";
+  el("settingInstructions").value=data.instructions||"";
+ }
+}
+
+async function savePaymentSettings(){
+ const values={
+  upi_id:el("settingUpi").value.trim(),
+  account_name:el("settingName").value.trim(),
+  qr_image_url:el("settingQR").value.trim()||null,
+  instructions:el("settingInstructions").value.trim()
+ };
+
+ msg("settingsMessage","Settings save ho rahi hain...");
+
+ const {error}=await db.from("payment_settings")
+  .update(values).eq("id",true);
+
+ if(error){
+  msg("settingsMessage",error.message,true);
+  return;
+ }
+
+ paymentSettings={...paymentSettings,...values};
+ msg("settingsMessage","Payment settings save ho gayi hain.");
+}
+
+async function loadAdminPayments(){
+ const box=el("adminPayments");
+ box.textContent="Loading...";
+
+ const {data,error}=await db.from("payments")
+  .select("*").order("created_at",{ascending:false});
 
  if(error){
   box.textContent=error.message;
   return;
  }
 
- if(!data||data.length===0){
-  box.innerHTML="<p>Abhi koi enquiry nahi hai.</p>";
+ if(!data?.length){
+  box.innerHTML="<p>Abhi koi payment nahi hai.</p>";
   return;
  }
 
- box.innerHTML=data.map(item=>`
-  <div class="service">
-   <h3>${esc(item.service_name)}</h3>
-   <p>${esc(item.description)}</p>
-   <p>Mobile: ${esc(item.phone)}</p>
-   <p>Status: <span class="status">${esc(item.status)}</span></p>
-   <small class="muted">${new Date(item.created_at).toLocaleString("en-IN")}</small>
-  </div>
- `).join("");
+ let html="";
+
+ for(const p of data){
+  const {data:urlData}=await db.storage.from(BUCKET)
+   .createSignedUrl(p.screenshot_path,3600);
+
+  html+=`
+   <div class="service">
+    <h3>Payment: ${money(p.amount)}</h3>
+    <p>User ID: ${esc(p.user_id)}</p>
+    <p>Enquiry ID: ${esc(p.enquiry_id)}</p>
+    <p>Transaction ID: ${esc(p.transaction_id)}</p>
+    <p>Status: <span class="status">${esc(p.status)}</span></p>
+    ${urlData?.signedUrl?`<p><a href="${esc(urlData.signedUrl)}" target="_blank" rel="noopener">View Screenshot</a></p>`:"<p>Screenshot unavailable</p>"}
+    ${p.admin_note?`<p>Admin Note: ${esc(p.admin_note)}</p>`:""}
+    ${p.status==="Pending"?`
+     <label>Admin Note</label>
+     <input id="note_${esc(p.id)}" placeholder="Optional note">
+     <button class="success" onclick="reviewPayment('${esc(p.id)}','Verified')">Verify</button>
+     <button class="danger" onclick="reviewPayment('${esc(p.id)}','Rejected')">Reject</button>
+    `:""}
+   </div>`;
+ }
+
+ box.innerHTML=html;
+}
+
+async function reviewPayment(id,status){
+ const note=el("note_"+id)?.value.trim()||"";
+
+ if(!confirm("Payment ko "+status+" karna hai?"))return;
+
+ const {error}=await db.from("payments").update({
+  status,
+  admin_note:note,
+  verified_by:currentUser.id,
+  verified_at:new Date().toISOString()
+ }).eq("id",id);
+
+ if(error){
+  alert(error.message);
+  return;
+ }
+
+ await loadAdminPayments();
 }
 
 function adminTab(tab){
- if(tab==="enquiries"){
-  el("adminEnquiriesBox").classList.remove("hidden");
-  el("serviceManagerBox").classList.add("hidden");
-  loadAllEnquiries();
- }else{
-  el("adminEnquiriesBox").classList.add("hidden");
-  el("serviceManagerBox").classList.remove("hidden");
-  loadServiceManager();
- }
+ el("adminEnquiriesBox").classList.toggle("hidden",tab!=="enquiries");
+ el("serviceManagerBox").classList.toggle("hidden",tab!=="services");
+ el("adminPaymentsBox").classList.toggle("hidden",tab!=="payments");
+ el("paymentSettingsBox").classList.toggle("hidden",tab!=="settings");
+
+ if(tab==="enquiries")loadAllEnquiries();
+ if(tab==="services")loadServiceManager();
+ if(tab==="payments")loadAdminPayments();
+ if(tab==="settings")loadPaymentSettings();
 }
 
 async function loadAllEnquiries(){
- el("adminEnquiries").textContent="Loading...";
+ const box=el("adminEnquiries");
+ box.textContent="Loading...";
 
  const {data,error}=await db.from("enquiries")
-  .select("*")
-  .order("created_at",{ascending:false});
+  .select("*").order("created_at",{ascending:false});
 
  if(error){
-  el("adminEnquiries").textContent=error.message;
+  box.textContent=error.message;
   return;
  }
 
@@ -655,91 +700,69 @@ async function loadAllEnquiries(){
 
 function renderAdminEnquiries(){
  const box=el("adminEnquiries");
- if(!box)return;
+ const search=(el("searchEnquiry")?.value||"").toLowerCase();
+ const status=el("statusFilter")?.value||"";
 
- const q=(el("searchEnquiry").value||"").toLowerCase();
- const status=el("statusFilter").value;
-
- const filtered=allAdminEnquiries.filter(item=>{
-  const searchable=[
-   item.service_name,
-   item.description,
-   item.phone,
-   item.status,
-   item.user_id
-  ].join(" ").toLowerCase();
-
-  return searchable.includes(q)&&(!status||item.status===status);
+ const rows=allAdminEnquiries.filter(x=>{
+  const matchStatus=!status||x.status===status;
+  const text=[x.service_name,x.phone,x.description,x.user_id]
+   .join(" ").toLowerCase();
+  return matchStatus&&text.includes(search);
  });
 
- if(filtered.length===0){
+ if(!rows.length){
   box.innerHTML="<p>Koi enquiry nahi mili.</p>";
   return;
  }
 
  box.innerHTML=`
-  <table>
-   <thead>
-    <tr>
-     <th>Service / Details</th>
-     <th>Mobile</th>
-     <th>Date</th>
-     <th>Status</th>
-     <th>Update</th>
-    </tr>
-   </thead>
-   <tbody>
-    ${filtered.map(item=>`
-     <tr>
-      <td>
-       <strong>${esc(item.service_name)}</strong>
-       <p>${esc(item.description)}</p>
-       <small>User ID: ${esc(item.user_id)}</small>
-      </td>
-      <td>${esc(item.phone)}</td>
-      <td>${new Date(item.created_at).toLocaleDateString("en-IN")}</td>
-      <td><span class="status">${esc(item.status)}</span></td>
-      <td>
-       <select id="status-${esc(item.id)}">
-        ${["New","In Progress","Completed","Rejected"].map(s=>`
-         <option value="${s}" ${item.status===s?"selected":""}>${s}</option>
-        `).join("")}
-       </select>
-       <button onclick="updateStatus('${esc(item.id)}')">Save</button>
-      </td>
-     </tr>
-    `).join("")}
-   </tbody>
-  </table>
- `;
+ <table>
+ <tr><th>Service / Details</th><th>Mobile</th><th>User ID</th><th>Fee</th><th>Status</th><th>Update</th></tr>
+ ${rows.map(x=>`
+ <tr>
+  <td><strong>${esc(x.service_name)}</strong><br>${esc(x.description)}</td>
+  <td>${esc(x.phone)}</td>
+  <td>${esc(x.user_id)}</td>
+  <td>${money(x.fee)}</td>
+  <td>${esc(x.status)}</td>
+  <td>
+   <input type="number" min="0" id="fee_${esc(x.id)}" value="${Number(x.fee||0)}" placeholder="Fee">
+   <select id="status_${esc(x.id)}">
+    ${["New","In Progress","Completed","Rejected"].map(s=>`<option value="${s}" ${x.status===s?"selected":""}>${s}</option>`).join("")}
+   </select>
+   <button onclick="updateEnquiry('${esc(x.id)}')">Save</button>
+  </td>
+ </tr>`).join("")}
+ </table>`;
 }
 
-async function updateStatus(id){
- const select=el("status-"+id);
- if(!select)return;
+async function updateEnquiry(id){
+ const fee=Number(el("fee_"+id).value);
+ const status=el("status_"+id).value;
 
- const newStatus=select.value;
-
- const {error}=await db.from("enquiries")
-  .update({status:newStatus,updated_at:new Date().toISOString()})
-  .eq("id",id);
-
- if(error){
-  alert("Status update nahi hua: "+error.message);
+ if(!Number.isFinite(fee)||fee<0){
+  alert("Sahi fee enter karein.");
   return;
  }
 
- alert("Status successfully update ho gaya.");
+ const {error}=await db.from("enquiries")
+  .update({fee,status}).eq("id",id);
+
+ if(error){
+  alert(error.message);
+  return;
+ }
+
+ alert("Enquiry update ho gayi.");
  await loadAllEnquiries();
 }
 
 async function loadServiceManager(){
  const box=el("serviceManagerList");
- if(!box)return;
+ box.textContent="Loading...";
 
  const {data,error}=await db.from("services")
-  .select("*")
-  .order("name");
+  .select("*").order("created_at",{ascending:false});
 
  if(error){
   box.textContent=error.message;
@@ -748,8 +771,8 @@ async function loadServiceManager(){
 
  allServices=data||[];
 
- if(allServices.length===0){
-  box.innerHTML="<p>Koi service nahi hai.</p>";
+ if(!allServices.length){
+  box.innerHTML="<p>Abhi koi service nahi hai. Upar se add karein.</p>";
   return;
  }
 
@@ -757,11 +780,23 @@ async function loadServiceManager(){
   <div class="service">
    <h3>${esc(s.name)}</h3>
    <p>${esc(s.description||"")}</p>
-   <p>Price: ₹${esc(s.price??0)}</p>
-   <p>Status: ${s.active?"Active":"Inactive"}</p>
-   <button onclick="updateService('${esc(s.id)}',${s.active?"false":"true"})">
+   <p>Price: <strong>${money(s.price)}</strong></p>
+   <p>Status: <span class="status">${s.active?"Active":"Deactivated"}</span></p>
+
+   <label>Service Name</label>
+   <input id="sn_${esc(s.id)}" value="${esc(s.name)}">
+
+   <label>Description</label>
+   <textarea id="sd_${esc(s.id)}">${esc(s.description||"")}</textarea>
+
+   <label>Price</label>
+   <input type="number" min="0" id="sp_${esc(s.id)}" value="${Number(s.price||0)}">
+
+   <button onclick="editService('${esc(s.id)}')">Save Changes</button>
+   <button class="${s.active?"secondary":"success"}" onclick="updateService('${esc(s.id)}',${!s.active})">
     ${s.active?"Deactivate":"Activate"}
    </button>
+   <button class="danger" onclick="deleteService('${esc(s.id)}')">Permanent Delete</button>
   </div>
  `).join("");
 }
@@ -769,23 +804,17 @@ async function loadServiceManager(){
 async function addService(){
  const name=el("newServiceName").value.trim();
  const description=el("newServiceDescription").value.trim();
- const price=Number(el("newServicePrice").value||0);
+ const price=Number(el("newServicePrice").value);
 
- if(!name){
-  msg("serviceMessage","Service name enter karein.",true);
+ if(!name||!el("newServicePrice").value||!Number.isFinite(price)||price<0){
+  msg("serviceMessage","Service name aur valid price bharein.",true);
   return;
  }
 
- if(price<0||!Number.isFinite(price)){
-  msg("serviceMessage","Sahi price enter karein.",true);
-  return;
- }
+ msg("serviceMessage","Service add ho rahi hai...");
 
  const {error}=await db.from("services").insert({
-  name,
-  description,
-  price,
-  active:true
+  name,description,price,active:true
  });
 
  if(error){
@@ -796,14 +825,39 @@ async function addService(){
  el("newServiceName").value="";
  el("newServiceDescription").value="";
  el("newServicePrice").value="";
- msg("serviceMessage","Service add ho gayi.");
+
+ msg("serviceMessage","Service successfully add ho gayi.");
  await loadServiceManager();
+ await loadServices();
+}
+
+async function editService(id){
+ const name=el("sn_"+id).value.trim();
+ const description=el("sd_"+id).value.trim();
+ const price=Number(el("sp_"+id).value);
+
+ if(!name||!Number.isFinite(price)||price<0){
+  alert("Service name aur valid price enter karein.");
+  return;
+ }
+
+ const {error}=await db.from("services").update({
+  name,description,price
+ }).eq("id",id);
+
+ if(error){
+  alert(error.message);
+  return;
+ }
+
+ alert("Service update ho gayi.");
+ await loadServiceManager();
+ await loadServices();
 }
 
 async function updateService(id,active){
  const {error}=await db.from("services")
-  .update({active:active==="true"})
-  .eq("id",id);
+  .update({active:Boolean(active)}).eq("id",id);
 
  if(error){
   alert(error.message);
@@ -814,33 +868,47 @@ async function updateService(id,active){
  await loadServices();
 }
 
-async function init(){
- if(!initClient())return;
+async function deleteService(id){
+ if(!confirm("Kya aap is service ko permanently delete karna chahte hain? Ye action wapas nahi hoga."))return;
 
- const {data,error}=await db.auth.getSession();
+ const {error}=await db.from("services").delete().eq("id",id);
 
  if(error){
-  console.error(error);
+  alert("Delete nahi hui: "+error.message);
+  return;
  }
 
- if(data?.session){
-  currentUser=data.session.user;
+ alert("Service permanently delete ho gayi.");
+ await loadServiceManager();
+ await loadServices();
+}
+
+async function boot(){
+ if(!initClient())return;
+
+ const {data:{session}}=await db.auth.getSession();
+
+ if(session){
+  currentUser=session.user;
   await loadUserProfile();
  }else{
-  setLoggedInUI(false);
   showHome();
  }
-
- await loadServices();
 
  db.auth.onAuthStateChange((event,session)=>{
   if(event==="PASSWORD_RECOVERY"){
    show("resetView");
   }
+  if(!session){
+   currentUser=null;
+   currentRole="customer";
+   setLoggedInUI(false);
+  }
  });
 }
 
-document.addEventListener("DOMContentLoaded",init);
-</script>
+boot();
+ </script>
 </body>
-</
+</html>
+ 
