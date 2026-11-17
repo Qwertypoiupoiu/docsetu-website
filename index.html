@@ -704,14 +704,9 @@ function renderAdminEnquiries(){
  const status=el("statusFilter")?.value||"";
 
  const rows=allAdminEnquiries.filter(x=>{
-  const profile=allAdminProfiles.find(p=>p.id===x.user_id)||{};
   const matchStatus=!status||x.status===status;
-
-  const text=[
-   x.service_name,x.phone,x.description,x.user_id,
-   profile.full_name,profile.email
-  ].join(" ").toLowerCase();
-
+  const text=[x.service_name,x.phone,x.description,x.user_id]
+   .join(" ").toLowerCase();
   return matchStatus&&text.includes(search);
  });
 
@@ -722,23 +717,12 @@ function renderAdminEnquiries(){
 
  box.innerHTML=`
  <table>
- <tr>
-  <th>Service / Details</th>
-  <th>Customer</th>
-  <th>Email</th>
-  <th>Mobile</th>
-  <th>Fee</th>
-  <th>Status</th>
-  <th>Update</th>
- </tr>
- ${rows.map(x=>{
-  const profile=allAdminProfiles.find(p=>p.id===x.user_id)||{};
-  return `
+ <tr><th>Service / Details</th><th>Mobile</th><th>User ID</th><th>Fee</th><th>Status</th><th>Update</th></tr>
+ ${rows.map(x=>`
  <tr>
   <td><strong>${esc(x.service_name)}</strong><br>${esc(x.description)}</td>
-  <td>${esc(profile.full_name||"—")}</td>
-  <td>${esc(profile.email||"—")}</td>
-  <td>${esc(x.phone||"—")}</td>
+  <td>${esc(x.phone)}</td>
+  <td>${esc(x.user_id)}</td>
   <td>${money(x.fee)}</td>
   <td>${esc(x.status)}</td>
   <td>
@@ -748,8 +732,7 @@ function renderAdminEnquiries(){
    </select>
    <button onclick="updateEnquiry('${esc(x.id)}')">Save</button>
   </td>
- </tr>`;
- }).join("")}
+ </tr>`).join("")}
  </table>`;
 }
 
