@@ -695,24 +695,6 @@ async function loadAllEnquiries(){
  }
 
  allAdminEnquiries=data||[];
- allAdminProfiles=[];
-
- const userIds=[...new Set(allAdminEnquiries.map(x=>x.user_id).filter(Boolean))];
-
- if(userIds.length){
-  const {data:profiles,error:profileError}=await db
-   .from("profiles")
-   .select("id,full_name,email")
-   .in("id",userIds);
-
-  if(profileError){
-   box.textContent="Customer details load nahi hui: "+profileError.message;
-   return;
-  }
-
-  allAdminProfiles=profiles||[];
- }
-
  renderAdminEnquiries();
 }
 
