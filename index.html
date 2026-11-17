@@ -684,30 +684,75 @@ function adminTab(tab){
 
 async function loadAllEnquiries(){
  const box=el("adminEnquiries");
- box.textContent="Loading...";
+ box.textContent="Enquiries load ho rahi hain...";
 
- const {data,error}=await db.from("enquiries")
-  .select("*").order("created_at",{ascending:false});
+ try {
+  const {data:enquiries,error}=await db
+   .from("enquiries")
+   .select("*")
+   .order("created_at",{ascending:false});
 
- if(error){
-  box.textContent=error.message;
-  return;
+  if(error) throw error;
+
+  allAdminEnquiries=enquiries||[];
+  allAdminProfiles=[];
+
+  const userIds=[
+   ...new Set(
+    allAdminEnquiries
+     .map(x=>x.user_id)
+     .filter(Boolean)
+   )
+  ];
+
+  if(userIds.length){
+   const {data:profiles,error:profileError}=await db
+    .from("profiles")
+    .select("id,full_name,email")
+    .in("id",userIds);
+
+   if(profileError) throw profileError;
+
+   allAdminProfiles=profiles||[];
+  }
+
+  renderAdminEnquiries();
+
+ } catch(error){
+  console.error("Admin enquiries error:",error);
+  box.innerHTML=`
+   <p>Enquiries load nahi hui.</p>
+   <p>${esc(error.message||"Unknown error")}</p>
+   <button onclick="loadAllEnquiries()">Retry</button>
+  `;
  }
-
- allAdminEnquiries=data||[];
- renderAdminEnquiries();
 }
+ 
 
 function renderAdminEnquiries(){
  const box=el("adminEnquiries");
- const search=(el("searchEnquiry")?.value||"").toLowerCase();
+ const search=(el("searchEnquiry")?.value||"").trim().toLowerCase();
  const status=el("statusFilter")?.value||"";
 
- const rows=allAdminEnquiries.filter(x=>{
+ const profileMap=new Map(
+  (allAdminProfiles||[]).map(p=>[p.id,p])
+ );
+
+ const rows=(allAdminEnquiries||[]).filter(x=>{
+  const profile=profileMap.get(x.user_id)||{};
+
   const matchStatus=!status||x.status===status;
-  const text=[x.service_name,x.phone,x.description,x.user_id]
-   .join(" ").toLowerCase();
-  return matchStatus&&text.includes(search);
+
+  const searchable=[
+   x.service_name,
+   x.phone,
+   x.description,
+   x.user_id,
+   profile.full_name,
+   profile.email
+  ].join(" ").toLowerCase();
+
+  return matchStatus&&searchable.includes(search);
  });
 
  if(!rows.length){
@@ -716,26 +761,61 @@ function renderAdminEnquiries(){
  }
 
  box.innerHTML=`
+ <div style="overflow-x:auto">
  <table>
- <tr><th>Service / Details</th><th>Mobile</th><th>User ID</th><th>Fee</th><th>Status</th><th>Update</th></tr>
- ${rows.map(x=>`
- <tr>
-  <td><strong>${esc(x.service_name)}</strong><br>${esc(x.description)}</td>
-  <td>${esc(x.phone)}</td>
-  <td>${esc(x.user_id)}</td>
-  <td>${money(x.fee)}</td>
-  <td>${esc(x.status)}</td>
-  <td>
-   <input type="number" min="0" id="fee_${esc(x.id)}" value="${Number(x.fee||0)}" placeholder="Fee">
-   <select id="status_${esc(x.id)}">
-    ${["New","In Progress","Completed","Rejected"].map(s=>`<option value="${s}" ${x.status===s?"selected":""}>${s}</option>`).join("")}
-   </select>
-   <button onclick="updateEnquiry('${esc(x.id)}')">Save</button>
-  </td>
- </tr>`).join("")}
- </table>`;
-}
+  <tr>
+   <th>Enquiry</th>
+   <th>Customer</th>
+   <th>Email</th>
+   <th>Mobile</th>
+   <th>Date</th>
+   <th>Fee</th>
+   <th>Status</th>
+   <th>Action</th>
+  </tr>
 
+  ${rows.map(x=>{
+   const profile=profileMap.get(x.user_id)||{};
+
+   return `
+   <tr>
+    <td>
+     <strong>${esc(x.service_name||"—")}</strong>
+     <br>${esc(x.description||"—")}
+    </td>
+
+    <td>${esc(profile.full_name||"—")}</td>
+    <td>${esc(profile.email||"—")}</td>
+    <td>${esc(x.phone||"—")}</td>
+    <td>${x.created_at?new Date(x.created_at).toLocaleDateString("en-IN"):"—"}</td>
+
+    <td>
+     <input type="number" min="0"
+      id="fee_${esc(x.id)}"
+      value="${Number(x.fee||0)}"
+      placeholder="Fee">
+    </td>
+
+    <td>
+     <select id="status_${esc(x.id)}">
+      ${["New","In Progress","Completed","Rejected"].map(s=>
+       `<option value="${s}" ${x.status===s?"selected":""}>${s}</option>`
+      ).join("")}
+     </select>
+    </td>
+
+    <td>
+     <button onclick="updateEnquiry('${esc(x.id)}')">Save</button>
+    </td>
+   </tr>`;
+  }).join("")}
+ </table>
+ </div>
+
+ <p>Total enquiries: ${rows.length}</p>
+ `;
+}
+ 
 async function updateEnquiry(id){
  const fee=Number(el("fee_"+id).value);
  const status=el("status_"+id).value;
