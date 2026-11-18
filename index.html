@@ -1161,7 +1161,7 @@ async function deleteLockerDocument(name){
 });
 async function loadAdminLockerDocuments(){
  const box=el("adminCustomerDocuments");
- box.textContent="Customer documents load ho rahe hain...";
+ box.textContent="Customer folders load ho rahe hain...";
 
  const {data:customers,error}=await db
   .from("profiles")
@@ -1185,38 +1185,51 @@ async function loadAdminLockerDocuments(){
    .from(LOCKER_BUCKET)
    .list(customer.id,{limit:100});
 
-  html+=`<div class="service">
-   <h3>${esc(customer.full_name || "Customer")}</h3>
-   <p>${esc(customer.email || "")}</p>`;
+  const count=files ? files.length : 0;
+
+  html+=`
+   <details class="service">
+    <summary style="cursor:pointer;padding:8px;">
+     <strong>📁 ${esc(customer.full_name || "Customer")}</strong>
+     <br>
+     <small>${esc(customer.email || "")}</small>
+     <br>
+     <small>${count} Documents</small>
+    </summary>
+    <hr>
+  `;
 
   if(fileError){
-   html+=`<p>Documents load nahi hue.</p>`;
+   html+="<p>Documents load nahi hue.</p>";
   }else if(!files || !files.length){
-   html+=`<p>Koi document upload nahi hai.</p>`;
+   html+="<p>Koi document upload nahi hai.</p>";
   }else{
    for(const file of files){
     const path=customer.id+"/"+file.name;
+
     const {data,error:linkError}=await db.storage
      .from(LOCKER_BUCKET)
      .createSignedUrl(path,300);
 
-    html+=`<p><strong>${esc(file.name)}</strong><br>`;
+    html+=`<div class="service">
+     <strong>${esc(file.name)}</strong><br>`;
 
     if(!linkError && data?.signedUrl){
-     html+=`<a href="${esc(data.signedUrl)}" target="_blank" rel="noopener">Download Document</a>`;
+     html+=`<a href="${esc(data.signedUrl)}"
+      target="_blank" rel="noopener">Download Document</a>`;
     }else{
-     html+=`Download link nahi bana.`;
+     html+="Download link nahi bana.";
     }
 
-    html+="</p>";
+    html+="</div>";
    }
   }
 
-  html+="</div>";
+  html+="</details>";
  }
 
  box.innerHTML=html;
-} 
+}
 async function boot(){
  if(!initClient())return;
 
