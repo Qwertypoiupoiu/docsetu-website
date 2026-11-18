@@ -368,11 +368,40 @@ async function signupAccount(){
  if(data.session){
   currentUser=data.user;
   await loadUserProfile();
+  await processReferral();
  }else{
   msg("authMessage","Account ban gaya. Email confirmation ke baad login karein.");
   toggleSignup(false);
  }
 }
+ 
+async function processReferral(){
+ const urlCode = new URLSearchParams(window.location.search).get("ref");
+
+ if(urlCode && !localStorage.getItem("docsetu_referral_code")){
+  localStorage.setItem("docsetu_referral_code",urlCode.trim().toUpperCase());
+ }
+
+ const code = localStorage.getItem("docsetu_referral_code");
+
+ if(!code || !currentUser || currentRole !== "customer") return;
+
+ const {data,error} = await db.rpc("save_customer_referral",{
+  input_code:code
+ });
+
+ if(error){
+  console.error("Referral error:",error.message);
+  return;
+ }
+
+ localStorage.removeItem("docsetu_referral_code");
+
+ if(urlCode){
+  history.replaceState(null,"",window.location.pathname + window.location.hash);
+ }
+}
+ 
 
 async function forgotPassword(){
  const email=el("loginEmail").value.trim();
@@ -405,6 +434,7 @@ async function loadUserProfile(){
   .select("full_name,role").eq("id",currentUser.id).maybeSingle();
  if(error){alert("Profile load nahi hui: "+error.message);return}
  currentRole=data?.role||"customer";
+ await processReferral();
  setLoggedInUI(true);
  if(currentRole==="admin"){
   el("adminEmail").textContent=currentUser.email;
