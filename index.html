@@ -202,6 +202,7 @@ style="display:none;">
    <button onclick="adminTab('enquiries')">All Enquiries</button>
    <button class="secondary" onclick="adminTab('services')">Manage Services</button>
    <button class="secondary" onclick="adminTab('payments')">Payments</button>
+   <button class="secondary" onclick="adminTab('documents')">Customer Documents</button>
    <button class="secondary" onclick="adminTab('settings')">Payment Settings</button>
   </div>
  </div>
@@ -252,6 +253,13 @@ style="display:none;">
   <button onclick="savePaymentSettings()">Save Payment Settings</button>
   <div class="notice">Dynamic QR UPI ID aur enquiry amount se generate hoga. Optional QR image URL sirf backup display ke liye hai.</div>
  </div>
+ <div id="adminDocumentsBox" class="card hidden">
+ <h3>Customer Documents</h3>
+ <div id="adminDocumentsMessage" class="message"></div>
+ <div id="adminCustomerDocuments">
+  Customer documents load karne ke liye tab open karein.
+ </div>
+ </div> 
 </section>
 
 <section id="resetView" class="hidden">
@@ -704,13 +712,14 @@ function adminTab(tab){
  el("serviceManagerBox").classList.toggle("hidden",tab!=="services");
  el("adminPaymentsBox").classList.toggle("hidden",tab!=="payments");
  el("paymentSettingsBox").classList.toggle("hidden",tab!=="settings");
+ el("adminDocumentsBox").classList.toggle("hidden",tab!=="documents");
 
  if(tab==="enquiries")loadAllEnquiries();
  if(tab==="services")loadServiceManager();
  if(tab==="payments")loadAdminPayments();
  if(tab==="settings")loadPaymentSettings();
+ if(tab==="documents")loadAdminLockerDocuments();
 }
-
 async function loadAllEnquiries(){
  const box=el("adminEnquiries");
  box.textContent="Enquiries load ho rahi hain...";
@@ -1150,7 +1159,64 @@ async function deleteLockerDocument(name){
   otherBox.value="";
  }
 });
- 
+async function loadAdminLockerDocuments(){
+ const box=el("adminCustomerDocuments");
+ box.textContent="Customer documents load ho rahe hain...";
+
+ const {data:customers,error}=await db
+  .from("profiles")
+  .select("id,full_name,email")
+  .eq("role","customer");
+
+ if(error){
+  box.textContent="Customers load nahi hue: "+error.message;
+  return;
+ }
+
+ if(!customers || !customers.length){
+  box.textContent="Koi customer nahi mila.";
+  return;
+ }
+
+ let html="";
+
+ for(const customer of customers){
+  const {data:files,error:fileError}=await db.storage
+   .from(LOCKER_BUCKET)
+   .list(customer.id,{limit:100});
+
+  html+=`<div class="service">
+   <h3>${esc(customer.full_name || "Customer")}</h3>
+   <p>${esc(customer.email || "")}</p>`;
+
+  if(fileError){
+   html+=`<p>Documents load nahi hue.</p>`;
+  }else if(!files || !files.length){
+   html+=`<p>Koi document upload nahi hai.</p>`;
+  }else{
+   for(const file of files){
+    const path=customer.id+"/"+file.name;
+    const {data,error:linkError}=await db.storage
+     .from(LOCKER_BUCKET)
+     .createSignedUrl(path,300);
+
+    html+=`<p><strong>${esc(file.name)}</strong><br>`;
+
+    if(!linkError && data?.signedUrl){
+     html+=`<a href="${esc(data.signedUrl)}" target="_blank" rel="noopener">Download Document</a>`;
+    }else{
+     html+=`Download link nahi bana.`;
+    }
+
+    html+="</p>";
+   }
+  }
+
+  html+="</div>";
+ }
+
+ box.innerHTML=html;
+} 
 async function boot(){
  if(!initClient())return;
 
