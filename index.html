@@ -146,6 +146,9 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
  <option value="Signature">Signature</option>
  <option value="Other Document">Other Document</option>
 </select>
+ <input id="lockerOtherName" type="text"
+placeholder="Other document ka naam likhein"
+style="display:none;">
 
 <label>Files Select Karein</label>
   <input id="lockerFile" type="file" multiple accept=".pdf,.jpg,.jpeg,.png">
@@ -996,7 +999,18 @@ async function uploadLockerDocument(){
   return;
  }
 
- const docType=el("lockerDocType").value;
+ let docType=el("lockerDocType").value;
+
+if(docType==="Other Document"){
+ const otherName=el("lockerOtherName").value.trim();
+
+ if(!otherName){
+  msg("lockerMessage","Document ka naam likhein.",true);
+  return;
+ }
+
+ docType=otherName;
+}
  const files=Array.from(el("lockerFile").files);
 
  if(!docType){
@@ -1126,6 +1140,16 @@ async function deleteLockerDocument(name){
  alert("Document delete ho gaya.");
  await loadLockerDocuments();
   }
+ el("lockerDocType").addEventListener("change",function(){
+ const otherBox=el("lockerOtherName");
+
+ if(this.value==="Other Document"){
+  otherBox.style.display="block";
+ }else{
+  otherBox.style.display="none";
+  otherBox.value="";
+ }
+});
  
 async function boot(){
  if(!initClient())return;
