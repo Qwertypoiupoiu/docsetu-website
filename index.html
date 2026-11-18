@@ -131,6 +131,17 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
   </div>
  </div>
 
+  <div class="card">
+  <h3>My Document Locker</h3>
+  <div id="lockerMessage" class="message"></div>
+
+  <label>Document Select Karein</label>
+  <input id="lockerFile" type="file">
+
+  <button onclick="uploadLockerDocument()">Upload Document</button>
+
+  <div id="lockerDocuments">Loading...</div>
+  </div>
  <div id="newEnquiryBox" class="card">
   <h3>New Enquiry</h3>
   <div id="enquiryMessage" class="message"></div>
@@ -247,7 +258,8 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
 const SUPABASE_URL="https://hqzxhbuhecaltjoxhffe.supabase.co";
 const SUPABASE_KEY="sb_publishable_S4kEbpGOZ46mH22P20SFgg_fQtxAmnu";
 const BUCKET="docsetu-payment-proofs";
-
+const LOCKER_BUCKET="docsetu-locker";
+ 
 let db=null;
 let currentUser=null;
 let currentRole="customer";
@@ -375,6 +387,7 @@ async function loadUserProfile(){
   el("customerEmail").textContent=currentUser.email;
   show("customerView");
   await loadServices();
+  await loadLockerDocuments();
   customerTab("new");
  }
 }
@@ -963,6 +976,119 @@ async function deleteService(id){
  await loadServices();
 }
 
+async function uploadLockerDocument(){
+ if(!currentUser){
+  msg("lockerMessage","Pehle login karein.",true);
+  return;
+ }
+
+ const file=el("lockerFile").files[0];
+
+ if(!file){
+  msg("lockerMessage","Pehle document select karein.",true);
+  return;
+ }
+const allowedTypes=["application/pdf","image/jpeg","image/png"];
+if(!allowedTypes.includes(file.type)){
+ msg("lockerMessage","Sirf PDF, JPG aur PNG files allowed hain.",true);
+ return;
+}
+ if(file.size>10*1024*1024){
+  msg("lockerMessage","File 10 MB se chhoti honi chahiye.",true);
+  return;
+ }
+
+ const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+ const path=currentUser.id+"/"+Date.now()+"_"+safeName;
+
+ msg("lockerMessage","Document upload ho raha hai...");
+
+ const {error}=await db.storage
+  .from(LOCKER_BUCKET)
+  .upload(path,file);
+
+ if(error){
+  msg("lockerMessage",error.message,true);
+  return;
+ }
+
+ el("lockerFile").value="";
+ msg("lockerMessage","Document successfully upload ho gaya.");
+ await loadLockerDocuments();
+}
+
+async function loadLockerDocuments(){
+ if(!currentUser)return;
+
+ const box=el("lockerDocuments");
+ box.textContent="Documents load ho rahe hain...";
+
+ const {data,error}=await db.storage
+  .from(LOCKER_BUCKET)
+  .list(currentUser.id,{
+   limit:100,
+   sortBy:{column:"created_at",order:"desc"}
+  });
+
+ if(error){
+  box.textContent=error.message;
+  return;
+ }
+
+ const files=(data||[]).filter(f=>f.name);
+
+ if(!files.length){
+  box.innerHTML="<p>Abhi koi document upload nahi hai.</p>";
+  return;
+ }
+
+ box.innerHTML=files.map(f=>`
+  <div class="service">
+   <strong>${esc(f.name)}</strong>
+   <br><br>
+   <button onclick="downloadLockerDocument('${f.name}')">
+    Download
+   </button>
+   <button class="danger" onclick="deleteLockerDocument('${f.name}')">
+    Delete
+   </button>
+  </div>
+ `).join("");
+}
+
+async function downloadLockerDocument(name){
+ const path=currentUser.id+"/"+name;
+
+ const {data,error}=await db.storage
+  .from(LOCKER_BUCKET)
+  .createSignedUrl(path,60);
+
+ if(error){
+  alert(error.message);
+  return;
+ }
+
+ window.open(data.signedUrl,"_blank");
+}
+
+async function deleteLockerDocument(name){
+ if(!confirm("Kya aap ye document delete karna chahte hain?"))return;
+
+ const path=currentUser.id+"/"+name;
+
+ const {error}=await db.storage
+  .from(LOCKER_BUCKET)
+  .remove([path]);
+
+ if(error){
+  alert(error.message);
+  return;
+ }
+
+ alert("Document delete ho gaya.");
+ await loadLockerDocuments();
+  }
+ 
 async function boot(){
  if(!initClient())return;
 
