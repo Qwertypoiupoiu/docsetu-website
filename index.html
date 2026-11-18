@@ -135,8 +135,20 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
   <h3>My Document Locker</h3>
   <div id="lockerMessage" class="message"></div>
 
-  <label>Document Select Karein</label>
-  <input id="lockerFile" type="file">
+  <label>Document Name</label>
+<select id="lockerDocType">
+ <option value="">Document Select Karein</option>
+ <option value="Aadhaar Card">Aadhaar Card</option>
+ <option value="PAN Card">PAN Card</option>
+ <option value="Voter ID">Voter ID</option>
+ <option value="Bank Passbook">Bank Passbook</option>
+ <option value="Photo">Photo</option>
+ <option value="Signature">Signature</option>
+ <option value="Other Document">Other Document</option>
+</select>
+
+<label>Files Select Karein</label>
+  <input id="lockerFile" type="file" multiple accept=".pdf,.jpg,.jpeg,.png">
 
   <button onclick="uploadLockerDocument()">Upload Document</button>
 
@@ -977,45 +989,71 @@ async function deleteService(id){
 }
 
 async function uploadLockerDocument(){
+
+async function uploadLockerDocument(){
  if(!currentUser){
   msg("lockerMessage","Pehle login karein.",true);
   return;
  }
 
- const file=el("lockerFile").files[0];
+ const docType=el("lockerDocType").value;
+ const files=Array.from(el("lockerFile").files);
 
- if(!file){
-  msg("lockerMessage","Pehle document select karein.",true);
-  return;
- }
-const allowedTypes=["application/pdf","image/jpeg","image/png"];
-if(!allowedTypes.includes(file.type)){
- msg("lockerMessage","Sirf PDF, JPG aur PNG files allowed hain.",true);
- return;
-}
- if(file.size>10*1024*1024){
-  msg("lockerMessage","File 10 MB se chhoti honi chahiye.",true);
+ if(!docType){
+  msg("lockerMessage","Pehle document ka naam select karein.",true);
   return;
  }
 
- const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
- const path=currentUser.id+"/"+Date.now()+"_"+safeName;
-
- msg("lockerMessage","Document upload ho raha hai...");
-
- const {error}=await db.storage
-  .from(LOCKER_BUCKET)
-  .upload(path,file);
-
- if(error){
-  msg("lockerMessage",error.message,true);
+ if(!files.length){
+  msg("lockerMessage","Pehle file select karein.",true);
   return;
+ }
+
+ const allowedTypes=[
+  "application/pdf",
+  "image/jpeg",
+  "image/png"
+ ];
+
+ for(const file of files){
+  if(!allowedTypes.includes(file.type)){
+   msg("lockerMessage","Sirf PDF, JPG aur PNG allowed hain.",true);
+   return;
+  }
+
+  if(file.size>10*1024*1024){
+   msg("lockerMessage","Har file 10 MB se chhoti honi chahiye.",true);
+   return;
+  }
+ }
+
+ msg("lockerMessage","Documents upload ho rahe hain...");
+
+ const safeType=docType.replace(/[^a-zA-Z0-9_-]/g,"_");
+
+ for(let i=0;i<files.length;i++){
+  const file=files[i];
+  const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+  const path=currentUser.id+"/"+safeType+"_"+Date.now()+"_"+i+"_"+safeName;
+
+  const {error}=await db.storage
+   .from(LOCKER_BUCKET)
+   .upload(path,file);
+
+  if(error){
+   msg("lockerMessage",error.message,true);
+   return;
+  }
  }
 
  el("lockerFile").value="";
- msg("lockerMessage","Document successfully upload ho gaya.");
+ el("lockerDocType").value="";
+
+ msg("lockerMessage",files.length+" document successfully upload ho gaye.");
+
  await loadLockerDocuments();
 }
+ 
 
 async function loadLockerDocuments(){
  if(!currentUser)return;
