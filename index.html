@@ -209,6 +209,7 @@ style="display:none;">
    <button class="secondary" onclick="adminTab('payments')">Payments</button>
    <button class="secondary" onclick="adminTab('documents')">Customer Documents</button>
    <button class="secondary" onclick="adminTab('settings')">Payment Settings</button>
+   <button class="secondary" onclick="adminTab('orders')">Orders</button>
    <button class="secondary" onclick="adminTab('staff')">Staff Management</button>
   </div>
  </div>
@@ -289,6 +290,13 @@ style="display:none;">
 
   <button onclick="assignStaffTask()">Assign Task</button>
  </div>
+ 
+<div id="ordersManagementBox" class="card hidden">
+  <h3>Orders Management</h3>
+  <div id="ordersMessage" class="message"></div>
+  <div id="adminOrdersList">Orders load ho rahe hain...</div>
+</div>
+ 
 </section>
 
 <section id="resetView" class="hidden">
