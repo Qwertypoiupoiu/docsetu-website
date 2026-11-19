@@ -116,7 +116,6 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
    <input id="signupPassword" type="password" placeholder="Kam se kam 6 characters">
    <button onclick="signupAccount()">Create Account</button>
    <button class="secondary" onclick="toggleSignup(false)">Back to Login</button>
-   <button class="secondary" onclick="customerTab('orders')">My Orders</button>
   </div>
  </div>
 </section>
@@ -130,6 +129,7 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
    <button class="secondary" onclick="customerTab('mine')">My Enquiries</button>
    <button class="secondary" onclick="customerTab('payments')">My Payments</button>
    <button class="secondary" onclick="customerTab('orders')">My Orders</button>
+   <button class="success" onclick="openDocSetuWhatsApp()">WhatsApp Support</button>
   </div>
  </div>
 
@@ -562,6 +562,19 @@ async function loadCustomerOrders(){
  `).join("");
 }
 
+function openDocSetuWhatsApp(){
+ const phone="918059482078";
+ const name=currentUser?.user_metadata?.full_name||"Customer";
+ const message=
+  "Namaste DocSetu! Mujhe aapki service ke sambandh mein madad chahiye.\n"+
+  "Customer: "+name+"\n"+
+  "Email: "+(currentUser?.email||"")+"\n"+
+  "Please contact me.";
+
+ const url="https://wa.me/"+phone+"?text="+encodeURIComponent(message);
+ window.open(url,"_blank");
+}
+ 
 function customerTab(tab){
  el("newEnquiryBox").classList.toggle("hidden",tab!=="new");
  el("myEnquiriesBox").classList.toggle("hidden",tab!=="mine");
