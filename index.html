@@ -439,7 +439,8 @@ async function login(){
  const {data,error}=await db.auth.signInWithPassword({email,password});
  if(error){msg("authMessage",error.message,true);return}
  currentUser=data.user;
- await loadUserProfile();
+await loadUserProfile();
+await processReferral();
 }
 
 async function signupAccount(){
