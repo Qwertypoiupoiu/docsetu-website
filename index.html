@@ -779,6 +779,70 @@ function adminTab(tab){
  if(tab==="settings")loadPaymentSettings();
  if(tab==="documents")loadAdminLockerDocuments();
 }
+ async function loadStaffMembers(){
+ const box=el("staffList");
+ box.textContent="Staff load ho rahe hain...";
+
+ const {data,error}=await db
+  .from("staff_members")
+  .select("id,full_name,phone,designation,is_active")
+  .order("created_at",{ascending:false});
+
+ if(error){
+  box.textContent="Error: "+error.message;
+  return;
+ }
+
+ const staff=data||[];
+
+ el("staffSelect").innerHTML=
+  '<option value="">Staff select karein</option>'+
+  staff.filter(s=>s.is_active).map(s=>
+   `<option value="${esc(s.id)}">${esc(s.full_name)} - ${esc(s.designation||"Staff")}</option>`
+  ).join("");
+
+ if(!staff.length){
+  box.innerHTML="<p>Abhi koi staff member nahi hai.</p>";
+  return;
+ }
+
+ box.innerHTML=staff.map(s=>`
+  <div class="service">
+   <strong>${esc(s.full_name)}</strong>
+   <p>Phone: ${esc(s.phone||"—")}</p>
+   <p>Designation: ${esc(s.designation||"Staff")}</p>
+   <p>Status: ${s.is_active?"Active":"Inactive"}</p>
+  </div>
+ `).join("");
+}
+
+async function assignStaffTask(){
+ const orderId=el("staffOrderId").value.trim();
+ const staffId=el("staffSelect").value;
+ const notes=el("staffTaskNotes").value.trim();
+
+ if(!orderId||!staffId){
+  msg("staffMessage","Order ID aur Staff select karein.",true);
+  return;
+ }
+
+ msg("staffMessage","Task assign ho raha hai...");
+
+ const {data,error}=await db.rpc("assign_order_to_staff",{
+  input_order_id:orderId,
+  input_staff_id:staffId,
+  input_notes:notes||null
+ });
+
+ if(error){
+  msg("staffMessage",error.message,true);
+  return;
+ }
+
+ msg("staffMessage","Task successfully assign ho gaya. Task ID: "+data);
+ el("staffOrderId").value="";
+ el("staffTaskNotes").value="";
+}
 async function loadAllEnquiries(){
  const box=el("adminEnquiries");
  box.textContent="Enquiries load ho rahi hain...";
