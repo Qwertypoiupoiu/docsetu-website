@@ -528,6 +528,38 @@ async function submitEnquiry(){
  msg("enquiryMessage","Aapki enquiry successfully submit ho gayi.");
 }
 
+async function loadCustomerOrders(){
+ const box=el("customerOrders");
+ box.textContent="Orders load ho rahe hain...";
+
+ const {data,error}=await db
+  .from("orders")
+  .select("id,service_name,amount,payment_status,work_status,created_at")
+  .eq("user_id",currentUser.id)
+  .order("created_at",{ascending:false});
+
+ if(error){
+  box.textContent="Error: "+error.message;
+  return;
+ }
+
+ const orders=data||[];
+
+ if(!orders.length){
+  box.innerHTML="<p>Abhi koi order nahi hai.</p>";
+  return;
+ }
+
+ box.innerHTML=orders.map(o=>`
+  <div class="service">
+   <strong>${esc(o.service_name||"Service")}</strong>
+   <p>Amount: ₹${Number(o.amount||0).toFixed(2)}</p>
+   <p>Payment: ${esc(o.payment_status||"Unpaid")}</p>
+   <p>Work Status: ${esc(o.work_status||"Pending")}</p>
+   <p>Date: ${o.created_at?new Date(o.created_at).toLocaleString("en-IN"):"—"}</p>
+  </div>
+ `).join("");
+}
 
 function customerTab(tab){
  el("newEnquiryBox").classList.toggle("hidden",tab!=="new");
