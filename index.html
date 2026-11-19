@@ -470,31 +470,47 @@ async function signupAccount(){
  }
 }
  
+
 async function processReferral(){
- const urlCode = new URLSearchParams(window.location.search).get("ref");
+  const urlCode = new URLSearchParams(window.location.search).get("ref");
 
- if(urlCode && !localStorage.getItem("docsetu_referral_code")){
-  localStorage.setItem("docsetu_referral_code",urlCode.trim().toUpperCase());
- }
+  if(urlCode && !localStorage.getItem("docsetu_referral_code")){
+    localStorage.setItem("docsetu_referral_code",urlCode.trim().toUpperCase());
+  }
 
- const code = localStorage.getItem("docsetu_referral_code");
+  const code = localStorage.getItem("docsetu_referral_code");
 
- if(!code || !currentUser || currentRole !== "customer") return;
+  if(!code || !currentUser || currentRole !== "customer") return;
 
- const {data,error} = await db.rpc("save_customer_referral",{
-  input_code:code
- });
+  // Pehle customer-to-customer referral check
+  const {data:customerResult,error:customerError}=await db.rpc(
+    "save_customer_to_customer_referral",
+    {input_code:code}
+  );
 
- if(error){
-  console.error("Referral error:",error.message);
-  return;
- }
+  if(!customerError &&
+    ["saved","already_referred"].includes(customerResult)){
+    localStorage.removeItem("docsetu_referral_code");
+    if(urlCode) history.replaceState(null,"",window.location.pathname+window.location.hash);
+    return;
+  }
 
- localStorage.removeItem("docsetu_referral_code");
+  // Agar customer code nahi hai, purana shop referral check
+  const {data:shopResult,error:shopError}=await db.rpc(
+    "save_customer_referral",
+    {input_code:code}
+  );
 
- if(urlCode){
-  history.replaceState(null,"",window.location.pathname + window.location.hash);
- }
+  if(shopError){
+    console.error("Referral error:",customerError?.message,shopError.message);
+    return;
+  }
+
+  localStorage.removeItem("docsetu_referral_code");
+
+  if(urlCode){
+    history.replaceState(null,"",window.location.pathname+window.location.hash);
+  }
 }
  
 
