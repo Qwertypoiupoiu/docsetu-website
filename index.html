@@ -953,7 +953,7 @@ async function convertEnquiryToOrder(enquiryId){
 
  el("staffOrderId").value=data;
 alert("Order successfully ready!\nOrder ID: "+data+"\nOrder ID Staff Assignment box mein bhi bhar di gayi hai.");
-
+}
 function renderAdminEnquiries(){
  const box=el("adminEnquiries");
  const search=(el("searchEnquiry")?.value||"").trim().toLowerCase();
