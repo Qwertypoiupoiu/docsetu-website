@@ -454,12 +454,6 @@ async function signupAccount(){
   email,password,options:{data:{full_name:name}}
  });
  if(error){msg("authMessage",error.message,true);return}
- if(data.user){
-  const {error:pe}=await db.from("profiles").upsert({
-   id:data.user.id,full_name:name
-  },{onConflict:"id"});
-  if(pe){msg("authMessage","Account ban gaya, profile save nahi hui: "+pe.message,true);return}
- }
  if(data.session){
   currentUser=data.user;
   await loadUserProfile();
