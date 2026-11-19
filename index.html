@@ -209,6 +209,7 @@ style="display:none;">
    <button class="secondary" onclick="adminTab('payments')">Payments</button>
    <button class="secondary" onclick="adminTab('documents')">Customer Documents</button>
    <button class="secondary" onclick="adminTab('settings')">Payment Settings</button>
+   <button class="secondary" onclick="adminTab('staff')">Staff Management</button>
   </div>
  </div>
 
@@ -265,6 +266,29 @@ style="display:none;">
   Customer documents load karne ke liye tab open karein.
  </div>
  </div> 
+ <div id="staffManagementBox" class="card hidden">
+  <h3>Staff Management</h3>
+  <div id="staffMessage" class="message"></div>
+
+  <h4>Staff Members</h4>
+  <div id="staffList">Loading...</div>
+
+  <hr>
+
+  <h4>Assign Order to Staff</h4>
+  <label>Order ID</label>
+  <input id="staffOrderId" placeholder="Order UUID">
+
+  <label>Staff Member</label>
+  <select id="staffSelect">
+    <option value="">Staff select karein</option>
+  </select>
+
+  <label>Task Notes</label>
+  <textarea id="staffTaskNotes" placeholder="Task details"></textarea>
+
+  <button onclick="assignStaffTask()">Assign Task</button>
+ </div>
 </section>
 
 <section id="resetView" class="hidden">
