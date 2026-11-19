@@ -765,19 +765,20 @@ async function reviewPayment(id,status){
 
  await loadAdminPayments();
 }
-
 function adminTab(tab){
  el("adminEnquiriesBox").classList.toggle("hidden",tab!=="enquiries");
  el("serviceManagerBox").classList.toggle("hidden",tab!=="services");
  el("adminPaymentsBox").classList.toggle("hidden",tab!=="payments");
  el("paymentSettingsBox").classList.toggle("hidden",tab!=="settings");
  el("adminDocumentsBox").classList.toggle("hidden",tab!=="documents");
+ el("staffManagementBox").classList.toggle("hidden",tab!=="staff");
 
  if(tab==="enquiries")loadAllEnquiries();
  if(tab==="services")loadServiceManager();
  if(tab==="payments")loadAdminPayments();
  if(tab==="settings")loadPaymentSettings();
  if(tab==="documents")loadAdminLockerDocuments();
+ if(tab==="staff")loadStaffMembers();
 }
  async function loadStaffMembers(){
  const box=el("staffList");
