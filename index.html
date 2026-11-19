@@ -904,8 +904,8 @@ async function convertEnquiryToOrder(enquiryId){
   return;
  }
 
- alert("Order successfully ready!\nOrder ID: "+data);
-}
+ el("staffOrderId").value=data;
+alert("Order successfully ready!\nOrder ID: "+data+"\nOrder ID Staff Assignment box mein bhi bhar di gayi hai.");
 
 function renderAdminEnquiries(){
  const box=el("adminEnquiries");
