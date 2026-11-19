@@ -891,6 +891,22 @@ async function loadAllEnquiries(){
 }
  
 
+
+async function convertEnquiryToOrder(enquiryId){
+ if(!confirm("Kya aap is enquiry ko Order mein convert karna chahte hain?"))return;
+
+ const {data,error}=await db.rpc("convert_enquiry_to_order",{
+  input_enquiry_id:enquiryId
+ });
+
+ if(error){
+  alert("Conversion failed: "+error.message);
+  return;
+ }
+
+ alert("Order successfully ready!\nOrder ID: "+data);
+}
+
 function renderAdminEnquiries(){
  const box=el("adminEnquiries");
  const search=(el("searchEnquiry")?.value||"").trim().toLowerCase();
@@ -902,7 +918,6 @@ function renderAdminEnquiries(){
 
  const rows=(allAdminEnquiries||[]).filter(x=>{
   const profile=profileMap.get(x.user_id)||{};
-
   const matchStatus=!status||x.status===status;
 
   const searchable=[
@@ -968,6 +983,9 @@ function renderAdminEnquiries(){
 
     <td>
      <button onclick="updateEnquiry('${esc(x.id)}')">Save</button>
+     <button onclick="convertEnquiryToOrder('${esc(x.id)}')">
+      Convert to Order
+     </button>
     </td>
    </tr>`;
   }).join("")}
@@ -977,6 +995,7 @@ function renderAdminEnquiries(){
  <p>Total enquiries: ${rows.length}</p>
  `;
 }
+ 
  
 async function updateEnquiry(id){
  const fee=Number(el("fee_"+id).value);
