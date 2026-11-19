@@ -129,6 +129,7 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
    <button class="secondary" onclick="customerTab('mine')">My Enquiries</button>
    <button class="secondary" onclick="customerTab('payments')">My Payments</button>
    <button class="secondary" onclick="customerTab('orders')">My Orders</button>
+   <button class="secondary" onclick="openCustomerProfile()">My Profile</button>
    <button class="success" onclick="openDocSetuWhatsApp()">WhatsApp Support</button>
   </div>
  </div>
@@ -164,6 +165,25 @@ style="display:none;">
 
   <div id="lockerDocuments">Loading...</div>
   </div>
+ <div id="customerProfileBox" style="display:none;">
+  <h3>My Profile</h3>
+
+  <label>Full Name</label>
+  <input id="profileFullName" type="text" placeholder="Apna naam likhein">
+
+  <label>Mobile Number</label>
+  <input id="profilePhone" type="tel" placeholder="Mobile number">
+
+  <label>Email</label>
+  <input id="profileEmail" type="email" readonly>
+
+  <button class="success" onclick="saveCustomerProfile()">
+    Save Profile
+  </button>
+
+  <p id="profileMessage"></p>
+ </div>
+ 
  <div id="newEnquiryBox" class="card">
   <h3>New Enquiry</h3>
   <div id="enquiryMessage" class="message"></div>
@@ -573,6 +593,71 @@ function openDocSetuWhatsApp(){
 
  const url="https://wa.me/"+phone+"?text="+encodeURIComponent(message);
  window.open(url,"_blank");
+}
+ async function openCustomerProfile(){
+  if(!currentUser || !db) return;
+
+  const sections = [
+    "newEnquiryBox",
+    "myEnquiriesBox",
+    "customerPaymentsBox",
+    "customerOrdersBox",
+    "makePaymentBox",
+    "lockerDocuments"
+  ];
+
+  sections.forEach(id=>{
+    const box=document.getElementById(id);
+    if(box) box.style.display="none";
+  });
+
+  const profileBox=document.getElementById("customerProfileBox");
+  profileBox.style.display="block";
+
+  document.getElementById("profileEmail").value =
+    currentUser.email || "";
+
+  document.getElementById("profileMessage").textContent="Loading...";
+
+  const {data,error}=await db
+    .from("profiles")
+    .select("full_name,phone")
+    .eq("id",currentUser.id)
+    .maybeSingle();
+
+  if(error){
+    document.getElementById("profileMessage").textContent=error.message;
+    return;
+  }
+
+  document.getElementById("profileFullName").value=data?.full_name || "";
+  document.getElementById("profilePhone").value=data?.phone || "";
+  document.getElementById("profileMessage").textContent="";
+}
+
+async function saveCustomerProfile(){
+  if(!currentUser || !db) return;
+
+  const full_name=document.getElementById("profileFullName").value.trim();
+  const phone=document.getElementById("profilePhone").value.trim();
+  const message=document.getElementById("profileMessage");
+
+  if(!full_name || !phone){
+    message.textContent="Name aur mobile number dono bharein.";
+    return;
+  }
+
+  const {error}=await db
+    .from("profiles")
+    .update({full_name,phone})
+    .eq("id",currentUser.id);
+
+  if(error){
+    message.textContent="Error: "+error.message;
+    return;
+  }
+
+  message.textContent="Profile successfully updated!";
 }
  
 function customerTab(tab){
