@@ -833,18 +833,38 @@ async function loadAdminOrders(){
   return;
  }
 
- box.innerHTML=orders.map(o=>`
+ 
+box.innerHTML=orders.map(o=>`
   <div class="service">
    <strong>${esc(o.service_name||"Service")}</strong>
    <p>Order ID: ${esc(o.id)}</p>
    <button onclick="GenUI.copy('${esc(o.id)}')">Copy Order ID</button>
    <p>Amount: ₹${Number(o.amount||0).toFixed(2)}</p>
-   <p>Payment: ${esc(o.payment_status||"Unpaid")}</p>
-   <p>Work Status: ${esc(o.work_status||"Pending")}</p>
+
+   <p>Payment Status:</p>
+   <select id="payment_${esc(o.id)}">
+    <option value="unpaid" ${o.payment_status==="unpaid"?"selected":""}>Unpaid</option>
+    <option value="paid" ${o.payment_status==="paid"?"selected":""}>Paid</option>
+    <option value="refunded" ${o.payment_status==="refunded"?"selected":""}>Refunded</option>
+   </select>
+
+   <p>Work Status:</p>
+   <select id="work_${esc(o.id)}">
+    <option value="pending" ${o.work_status==="pending"?"selected":""}>Pending</option>
+    <option value="assigned" ${o.work_status==="assigned"?"selected":""}>Assigned</option>
+    <option value="in_progress" ${o.work_status==="in_progress"?"selected":""}>In Progress</option>
+    <option value="waiting_for_documents" ${o.work_status==="waiting_for_documents"?"selected":""}>Waiting for Documents</option>
+    <option value="completed" ${o.work_status==="completed"?"selected":""}>Completed</option>
+    <option value="on_hold" ${o.work_status==="on_hold"?"selected":""}>On Hold</option>
+   </select>
+
+   <button onclick="updateOrderStatus('${esc(o.id)}')">Update Status</button>
+
    <p>Date: ${o.created_at?new Date(o.created_at).toLocaleString("en-IN"):"—"}</p>
   </div>
  `).join("");
 }
+ 
  
  async function loadStaffMembers(){
  const box=el("staffList");
