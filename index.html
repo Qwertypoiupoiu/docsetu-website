@@ -130,6 +130,7 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
    <button class="secondary" onclick="customerTab('payments')">My Payments</button>
    <button class="secondary" onclick="customerTab('orders')">My Orders</button>
    <button class="secondary" onclick="openCustomerProfile()">My Profile</button>
+   <button class="secondary" onclick="openReferralDashboard()">My Referrals</button>
    <button class="secondary" onclick="openOrderTimeline()">Order Timeline</button>
    <button class="success" onclick="openDocSetuWhatsApp()">WhatsApp Support</button>
   </div>
@@ -172,6 +173,32 @@ style="display:none;">
     Loading orders...
   </div>
 </div>
+ <div id="customerReferralBox" style="display:none;">
+  <h3>My Referrals</h3>
+
+  <p>Your Referral Code:</p>
+  <h2 id="myReferralCode">Loading...</h2>
+
+  <button onclick="copyMyReferralCode()">
+    Copy Referral Code
+  </button>
+
+  <p>Referral Link:</p>
+  <input id="myReferralLink" type="text" readonly>
+
+  <button onclick="copyMyReferralLink()">
+    Copy Referral Link
+  </button>
+
+  <hr>
+
+  <h3>Referral Summary</h3>
+  <p>Total Referrals: <strong id="totalReferrals">0</strong></p>
+
+  <div id="referralList">
+    Loading referrals...
+  </div>
+ </div>
 
 <div id="customerProfileBox" style="display:none;">
   <h3>My Profile</h3>
