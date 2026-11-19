@@ -791,7 +791,26 @@ function adminTab(tab){
  if(tab==="staff")loadStaffMembers();
  if(tab==="orders")loadAdminOrders();
 }
- 
+ async function updateOrderStatus(orderId){
+ const paymentStatus=el("payment_"+orderId).value;
+ const workStatus=el("work_"+orderId).value;
+
+ const {error}=await db
+  .from("orders")
+  .update({
+   payment_status:paymentStatus,
+   work_status:workStatus
+  })
+  .eq("id",orderId);
+
+ if(error){
+  alert("Update failed: "+error.message);
+  return;
+ }
+
+ alert("Order status successfully update ho gaya!");
+ loadAdminOrders();
+ }
  
 async function loadAdminOrders(){
  const box=el("adminOrdersList");
