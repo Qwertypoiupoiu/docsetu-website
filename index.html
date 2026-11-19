@@ -166,6 +166,13 @@ style="display:none;">
   <div id="lockerDocuments">Loading...</div>
   </div>
  <div id="customerProfileBox" style="display:none;">
+  <div id="orderTimelineBox" style="display:none;">
+  <h3>My Order Timeline</h3>
+  <div id="orderTimelineContent">
+    Loading orders...
+  </div>
+  </div>
+  
   <h3>My Profile</h3>
 
   <label>Full Name</label>
@@ -660,6 +667,97 @@ async function saveCustomerProfile(){
   message.textContent="Profile successfully updated!";
 }
  
+ async function openOrderTimeline(){
+  if(!currentUser || !db) return;
+
+  const sections = [
+    "newEnquiryBox",
+    "myEnquiriesBox",
+    "customerPaymentsBox",
+    "customerOrdersBox",
+    "customerProfileBox",
+    "makePaymentBox"
+  ];
+
+  sections.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display="none";
+  });
+
+  const box=document.getElementById("orderTimelineBox");
+  box.style.display="block";
+
+  const content=document.getElementById("orderTimelineContent");
+  content.textContent="Loading orders...";
+
+  const {data:orders,error}=await db
+    .from("orders")
+    .select("id,service_name,work_status,payment_status,created_at")
+    .eq("user_id",currentUser.id)
+    .order("created_at",{ascending:false});
+
+  if(error){
+    content.textContent="Error: "+error.message;
+    return;
+  }
+
+  if(!orders || orders.length===0){
+    content.textContent="Abhi koi order nahi hai.";
+    return;
+  }
+
+  content.innerHTML="";
+
+  for(const order of orders){
+    const card=document.createElement("div");
+    card.className="service";
+
+    const heading=document.createElement("h4");
+    heading.textContent=order.service_name;
+
+    const payment=document.createElement("p");
+    payment.textContent="Payment: "+(order.payment_status||"Pending");
+
+    const work=document.createElement("p");
+    work.textContent="Work Status: "+(order.work_status||"Pending");
+
+    const date=document.createElement("p");
+    date.textContent="Order Date: "+(
+      order.created_at
+      ? new Date(order.created_at).toLocaleDateString("en-IN")
+      : "-"
+    );
+
+    const history=document.createElement("div");
+    history.textContent="Loading timeline...";
+
+    card.append(heading,payment,work,date,history);
+    content.appendChild(card);
+
+    const {data:events,error:eventError}=await db
+      .from("order_status_history")
+      .select("status,note,created_at")
+      .eq("order_id",order.id)
+      .order("created_at",{ascending:true});
+
+    history.innerHTML="";
+
+    if(eventError){
+      history.textContent="Timeline error: "+eventError.message;
+    }else if(!events || events.length===0){
+      history.textContent="Abhi status history available nahi hai.";
+    }else{
+      events.forEach(event=>{
+        const item=document.createElement("p");
+        item.textContent="✓ "+event.status+
+          (event.note?" — "+event.note:"")+
+          " ("+new Date(event.created_at).toLocaleString("en-IN")+")";
+        history.appendChild(item);
+      });
+    }
+  }
+ }
+ 
 function customerTab(tab){
  el("newEnquiryBox").classList.toggle("hidden",tab!=="new");
  el("myEnquiriesBox").classList.toggle("hidden",tab!=="mine");
@@ -932,10 +1030,24 @@ function adminTab(tab){
  if(tab==="staff")loadStaffMembers();
  if(tab==="orders")loadAdminOrders();
 }
- async function updateOrderStatus(orderId){
+ 
+async function updateOrderStatus(orderId){
  const paymentStatus=el("payment_"+orderId).value;
  const workStatus=el("work_"+orderId).value;
 
+ // Purana status nikalo
+ const {data:oldOrder,error:fetchError}=await db
+  .from("orders")
+  .select("payment_status,work_status")
+  .eq("id",orderId)
+  .single();
+
+ if(fetchError){
+  alert("Old status load nahi hua: "+fetchError.message);
+  return;
+ }
+
+ // Order update karo
  const {error}=await db
   .from("orders")
   .update({
@@ -949,9 +1061,46 @@ function adminTab(tab){
   return;
  }
 
- alert("Order status successfully update ho gaya!");
- loadAdminOrders();
+ // Sirf changed status ki history banao
+ const history=[];
+
+ if(oldOrder.payment_status!==paymentStatus){
+  history.push({
+   order_id:orderId,
+   status:"Payment: "+paymentStatus,
+   note:"Admin ne payment status update kiya."
+  });
  }
+
+ if(oldOrder.work_status!==workStatus){
+  history.push({
+   order_id:orderId,
+   status:"Work: "+workStatus,
+   note:"Admin ne work status update kiya."
+  });
+ }
+
+ if(history.length){
+  const {data:{user}}=await db.auth.getUser();
+
+  history.forEach(item=>{
+   item.changed_by=user?.id||null;
+  });
+
+  const {error:historyError}=await db
+   .from("order_status_history")
+   .insert(history);
+
+  if(historyError){
+   alert("Order update ho gaya, lekin timeline save nahi hui: "+historyError.message);
+   loadAdminOrders();
+   return;
+  }
+ }
+
+ alert("Order aur timeline successfully update ho gaye!");
+ loadAdminOrders();
+}
  
 async function loadAdminOrders(){
  const box=el("adminOrdersList");
