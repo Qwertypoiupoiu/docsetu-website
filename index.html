@@ -786,6 +786,101 @@ async function saveCustomerProfile(){
   }
  }
  
+async function openReferralDashboard(){
+  if(!currentUser || !db) return;
+
+  const sections = [
+    "newEnquiryBox",
+    "myEnquiriesBox",
+    "customerPaymentsBox",
+    "customerOrdersBox",
+    "customerProfileBox",
+    "makePaymentBox",
+    "orderTimelineBox",
+    "lockerDocuments"
+  ];
+
+  sections.forEach(id=>{
+    const box=document.getElementById(id);
+    if(box) box.style.display="none";
+  });
+
+  const referralBox=document.getElementById("customerReferralBox");
+  referralBox.style.display="block";
+
+  document.getElementById("myReferralCode").textContent="Loading...";
+  document.getElementById("referralList").textContent="Loading referrals...";
+
+  const {data:profile,error}=await db
+    .from("profiles")
+    .select("referral_code")
+    .eq("id",currentUser.id)
+    .maybeSingle();
+
+  if(error || !profile){
+    document.getElementById("myReferralCode").textContent="Error loading code";
+    return;
+  }
+
+  const code=profile.referral_code;
+
+  document.getElementById("myReferralCode").textContent=code || "Not available";
+
+  const link=window.location.origin+
+    window.location.pathname+"?ref="+encodeURIComponent(code);
+
+  document.getElementById("myReferralLink").value=link;
+
+  const {data:referrals,error:refError}=await db
+    .from("customer_to_customer_referrals")
+    .select("id,referred_user_id,created_at")
+    .eq("referrer_id",currentUser.id)
+    .order("created_at",{ascending:false});
+
+  if(refError){
+    document.getElementById("referralList").textContent=refError.message;
+    return;
+  }
+
+  const list=referrals || [];
+
+  document.getElementById("totalReferrals").textContent=list.length;
+
+  if(!list.length){
+    document.getElementById("referralList").textContent="Abhi koi referral nahi hai.";
+    return;
+  }
+
+  document.getElementById("referralList").innerHTML=list.map((r,i)=>`
+    <div class="service">
+      <strong>Referral ${i+1}</strong>
+      <p>Date: ${new Date(r.created_at).toLocaleDateString("en-IN")}</p>
+    </div>
+  `).join("");
+}
+
+function copyMyReferralCode(){
+  const code=document.getElementById("myReferralCode").textContent;
+  if(!code || code==="Loading..." || code==="Not available"){
+    alert("Referral code available nahi hai.");
+    return;
+  }
+  navigator.clipboard.writeText(code)
+    .then(()=>alert("Referral code copied!"))
+    .catch(()=>alert("Copy nahi hua. Code manually copy karein."));
+}
+
+function copyMyReferralLink(){
+  const link=document.getElementById("myReferralLink").value;
+  if(!link){
+    alert("Referral link available nahi hai.");
+    return;
+  }
+  navigator.clipboard.writeText(link)
+    .then(()=>alert("Referral link copied!"))
+    .catch(()=>alert("Copy nahi hua. Link manually copy karein."));
+}
+ 
 function customerTab(tab){
  el("newEnquiryBox").classList.toggle("hidden",tab!=="new");
  el("myEnquiriesBox").classList.toggle("hidden",tab!=="mine");
