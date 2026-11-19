@@ -116,6 +116,7 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
    <input id="signupPassword" type="password" placeholder="Kam se kam 6 characters">
    <button onclick="signupAccount()">Create Account</button>
    <button class="secondary" onclick="toggleSignup(false)">Back to Login</button>
+   <button class="secondary" onclick="customerTab('orders')">My Orders</button>
   </div>
  </div>
 </section>
@@ -184,6 +185,11 @@ style="display:none;">
   <div id="customerPayments">Loading...</div>
  </div>
 
+<div id="customerOrdersBox" class="card hidden">
+  <h3>My Orders</h3>
+  <div id="customerOrders">Orders load ho rahe hain...</div>
+</div>
+ 
  <div id="makePaymentBox" class="card hidden">
   <h3>Make Payment</h3>
   <div id="paymentMessage" class="message"></div>
@@ -522,15 +528,19 @@ async function submitEnquiry(){
  msg("enquiryMessage","Aapki enquiry successfully submit ho gayi.");
 }
 
+
 function customerTab(tab){
  el("newEnquiryBox").classList.toggle("hidden",tab!=="new");
  el("myEnquiriesBox").classList.toggle("hidden",tab!=="mine");
  el("customerPaymentsBox").classList.toggle("hidden",tab!=="payments");
+ el("customerOrdersBox").classList.toggle("hidden",tab!=="orders");
  el("makePaymentBox").classList.add("hidden");
+
  if(tab==="mine")loadMyEnquiries();
  if(tab==="payments")loadCustomerPayments();
+ if(tab==="orders")loadCustomerOrders();
 }
-
+ 
 async function loadMyEnquiries(){
  const box=el("myEnquiries");box.textContent="Loading...";
  const {data,error}=await db.from("enquiries")
