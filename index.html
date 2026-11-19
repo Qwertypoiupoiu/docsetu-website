@@ -773,6 +773,7 @@ async function reviewPayment(id,status){
 
  await loadAdminPayments();
 }
+
 function adminTab(tab){
  el("adminEnquiriesBox").classList.toggle("hidden",tab!=="enquiries");
  el("serviceManagerBox").classList.toggle("hidden",tab!=="services");
@@ -780,6 +781,7 @@ function adminTab(tab){
  el("paymentSettingsBox").classList.toggle("hidden",tab!=="settings");
  el("adminDocumentsBox").classList.toggle("hidden",tab!=="documents");
  el("staffManagementBox").classList.toggle("hidden",tab!=="staff");
+ el("ordersManagementBox").classList.toggle("hidden",tab!=="orders");
 
  if(tab==="enquiries")loadAllEnquiries();
  if(tab==="services")loadServiceManager();
@@ -787,7 +789,44 @@ function adminTab(tab){
  if(tab==="settings")loadPaymentSettings();
  if(tab==="documents")loadAdminLockerDocuments();
  if(tab==="staff")loadStaffMembers();
+ if(tab==="orders")loadAdminOrders();
 }
+ 
+ 
+async function loadAdminOrders(){
+ const box=el("adminOrdersList");
+ box.textContent="Orders load ho rahe hain...";
+
+ const {data,error}=await db
+  .from("orders")
+  .select("id,enquiry_id,user_id,service_name,amount,payment_status,work_status,created_at")
+  .order("created_at",{ascending:false});
+
+ if(error){
+  box.textContent="Error: "+error.message;
+  return;
+ }
+
+ const orders=data||[];
+
+ if(!orders.length){
+  box.innerHTML="<p>Abhi koi order nahi hai.</p>";
+  return;
+ }
+
+ box.innerHTML=orders.map(o=>`
+  <div class="service">
+   <strong>${esc(o.service_name||"Service")}</strong>
+   <p>Order ID: ${esc(o.id)}</p>
+   <button onclick="GenUI.copy('${esc(o.id)}')">Copy Order ID</button>
+   <p>Amount: ₹${Number(o.amount||0).toFixed(2)}</p>
+   <p>Payment: ${esc(o.payment_status||"Unpaid")}</p>
+   <p>Work Status: ${esc(o.work_status||"Pending")}</p>
+   <p>Date: ${o.created_at?new Date(o.created_at).toLocaleString("en-IN"):"—"}</p>
+  </div>
+ `).join("");
+}
+ 
  async function loadStaffMembers(){
  const box=el("staffList");
  box.textContent="Staff load ho rahe hain...";
