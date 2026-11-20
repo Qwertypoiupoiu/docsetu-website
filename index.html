@@ -455,7 +455,7 @@ const {data,error}=await db.auth.signUp({
   password,
   options:{
     data:{full_name:name},
-    emailRedirectTo: window.location.origin + window.location.pathname
+    emailRedirectTo: "https://qwertypoiupoiu.github.io/docsetu-website/"
   }
 });
  if(error){msg("authMessage",error.message,true);return}
