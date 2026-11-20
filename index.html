@@ -450,9 +450,14 @@ async function signupAccount(){
  if(!name||!email||!password){msg("authMessage","Saari details bharein.",true);return}
  if(password.length<6){msg("authMessage","Password kam se kam 6 characters ka hona chahiye.",true);return}
  msg("authMessage","Account ban raha hai...");
- const {data,error}=await db.auth.signUp({
-  email,password,options:{data:{full_name:name}}
- });
+const {data,error}=await db.auth.signUp({
+  email,
+  password,
+  options:{
+    data:{full_name:name},
+    emailRedirectTo: window.location.origin + window.location.pathname
+  }
+});
  if(error){msg("authMessage",error.message,true);return}
  if(data.session){
   currentUser=data.user;
