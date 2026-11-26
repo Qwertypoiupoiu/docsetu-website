@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -261,6 +260,21 @@ style="display:none;">
  </div>
 </section>
 
+<section id="staffView" class="hidden">
+ <div class="card">
+  <h2>Staff Dashboard</h2>
+  <p id="staffWelcome" class="muted"></p>
+  <div class="grid" id="staffStats"></div>
+  <h3>My Assigned Work</h3>
+  <div id="staffTasksList">Loading...</div>
+  <hr>
+  <h3>My Earnings & Payments</h3>
+  <div id="staffFinanceSummary"></div>
+  <div id="staffEarningHistory"></div>
+  <div id="staffPayoutHistory"></div>
+ </div>
+</section>
+
 <section id="adminView" class="hidden">
  <div class="card">
   <h2>Admin Dashboard</h2>
@@ -273,6 +287,7 @@ style="display:none;">
    <button class="secondary" onclick="adminTab('settings')">Payment Settings</button>
    <button class="secondary" onclick="adminTab('orders')">Orders</button>
    <button class="secondary" onclick="adminTab('staff')">Staff Management</button>
+   <button class="secondary" onclick="adminTab('staffFinance')">Staff Payments & Reports</button>
   </div>
  </div>
 
@@ -351,6 +366,57 @@ style="display:none;">
   <textarea id="staffTaskNotes" placeholder="Task details"></textarea>
 
   <button onclick="assignStaffTask()">Assign Task</button>
+  <hr>
+  <h4>Bulk Work Distribution</h4>
+  <p class="muted">Pending orders select karke active staff mein equal ya manual distribution karein.</p>
+  <button class="secondary" onclick="loadBulkOrders()">Refresh Unassigned Orders</button>
+  <div id="bulkOrdersList">Orders load karne ke liye Refresh dabayein.</div>
+  <label>Distribution Method</label>
+  <select id="bulkDistribution" onchange="renderManualDistribution()">
+   <option value="equal">Equal Distribution</option>
+   <option value="manual">Manual Distribution</option>
+  </select>
+  <div id="manualDistributionBox"></div>
+  <label>Assignment Notes</label>
+  <input id="bulkAssignNotes" placeholder="Optional notes">
+  <button class="success" onclick="runBulkAssignment()">Assign Selected Orders</button>
+  <div id="bulkAssignMessage" class="message"></div>
+  <hr>
+  <h4>Staff Commission Percentage</h4>
+  <p class="muted">Har staff ka percentage set karein. Completed work ko verify karne par commission calculate hoga.</p>
+  <div id="staffCommissionSettings">Loading...</div>
+ </div>
+
+ <div id="staffFinanceBox" class="card hidden">
+  <h3>Staff Payments & Performance Reports</h3>
+  <div id="staffFinanceMessage" class="message"></div>
+  <h4>Staff-wise Summary</h4>
+  <div id="staffFinanceReport">Loading...</div>
+  <hr>
+  <h4>Verify Completed Work & Generate Commission</h4>
+  <div id="completedStaffWork">Loading...</div>
+  <hr>
+  <h4>Record Staff Payment</h4>
+  <label>Staff Member</label>
+  <select id="payoutStaffSelect"></select>
+  <label>Amount (₹)</label>
+  <input id="payoutAmount" type="number" min="0.01" step="0.01" placeholder="Payment amount">
+  <label>Payment Method</label>
+  <select id="payoutMethod"><option>Cash</option><option>UPI</option><option>Bank</option></select>
+  <label>Transaction Reference (optional)</label>
+  <input id="payoutReference" placeholder="UTR / reference">
+  <label>Remarks</label>
+  <input id="payoutRemarks" placeholder="Optional remarks">
+  <button class="success" onclick="recordStaffPayout()">Save Staff Payment</button>
+  <hr>
+  <h4>Manual Bonus / Deduction</h4>
+  <label>Staff Member</label>
+  <select id="adjustStaffSelect"></select>
+  <label>Amount (positive bonus, negative deduction)</label>
+  <input id="adjustAmount" type="number" step="0.01" placeholder="e.g. 500 or -100">
+  <label>Reason</label>
+  <input id="adjustNote" placeholder="Reason is required">
+  <button onclick="addStaffAdjustment()">Save Adjustment</button>
  </div>
  
 <div id="ordersManagementBox" class="card hidden">
@@ -392,6 +458,9 @@ let currentEnquiries=[];
 let customerPaymentRecords=[];
 let paymentSettings=null;
 let selectedPaymentEnquiry=null;
+let currentStaffTasks=[];
+let bulkAvailableOrders=[];
+let adminStaffCache=[];
 
 function el(id){return document.getElementById(id)}
 function msg(id,text,isError=false){
@@ -411,7 +480,7 @@ function initClient(){
  return true;
 }
 function show(view){
- ["homeView","authView","customerView","adminView","resetView"].forEach(id=>el(id).classList.add("hidden"));
+ ["homeView","authView","customerView","adminView","staffView","resetView"].forEach(id=>el(id).classList.add("hidden"));
  el(view).classList.remove("hidden");
  window.scrollTo(0,0);
 }
@@ -456,7 +525,7 @@ const {data,error}=await db.auth.signUp({
   options:{
     data:{full_name:name},
     emailRedirectTo: "https://qwertypoiupoiu.github.io/docsetu-website/"
-  }
+   }
 });
  if(error){msg("authMessage",error.message,true);return}
  if(data.session){
@@ -553,6 +622,16 @@ async function loadUserProfile(){
   await loadServiceManager();
   await loadPaymentSettings();
  }else{
+  // Staff account is linked by staff_members.id = auth user id.
+  const {data:staffAccount}=await db.from("staff_members")
+   .select("id,full_name,is_active").eq("id",currentUser.id).maybeSingle();
+  if(staffAccount?.is_active){
+   currentRole="staff";
+   el("staffWelcome").textContent="Namaste, "+(staffAccount.full_name||currentUser.email);
+   show("staffView");
+   await loadStaffDashboard();
+   return;
+  }
   el("customerEmail").textContent=currentUser.email;
   show("customerView");
   await loadServices();
@@ -565,6 +644,8 @@ function openDashboard(){
  if(!currentUser){showAuth();return}
  if(currentRole==="admin"){
   show("adminView");loadAllEnquiries();
+ }else if(currentRole==="staff"){
+  show("staffView");loadStaffDashboard();
  }else{
   show("customerView");loadServices();
  }
@@ -598,9 +679,8 @@ async function submitEnquiry(){
  el("customerPhone").value="";
  el("enquiryDetails").value="";
  msg("enquiryMessage","Aapki enquiry successfully submit ho gayi.");
-}
-
-async function loadCustomerOrders(){
+ }
+ async function loadCustomerOrders(){
  const box=el("customerOrders");
  box.textContent="Orders load ho rahe hain...";
 
@@ -908,8 +988,7 @@ function customerTab(tab){
  if(tab==="payments")loadCustomerPayments();
  if(tab==="orders")loadCustomerOrders();
 }
- 
-async function loadMyEnquiries(){
+ async function loadMyEnquiries(){
  const box=el("myEnquiries");box.textContent="Loading...";
  const {data,error}=await db.from("enquiries")
   .select("*").eq("user_id",currentUser.id)
@@ -1086,9 +1165,8 @@ async function savePaymentSettings(){
 
  paymentSettings={...paymentSettings,...values};
  msg("settingsMessage","Payment settings save ho gayi hain.");
-}
-
-async function loadAdminPayments(){
+ }
+ async function loadAdminPayments(){
  const box=el("adminPayments");
  box.textContent="Loading...";
 
@@ -1160,6 +1238,7 @@ function adminTab(tab){
  el("adminDocumentsBox").classList.toggle("hidden",tab!=="documents");
  el("staffManagementBox").classList.toggle("hidden",tab!=="staff");
  el("ordersManagementBox").classList.toggle("hidden",tab!=="orders");
+ el("staffFinanceBox").classList.toggle("hidden",tab!=="staffFinance");
 
  if(tab==="enquiries")loadAllEnquiries();
  if(tab==="services")loadServiceManager();
@@ -1167,6 +1246,7 @@ function adminTab(tab){
  if(tab==="settings")loadPaymentSettings();
  if(tab==="documents")loadAdminLockerDocuments();
  if(tab==="staff")loadStaffMembers();
+ if(tab==="staffFinance")loadStaffFinanceAdmin();
  if(tab==="orders")loadAdminOrders();
 }
  
@@ -1301,7 +1381,7 @@ box.innerHTML=orders.map(o=>`
 
  const {data,error}=await db
   .from("staff_members")
-  .select("id,full_name,phone,designation,is_active")
+  .select("id,full_name,phone,designation,is_active,commission_percent")
   .order("created_at",{ascending:false});
 
  if(error){
@@ -1328,11 +1408,21 @@ box.innerHTML=orders.map(o=>`
    <p>Phone: ${esc(s.phone||"—")}</p>
    <p>Designation: ${esc(s.designation||"Staff")}</p>
    <p>Status: ${s.is_active?"Active":"Inactive"}</p>
+   <p>Commission: ${Number(s.commission_percent||0)}%</p>
   </div>
  `).join("");
-}
-
-async function assignStaffTask(){
+ el("staffCommissionSettings").innerHTML=staff.map(s=>`
+  <div class="service">
+   <strong>${esc(s.full_name)}</strong>
+   <label>Commission %</label>
+   <input id="commission_${esc(s.id)}" type="number" min="0" max="100" step="0.01" value="${Number(s.commission_percent||0)}">
+   <button onclick="saveStaffCommission('${esc(s.id)}')">Save Percentage</button>
+  </div>
+ `).join("");
+ adminStaffCache=staff;
+ renderManualDistribution();
+   }
+ async function assignStaffTask(){
  const orderId=el("staffOrderId").value.trim();
  const staffId=el("staffSelect").value;
  const notes=el("staffTaskNotes").value.trim();
@@ -1359,6 +1449,140 @@ async function assignStaffTask(){
  el("staffOrderId").value="";
  el("staffTaskNotes").value="";
 }
+async function saveStaffCommission(staffId){
+ const value=Number(el("commission_"+staffId).value);
+ if(!Number.isFinite(value)||value<0||value>100){alert("Commission 0 se 100 ke beech honi chahiye.");return}
+ const {error}=await db.from("staff_members").update({commission_percent:value}).eq("id",staffId);
+ if(error){alert("Commission save nahi hua: "+error.message);return}
+ alert("Commission percentage save ho gaya.");
+ loadStaffMembers();
+}
+
+async function loadBulkOrders(){
+ const box=el("bulkOrdersList"); box.textContent="Orders load ho rahe hain...";
+ const [{data:orders,error:oerr},{data:tasks,error:terr}] = await Promise.all([
+  db.from("orders").select("id,service_name,amount,work_status,created_at").order("created_at",{ascending:true}),
+  db.from("staff_tasks").select("order_id,task_status")
+ ]);
+ if(oerr||terr){box.textContent="Load error: "+(oerr?.message||terr?.message);return}
+ const activeIds=new Set((tasks||[]).filter(t=>t.task_status!=="Completed").map(t=>t.order_id));
+ bulkAvailableOrders=(orders||[]).filter(o=>!activeIds.has(o.id)&&o.work_status!=="completed");
+ if(!bulkAvailableOrders.length){box.innerHTML="<p>Koi unassigned/pending order nahi mila.</p>";return}
+ box.innerHTML='<label><input type="checkbox" id="bulkSelectAll" onchange="toggleBulkOrders(this.checked)" style="width:auto;margin-right:8px">Select All</label>'+bulkAvailableOrders.map(o=>`
+  <label class="service" style="display:block;font-weight:normal">
+   <input class="bulk-order-check" type="checkbox" value="${esc(o.id)}" style="width:auto;margin-right:8px">
+   <strong>${esc(o.service_name||"Service")}</strong> — ${money(o.amount)}<br>
+   <small>${esc(o.work_status||"pending")} · ${new Date(o.created_at).toLocaleDateString("en-IN")} · ${esc(o.id)}</small>
+  </label>`).join("");
+}
+function toggleBulkOrders(checked){document.querySelectorAll(".bulk-order-check").forEach(x=>x.checked=checked)}
+function renderManualDistribution(){
+ const box=el("manualDistributionBox");
+ if(el("bulkDistribution").value!=="manual"){box.innerHTML="";return}
+ const staff=adminStaffCache.filter(s=>s.is_active);
+ box.innerHTML=staff.map(s=>`<label>${esc(s.full_name)} — orders count</label><input class="manual-staff-count" data-staff-id="${esc(s.id)}" type="number" min="0" step="1" value="0">`).join("");
+}
+async function runBulkAssignment(){
+ const orderIds=[...document.querySelectorAll(".bulk-order-check:checked")].map(x=>x.value);
+ const staff=adminStaffCache.filter(s=>s.is_active);
+ const staffIds=staff.map(s=>s.id);
+ if(!orderIds.length||!staffIds.length){msg("bulkAssignMessage","Orders aur active staff select karein.",true);return}
+ const distribution=el("bulkDistribution").value;
+ let counts=null;
+ if(distribution==="manual"){
+  counts={};let sum=0;
+  document.querySelectorAll(".manual-staff-count").forEach(x=>{const n=Number(x.value);if(!Number.isInteger(n)||n<0){sum=-999;return}counts[x.dataset.staffId]=n;sum+=n});
+  if(sum!==orderIds.length){msg("bulkAssignMessage","Manual counts ka total selected orders ke barabar hona chahiye.",true);return}
+ }
+ if(!confirm(`${orderIds.length} orders ko ${staff.length} staff members mein assign karna hai?`))return;
+ msg("bulkAssignMessage","Bulk assignment chal raha hai...");
+ const {data,error}=await db.rpc("bulk_assign_orders",{
+  input_order_ids:orderIds,input_staff_ids:staffIds,input_distribution:distribution,
+  input_manual_counts:counts,input_notes:el("bulkAssignNotes").value.trim()||null
+ });
+ if(error){msg("bulkAssignMessage",error.message,true);return}
+ msg("bulkAssignMessage",`${data} orders successfully assign ho gaye.`);
+ await loadBulkOrders();
+ await loadAdminOrders();
+}
+
+async function loadStaffDashboard(){
+ const [taskRes,earningRes,payoutRes]=await Promise.all([
+  db.from("staff_tasks").select("id,order_id,task_status,notes,assigned_at,updated_at").eq("staff_id",currentUser.id).order("assigned_at",{ascending:false}),
+  db.from("staff_commission_ledger").select("id,order_id,entry_type,base_amount,commission_percent,earning_amount,note,created_at").eq("staff_id",currentUser.id).order("created_at",{ascending:false}),
+  db.from("staff_payouts").select("id,amount,payment_method,transaction_reference,remarks,paid_at").eq("staff_id",currentUser.id).order("paid_at",{ascending:false})
+ ]);
+ if(taskRes.error||earningRes.error||payoutRes.error){el("staffTasksList").textContent="Dashboard load error: "+(taskRes.error?.message||earningRes.error?.message||payoutRes.error?.message);return}
+ currentStaffTasks=taskRes.data||[];
+ const orderIds=[...new Set(currentStaffTasks.map(t=>t.order_id).filter(Boolean))];
+ let orderMap={};
+ if(orderIds.length){const {data,error}=await db.from("orders").select("id,service_name,amount,work_status,created_at").in("id",orderIds);if(error){el("staffTasksList").textContent=error.message;return}(data||[]).forEach(o=>orderMap[o.id]=o)}
+ const tasks=currentStaffTasks;
+ const count=status=>tasks.filter(t=>t.task_status===status).length;
+ el("staffStats").innerHTML=[
+  ["Total Assigned",tasks.length],["In Progress",count("In Progress")],["Waiting",count("Waiting for Documents")],["Completed",count("Completed")]
+ ].map(x=>`<div class="service"><small>${x[0]}</small><h2>${x[1]}</h2></div>`).join("");
+ el("staffTasksList").innerHTML=tasks.length?tasks.map(t=>{const o=orderMap[t.order_id]||{};return `<div class="service"><strong>${esc(o.service_name||"Order")}</strong><p>Amount: ${money(o.amount)}</p><p>Order ID: ${esc(t.order_id)}</p><p>Assigned: ${new Date(t.assigned_at).toLocaleString("en-IN")}</p><p>Status: <strong>${esc(t.task_status)}</strong></p><label>Update Status</label><select id="staff_status_${esc(t.id)}"><option ${t.task_status==="Assigned"?"selected":""}>Assigned</option><option ${t.task_status==="In Progress"?"selected":""}>In Progress</option><option ${t.task_status==="Waiting for Documents"?"selected":""}>Waiting for Documents</option><option ${t.task_status==="Completed"?"selected":""}>Completed</option><option ${t.task_status==="On Hold"?"selected":""}>On Hold</option></select><input id="staff_note_${esc(t.id)}" placeholder="Update note (optional)"><button onclick="saveMyTaskStatus('${esc(t.id)}')">Save Status</button></div>`}).join(""):"<p>Abhi koi task assign nahi hua.</p>";
+ const earnings=earningRes.data||[], payouts=payoutRes.data||[];
+ const earned=earnings.reduce((a,x)=>a+Number(x.earning_amount||0),0), paid=payouts.reduce((a,x)=>a+Number(x.amount||0),0);
+ el("staffFinanceSummary").innerHTML=`<div class="grid"><div class="service">Total Earned<h2>${money(earned)}</h2></div><div class="service">Total Paid<h2>${money(paid)}</h2></div><div class="service">Pending Balance<h2>${money(earned-paid)}</h2></div></div>`;
+ el("staffEarningHistory").innerHTML="<h4>Earning History</h4>"+(earnings.length?earnings.map(x=>`<div class="service"><strong>${esc(x.entry_type)}</strong> — ${money(x.earning_amount)}<p>${esc(x.note||"")}</p><small>${new Date(x.created_at).toLocaleString("en-IN")}</small></div>`).join(""):"<p>No earnings recorded yet.</p>");
+ el("staffPayoutHistory").innerHTML="<h4>Payment History</h4>"+(payouts.length?payouts.map(x=>`<div class="service"><strong>${money(x.amount)}</strong> · ${esc(x.payment_method)}<p>${esc(x.transaction_reference||"")} ${esc(x.remarks||"")}</p><small>${new Date(x.paid_at).toLocaleString("en-IN")}</small></div>`).join(""):"<p>No payouts recorded yet.</p>");
+}
+async function saveMyTaskStatus(taskId){
+ const status=el("staff_status_"+taskId).value,note=el("staff_note_"+taskId).value.trim();
+ const {error}=await db.rpc("update_my_task_status",{input_task_id:taskId,input_status:status,input_note:note||null});
+ if(error){alert(error.message);return} alert("Task status updated."); await loadStaffDashboard();
+}
+
+async function loadStaffFinanceAdmin(){
+ const [{data:staff,error:se},{data:ledger,error:le},{data:payouts,error:pe},{data:tasks,error:te}] = await Promise.all([
+  db.from("staff_members").select("id,full_name,commission_percent,is_active"),
+  db.from("staff_commission_ledger").select("staff_id,earning_amount,entry_type,created_at"),
+  db.from("staff_payouts").select("staff_id,amount,paid_at"),
+  db.from("staff_tasks").select("staff_id,task_status,assigned_at,updated_at")
+ ]);
+ if(se||le||pe||te){el("staffFinanceReport").textContent="Report error: "+(se?.message||le?.message||pe?.message||te?.message);return}
+ adminStaffCache=staff||[];
+ el("payoutStaffSelect").innerHTML=staff.map(s=>`<option value="${esc(s.id)}">${esc(s.full_name)}</option>`).join("");
+ el("adjustStaffSelect").innerHTML=el("payoutStaffSelect").innerHTML;
+ const now=Date.now(), day=86400000;
+ el("staffFinanceReport").innerHTML=staff.map(s=>{
+  const earned=(ledger||[]).filter(x=>x.staff_id===s.id).reduce((a,x)=>a+Number(x.earning_amount||0),0);
+  const paid=(payouts||[]).filter(x=>x.staff_id===s.id).reduce((a,x)=>a+Number(x.amount||0),0);
+  const mine=(tasks||[]).filter(x=>x.staff_id===s.id);
+  const assignedSince=ms=>mine.filter(x=>new Date(x.assigned_at).getTime()>=now-ms).length;
+  const completedSince=ms=>mine.filter(x=>x.task_status==="Completed"&&new Date(x.updated_at).getTime()>=now-ms).length;
+  return `<div class="service"><strong>${esc(s.full_name)}</strong><p>Commission: ${Number(s.commission_percent||0)}%</p><p>Total Earned: ${money(earned)} · Paid: ${money(paid)} · Pending: <strong>${money(earned-paid)}</strong></p><p>Today: ${assignedSince(day)} assigned / ${completedSince(day)} completed</p><p>Last 7 days: ${assignedSince(7*day)} assigned / ${completedSince(7*day)} completed</p><p>Last 30 days: ${assignedSince(30*day)} assigned / ${completedSince(30*day)} completed</p></div>`;
+ }).join("")||"No staff members found.";
+ const {data:completed,error:ce}=await db.from("orders").select("id,service_name,amount,created_at,work_verified_at").eq("work_status","completed").is("work_verified_at",null).order("created_at",{ascending:false});
+ if(ce){el("completedStaffWork").textContent=ce.message;return}
+ el("completedStaffWork").innerHTML=(completed||[]).length?(completed||[]).map(o=>`<div class="service"><strong>${esc(o.service_name)}</strong><p>${money(o.amount)} · ${esc(o.id)}</p><label>Manual earning override (optional)</label><input id="verify_amount_${esc(o.id)}" type="number" min="0" step="0.01" placeholder="Blank = percentage automatic"><input id="verify_note_${esc(o.id)}" placeholder="Optional note"><button class="success" onclick="verifyStaffWork('${esc(o.id)}')">Verify & Generate Earning</button></div>`).join(""):"<p>No unverified completed staff work.</p>";
+}
+async function verifyStaffWork(orderId){
+ const raw=el("verify_amount_"+orderId).value;
+ const amount=raw===""?null:Number(raw);
+ const note=el("verify_note_"+orderId).value.trim()||null;
+ if(amount!==null&&(!Number.isFinite(amount)||amount<0)){alert("Valid amount enter karein.");return}
+ const {error}=await db.rpc("admin_verify_staff_work",{input_order_id:orderId,input_manual_amount:amount,input_note:note});
+ if(error){alert(error.message);return}
+ alert("Work verified; staff earning generated."); await loadStaffFinanceAdmin();
+}
+async function recordStaffPayout(){
+ const staffId=el("payoutStaffSelect").value,amount=Number(el("payoutAmount").value),method=el("payoutMethod").value;
+ if(!staffId||!Number.isFinite(amount)||amount<=0){msg("staffFinanceMessage","Staff aur valid payment amount enter karein.",true);return}
+ const {error}=await db.rpc("admin_record_staff_payout",{input_staff_id:staffId,input_amount:amount,input_method:method,input_reference:el("payoutReference").value.trim()||null,input_remarks:el("payoutRemarks").value.trim()||null});
+ if(error){msg("staffFinanceMessage",error.message,true);return}
+ msg("staffFinanceMessage","Staff payment successfully record ho gayi."); el("payoutAmount").value="";el("payoutReference").value="";el("payoutRemarks").value="";await loadStaffFinanceAdmin();
+}
+async function addStaffAdjustment(){
+ const staffId=el("adjustStaffSelect").value,amount=Number(el("adjustAmount").value),note=el("adjustNote").value.trim();
+ if(!staffId||!Number.isFinite(amount)||amount===0||!note){alert("Staff, non-zero amount aur reason zaroori hain.");return}
+ const {error}=await db.rpc("admin_add_staff_adjustment",{input_staff_id:staffId,input_amount:amount,input_note:note});
+ if(error){alert(error.message);return}
+ alert("Adjustment saved.");el("adjustAmount").value="";el("adjustNote").value="";await loadStaffFinanceAdmin();
+}
+
 async function loadAllEnquiries(){
  const box=el("adminEnquiries");
  box.textContent="Enquiries load ho rahi hain...";
@@ -1404,10 +1628,7 @@ async function loadAllEnquiries(){
   `;
  }
 }
- 
-
-
-async function convertEnquiryToOrder(enquiryId){
+ async function convertEnquiryToOrder(enquiryId){
  if(!confirm("Kya aap is enquiry ko Order mein convert karna chahte hain?"))return;
 
  const {data,error}=await db.rpc("convert_enquiry_to_order",{
@@ -1871,10 +2092,8 @@ async function loadLockerDocuments(){
  }
 
  box.innerHTML=html;
-   }
- 
-
-async function downloadLockerDocument(name){
+ }
+ async function downloadLockerDocument(name){
  const path=currentUser.id+"/"+name;
 
  const {data,error}=await db.storage
@@ -2015,4 +2234,3 @@ boot();
  </script>
 </body>
 </html>
- 
