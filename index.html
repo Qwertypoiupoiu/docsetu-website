@@ -1668,16 +1668,17 @@ async function uploadLockerDocument(){
 
  let docType=el("lockerDocType").value;
 
-if(docType==="Other Document"){
- const otherName=el("lockerOtherName").value.trim();
+ if(docType==="Other Document"){
+  const otherName=el("lockerOtherName").value.trim();
 
- if(!otherName){
-  msg("lockerMessage","Document ka naam likhein.",true);
-  return;
+  if(!otherName){
+   msg("lockerMessage","Document ka naam likhein.",true);
+   return;
+  }
+
+  docType=otherName;
  }
 
- docType=otherName;
-}
  const files=Array.from(el("lockerFile").files);
 
  if(!docType){
@@ -1701,11 +1702,49 @@ if(docType==="Other Document"){
    msg("lockerMessage","Sirf PDF, JPG aur PNG allowed hain.",true);
    return;
   }
+ }
 
-  if(file.size>10*1024*1024){
-   msg("lockerMessage","Har file 10 MB se chhoti honi chahiye.",true);
+ // 10 MB total customer storage limit
+ const LIMIT=10*1024*1024;
+
+ const {data:existingFiles,error:listError}=await db.storage
+  .from(LOCKER_BUCKET)
+  .list(currentUser.id,{limit:1000});
+
+ if(listError){
+  msg("lockerMessage","Storage check failed: "+listError.message,true);
+  return;
+ }
+
+ const existing=(existingFiles||[]).filter(f=>f.name);
+
+ let usedBytes=0;
+
+ for(const f of existing){
+  const size=Number(f.metadata?.size);
+
+  if(!Number.isFinite(size)){
+   msg("lockerMessage","Existing file size verify nahi ho paaya.",true);
    return;
   }
+
+  usedBytes+=size;
+ }
+
+ const newBytes=files.reduce((total,file)=>total+file.size,0);
+
+ if(usedBytes+newBytes>LIMIT){
+  const usedMB=(usedBytes/1024/1024).toFixed(2);
+  const remainingMB=Math.max(0,(LIMIT-usedBytes)/1024/1024).toFixed(2);
+
+  msg(
+   "lockerMessage",
+   "10 MB limit! Used: "+usedMB+
+   " MB. Available: "+remainingMB+
+   " MB. Kuch purane documents delete karein.",
+   true
+  );
+  return;
  }
 
  msg("lockerMessage","Documents upload ho rahe hain...");
@@ -1715,7 +1754,9 @@ if(docType==="Other Document"){
  for(let i=0;i<files.length;i++){
   const file=files[i];
   const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-  const path=currentUser.id+"/"+safeType+"_"+Date.now()+"_"+i+"_"+safeName;
+
+  const path=currentUser.id+"/"+safeType+"_"+
+   Date.now()+"_"+i+"_"+safeName;
 
   const {error}=await db.storage
    .from(LOCKER_BUCKET)
@@ -1723,57 +1764,115 @@ if(docType==="Other Document"){
 
   if(error){
    msg("lockerMessage",error.message,true);
+   await loadLockerDocuments();
    return;
   }
  }
 
  el("lockerFile").value="";
  el("lockerDocType").value="";
+ el("lockerOtherName").value="";
+ el("lockerOtherName").style.display="none";
 
  msg("lockerMessage",files.length+" document successfully upload ho gaye.");
 
  await loadLockerDocuments();
-}
- 
+  }
+
 
 async function loadLockerDocuments(){
  if(!currentUser)return;
 
  const box=el("lockerDocuments");
- box.textContent="Documents load ho rahe hain...";
+ box.innerHTML="Documents load ho rahe hain...";
 
- const {data,error}=await db.storage
+ const {data:files,error}=await db.storage
   .from(LOCKER_BUCKET)
-  .list(currentUser.id,{
-   limit:100,
-   sortBy:{column:"created_at",order:"desc"}
-  });
+  .list(currentUser.id,{limit:1000});
 
  if(error){
-  box.textContent=error.message;
+  box.textContent="Documents load nahi hue: "+error.message;
   return;
  }
 
- const files=(data||[]).filter(f=>f.name);
+ const documents=(files||[]).filter(f=>f.name);
 
- if(!files.length){
-  box.innerHTML="<p>Abhi koi document upload nahi hai.</p>";
-  return;
+ let usedBytes=0;
+ let sizeVerified=true;
+
+ for(const file of documents){
+  const size=Number(file.metadata?.size);
+
+  if(Number.isFinite(size)){
+   usedBytes+=size;
+  }else{
+   sizeVerified=false;
+  }
  }
 
- box.innerHTML=files.map(f=>`
-  <div class="service">
-   <strong>${esc(f.name)}</strong>
-   <br><br>
-   <button onclick="downloadLockerDocument('${f.name}')">
-    Download
-   </button>
-   <button class="danger" onclick="deleteLockerDocument('${f.name}')">
-    Delete
-   </button>
+ const LIMIT=10*1024*1024;
+ const remaining=Math.max(0,LIMIT-usedBytes);
+
+ function sizeMB(bytes){
+  return (bytes/1024/1024).toFixed(2)+" MB";
+ }
+
+ const percent=Math.min(100,(usedBytes/LIMIT)*100);
+
+ let html=`
+  <div class="service" style="margin-bottom:15px;">
+   <strong>🔒 My Document Storage</strong>
+   <p style="margin:8px 0;">
+    Used: ${sizeMB(usedBytes)} / 10.00 MB
+   </p>
+
+   <div style="background:#ddd;height:12px;border-radius:10px;overflow:hidden;">
+    <div style="background:#2861a8;width:${percent}%;height:12px;border-radius:10px;"></div>
+   </div>
+
+   <p style="margin:8px 0;">
+    Available: ${sizeMB(remaining)}
+   </p>
+
+   ${sizeVerified?"":"<small>Some file sizes verify nahi ho paaye.</small>"}
   </div>
- `).join("");
-}
+ `;
+
+ if(!documents.length){
+  html+="<p>Abhi koi document upload nahi hai.</p>";
+  box.innerHTML=html;
+  return;
+ }
+
+ for(const file of documents){
+  const fileSize=Number(file.metadata?.size);
+  const sizeText=Number.isFinite(fileSize)
+   ?sizeMB(fileSize)
+   :"Size unavailable";
+
+  const safeName=esc(file.name);
+
+  html+=`
+   <div class="service" style="margin-bottom:10px;">
+    <strong>📄 ${safeName}</strong>
+    <br>
+    <small>${sizeText}</small>
+    <br><br>
+
+    <button onclick="downloadLockerDocument('${file.name}')">
+     Download
+    </button>
+
+    <button class="danger" onclick="deleteLockerDocument('${file.name}')">
+     Delete
+    </button>
+   </div>
+  `;
+ }
+
+ box.innerHTML=html;
+   }
+ 
 
 async function downloadLockerDocument(name){
  const path=currentUser.id+"/"+name;
