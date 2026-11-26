@@ -1976,7 +1976,7 @@ async function uploadLockerDocument(){
   const file=files[i];
   const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
 
-  const path=currentUser.id+"/QUOTA_TEST_"+safeType+"_"+
+  const path=currentUser.id+"/"+safeType+"_"+
    Date.now()+"_"+i+"_"+safeName;
 
   const {error}=await db.storage
